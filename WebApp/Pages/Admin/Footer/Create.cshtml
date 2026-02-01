@@ -1,0 +1,115 @@
+﻿@page
+@model WebApp.Pages.Admin.Footer.CreateModel
+@{
+    ViewData["Title"] = "New Footer Content";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left">Create Footer Content</h3>
+                        <a class="btn btn-sm btn-secondary float-right" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="footer.Id" />
+
+                            <div class="form-group form-row">
+                                <label asp-for="footer.EnglishTitle" class="col-md-3 col-lg-2">English Heading<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="footer.EnglishTitle" id="txtenglishname" class="form-control" placeholder="English Name" autocomplete="on" />
+                                    <span asp-validation-for="footer.EnglishTitle" class="text-danger"></span>
+
+                                </div>
+                                <label asp-for="footer.HindiTitle" class="col-md-3 col-lg-2">&nbsp;&nbsp;  Hindi Heading<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="footer.HindiTitle" id="txthindiname" class="form-control" placeholder="Hindi Name" autocomplete="on" />
+                                    <span asp-validation-for="footer.HindiTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group form-row">
+                                <label asp-for="footer.EnglishPageLink" class="col-md-3 col-lg-2">English Title<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="footer.EnglishPageLink" id="txtTitle" class="form-control" placeholder="English Name" autocomplete="on" />
+                                    <span asp-validation-for="footer.EnglishPageLink" class="text-danger"></span>
+
+                                </div>
+                                <label asp-for="footer.HindiPageLink" class="col-md-3 col-lg-2">Hindi Title<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="footer.HindiPageLink" id="txtHindiTitle" class="form-control" placeholder="Hindi Title" autocomplete="on" />
+                                    <span asp-validation-for="footer.HindiPageLink" class="text-danger"></span>
+
+                                </div>
+                            </div>
+                           @* <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-PageLink-tab" data-toggle="tab" href="#nav-PageLink" role="tab" aria-controls="nav-home" aria-selected="true">Page Link</a>
+                                    <a class="nav-item nav-link" id="nav-UploadFile-tab" data-toggle="tab" href="#nav-UploadFile" role="tab" aria-controls="nav-profile" aria-selected="false">Upload File</a>
+                                    <a class="nav-item nav-link" id="nav-Content-tab" data-toggle="tab" href="#nav-Content" role="tab" aria-controls="nav-profile" aria-selected="false">Content</a>
+                                </div>
+                            </nav>*@
+
+@*
+                            <div class="tab-content p-3 border" id="nav-tabContent">
+                                <input type="hidden" id="LastSelectedId" />
+                                <div class="tab-pane fade show active" id="nav-PageLink" role="tabpanel" aria-labelledby="nav-PageLink-tab">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span class="FD">English Link</span><input class="form-control" asp-for="footer.EnglishPageLink" />
+                                            <span asp-validation-for="footer.EnglishPageLink" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span class="FD">Hindi Link</span><input class="form-control" asp-for="MenuHeadings.HindiPageLink" />
+                                            <span asp-validation-for="footer.HindiPageLink" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-UploadFile" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                                    <div class="row">
+                                        <div class="col-md-4"><span class="FD">English File</span><input class="form-control Attachment" asp-for="footer.EnglishFile" /></div>
+                                        <div class="col-md-4"><span class="FD">Hindi File</span><input class="form-control Attachment" asp-for="footer.HindiFile" /></div>
+
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-Content" role="tabpanel" aria-labelledby="nav-Contact-tab">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <span class="FD">English Content</span>
+                                            <textarea class="form-control" asp-for="footer.EnglishContentDesc" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                        </div>
+
+                                        <div class="col-md-10">
+                                            <span class="FD">Hindi Content</span>
+                                            <textarea class="form-control" cols="30" rows="3" asp-for="footer.HindiContentDesc" id="HindiContentDesc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                            <div class="form-group form-row">
+                                <label class="col-md-3 col-lg-2"></label>
+                                <div class="col-md-9 col-lg-10">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input asp-for="footer.Status" class="custom-control-input">
+                                        <label asp-for="footer.Status" class="custom-control-label">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Heading</button>&nbsp;
+                                    <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

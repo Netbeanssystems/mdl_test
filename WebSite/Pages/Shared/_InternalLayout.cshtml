@@ -1,0 +1,573 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    var lang = Context.Session.GetString("Lang");
+    var currentTitle = Html.Raw(ViewData["Title"]);
+    var htmlLang = (string.IsNullOrEmpty(lang) || lang == "English") ? "en" : "hi";
+}
+<!DOCTYPE html>
+<html lang="@htmlLang">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+@*     @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+    {
+        <title>@ViewData["Title"] | Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"] | मझगांव डॉक शिपबिल्डर्स लिमिटेड, रक्षा मंत्रालय, भारत सरकार की आधिकारिक वेबसाइट, भारत सरकार</title>
+    } *@
+    
+    <link rel="icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" integrity="sha256-GTX1Z3bCw4mJjku3N/Ih4QSAX8lmhuATyDkz7sSP1Bo=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/Assets/css/bootstrap.min.css" asp-append-version="true">
+
+    @*New CSS*@
+    <link rel="stylesheet" href="/Assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/Assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Assets/css/lightgallery.min.css">
+    <link rel="stylesheet" href="/Assets/css/aos.css">
+    <link rel="stylesheet" href="/Assets/css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="/Assets/css/icomoon.css">
+    <link rel="stylesheet" href="/Assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/Assets/css/custom.css" asp-append-version="true">
+    <link rel="stylesheet" href="/css/Change.css" asp-append-version="true" disabled>
+
+    @await RenderSectionAsync("Styles", required: false)
+    @await RenderSectionAsync("meta", required: false)
+
+    <!-- Google Tag Manager -->
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TK88K89');</script>
+    <!-- End Google Tag Manager -->
+
+    <style>
+        .heading {
+            position: absolute;
+            color: #fff;
+            top: 50%;
+            left: 50%;
+            font-size: 28px;
+            transform: translate(-50%, -50%);
+        }
+
+        .sideconsistor {
+            width: auto !important;
+        }
+
+        .hero img {
+            width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TK88K89"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="site-header header-rti">
+        <div class="header-top">
+            @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+            {
+                <input type="hidden" id="hdn_lang" value="eng" />
+                <div class="logo">
+                      <a href="/">
+                        <img title="Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India" src="/Assets/images/logo.svg" alt="Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India Undertaking Shipbuilders to the nation. CIN : L35100MH1934GOI002079 ." asp-append-version="true">
+                    </a>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" id="hdn_lang" value="hin" />
+                <div class="logo">
+                    <a href="">
+                        <img title="मझगांव डॉक शिपबिल्डर्स लिमिटेड, रक्षा मंत्रालय, भारत सरकार की आधिकारिक वेबसाइट, भारत सरकार" src="/Assets/images/logo.svg" alt="मझगांव डॉक शिपबिल्डर्स लिमिटेड, रक्षा मंत्रालय, भारत सरकार की आधिकारिक वेबसाइट, भारत सरकार" asp-append-version="true">
+                    </a>
+                </div>
+            }
+
+            <div class="header-top-right">
+                <div class="header-top-nav">
+                    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                    {
+                        <ul>
+                            <li><a title="Skip to Main Content" id="skip" style="cursor:pointer;" class="skip" href="#skipCont"><span class="icon-icons15"></span> Skip to Main Content</a></li>
+                            <li><a title="Feedback" href="/English/Forms/Feedback"><span class="icon-icons11"></span> Feedback</a></li>
+                            <li><a title="Enquiry" href="/English/Forms/Enquiry"><span class="icon-icons12"></span> Enquiry</a></li>
+                            <li><a title="Public Grievance" href="/English/Forms/PublicGrievance"><span class="icon-icons13"></span> Public Grievance</a></li>
+                            <li>
+                                <a title="Right to Information"  href="/English/rti">
+                                    <img width="30" height="25" src="/img/rti_icon.svg" alt="@currentTitle">
+                                    RTI
+                                </a>
+
+                            </li>
+                            <li><a title="Vigilance" href="/English/Forms/Vigilance"><span class="icon-icons14"></span> Vigilance</a></li>
+                            <li><a title="Contact Us" href="/English/Pages/contact-us"> Contact Us</a></li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul>
+                            <li><a title="मुख्य विषयवस्तु में जाएं" id="skip" style="cursor:pointer;" class="skip" href="#skipCont"><span class="icon-icons15"></span> मुख्य विषयवस्तु में जाएं</a></li>
+                            <li><a title="प्रतिक्रिया" href="/Hindi/Forms/Feedback"><span class="icon-icons11"></span> प्रतिक्रिया</a></li>
+                            <li><a title="पूछ-ताछ" href="/Hindi/Forms/Enquiry"><span class="icon-icons12"></span> पूछ-ताछ</a></li>
+                            <li><a title="लोक शिकायत" href="/Hindi/Forms/PublicGrievance"><span class="icon-icons13"></span> लोक शिकायत</a></li>
+                            <li>
+                                <a title="सूचना का अधिकार" href="/Hindi/rti">
+                                    <img width="30" height="25" src="/img/rti_icon.svg" alt="@currentTitle">
+                                    सूचना का अधिकार
+                                </a>
+
+                            </li>
+                            <li><a title="सतर्कता" href="/Hindi/Forms/Vigilance"><span class="icon-icons14"></span> सतर्कता</a></li>
+                            <li><a title="संपर्क करें" href="/Hindi/Pages/contact-us"> संपर्क</a></li>
+                        </ul>
+                    }
+                </div>
+                <div class="header-bottom-nav">
+                    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                    {
+                        <div class="link-single access-link">
+                            <a title="Screen Reader Access" href="/English/Pages/Screen-Reader-Access"><span class="icon-icons16"></span> Screen Reader Access</a>
+                        </div>
+                        <div class="link-single text-opt">
+                            <ul>
+                                <li><a title="Decrease Text Size" onclick="set_font_size('decrease')" href="javascript:void(0)">-A</a></li>
+                                <li><a title="Default Text Size" onclick="set_font_size('')" href="javascript:void(0)">A</a></li>
+                                <li><a title="Increase Text Size" onclick="set_font_size('increase')" href="javascript:void(0)">+A</a></li>
+                            </ul>
+                        </div>
+                        <div class="link-single color-opt">
+                            <ul>
+                                <li class="light-color"> <button title="Standard view" style="cursor:pointer;" class="theme-item theme-1 dark"><img src="/Assets/images/standard.png" alt="Standard view"></button></li>
+                                <li class="lightgray-color"><button title="High Contrast view : Yellow text on black background" style="cursor:pointer;" class="theme-item theme-2 light"><img src="/Assets/images/color-3.png" alt="High Contrast view : Yellow text on black background"></button></li>
+                                <li class="darkgray-color"><button title="Low Contrast View : Yellow text on light gray background" style="cursor:pointer;" class="theme-item theme-2 light"><img src="/Assets/images/color-2.png" alt="Low Contrast View : Yellow text on light gray background"></button></li>
+                            </ul>
+                        </div>
+                        <div class="link-single text-width">
+                            <button class="fa fa-text-width" title="Text Spacing" aria-pressed="false"  aria-label="Toggle text width" id="text-width" tabindex="0"></button>
+                        </div>
+                        <div class="link-single social-link">
+                            <ul>
+                                <li><a title="Twitter" target="_blank" onclick="return confirm('External site that opens in a new window.');" href="https://twitter.com/MazagonDockLtd"><img src="/Assets/images/twitter.png" alt="twitter"></a></li>
+                                <li><a title="Facebook" target="_blank" onclick="return confirm('External site that opens in a new window.');" href="https://www.facebook.com/MDLMumbai"><img src="/Assets/images/facebook.png" alt="facebook"></a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="link-single access-link">
+                            <a title="स्क्रीन रीडर एक्सेस" href="/Hindi/Pages/Screen-Reader-Access"><span class="icon-icons16"></span> स्क्रीन रीडर एक्सेस</a>
+                        </div>
+                        <div class="link-single text-opt">
+                            <ul>
+                                <li><a title="शब्द का आकार घटाए" onclick="set_font_size('decrease')" href="javascript:void(0)">अ-</a></li>
+                                <li><a title="नियमित शब्द का आकार" onclick="set_font_size('')" href="javascript:void(0)">अ</a></li>
+                                <li><a title="शब्द का आकार बढाये" onclick="set_font_size('increase')" href="javascript:void(0)">अ+</a></li>
+                            </ul>
+                        </div>
+                        <div class="link-single color-opt">
+                            <ul>
+                                <li class="light-color"> <button title="मानक दृश्य" style="cursor:pointer;" class="theme-item theme-1 dark"><img src="/Assets/images/standard.png" alt="मानक दृश्य"></button></li>
+                                <li class="lightgray-color"><button title="उच्च कंट्रास्ट दृश्य : काली पृष्ठभूमि पर पीला पाठ" style="cursor:pointer;" class="theme-item theme-2 light"><img src="/Assets/images/color-3.png" alt="उच्च कंट्रास्ट दृश्य : काली पृष्ठभूमि पर पीला पाठ"></button></li>
+                                <li class="darkgray-color"><button title="निम्न कंट्रास्ट दृश्य : हल्के भूरे रंग की पृष्ठभूमि पर पीला पाठ" style="cursor:pointer;" class="theme-item theme-2 light"><img src="/Assets/images/color-2.png" alt="निम्न कंट्रास्ट दृश्य : हल्के भूरे रंग की पृष्ठभूमि पर पीला पाठ"></button></li>
+                            </ul>
+                        </div>
+                        <div class="link-single text-width">
+                            <button class="fa fa-text-width" title="पाठ अंतरण" aria-pressed="false"  id="text-width" tabindex="0"></button>
+                        </div>
+                        <div class="link-single social-link">
+                            <ul>
+                                <li><a title="ट्विटर" target="_blank" onclick="return confirm('बाहरी वेबसाइट जो एक नई विंडो में खुलती है।');" href="https://twitter.com/MazagonDockLtd"><img src="/Assets/images/twitter.png" alt="twitter"></a></li>
+                                <li><a title="फेसबुक" target="_blank" onclick="return confirm('बाहरी वेबसाइट जो एक नई विंडो में खुलती है।');" href="https://www.facebook.com/MDLMumbai"><img src="/Assets/images/facebook.png" alt="facebook"></a></li>
+                            </ul>
+                        </div>
+                    }
+
+                        
+                    
+
+
+                    @*<div class="link-single access-link">
+                    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                    {
+                    <a title="Screen Reader Access" href="/English/Pages/Screen-Reader-Access"><span class="icon-icons16"></span> Screen Reader Access</a>
+                    }
+                    else
+                    {
+                    <a title="स्क्रीन रीडर एक्सेस" href="/Hindi/Pages/Screen-Reader-Access"><span class="icon-icons16"></span> स्क्रीन रीडर एक्सेस</a>
+                    }
+                    </div>
+                    <div class="link-single text-opt">
+                    <ul>
+                    <li><a title="Decrease Text Size" onclick="set_font_size('decrease')" href="">-A</a></li>
+                    <li><a title="Default Text Size" onclick="set_font_size('')" href="">A</a></li>
+                    <li><a title="Increase Text Size" onclick="set_font_size('increase')" href="">+A</a></li>
+                    </ul>
+                    </div>*@
+                    
+
+                    @{
+                        var returnurl = $"{Context.Request.Path}{Context.Request.QueryString}";
+                    }
+                    <div class="link-single access-link">
+                        @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                        {
+                            <a title="Switch to Hindi" role="button" onclick="return confirm('Do you want to change website language in Hindi?');" id="language" asp-page="Language" asp-page-handler="Return" asp-route-ReturnUrl="@returnurl">हिन्दी</a>
+                        }
+                        else
+                        {
+                            <a title="Switch to English" role="button" onclick="return confirm('क्या आप वेबसाइट की भाषा को अंग्रेजी में बदलना चाहते हैं?');" id="language" asp-page="Language" asp-page-handler="Return" asp-route-ReturnUrl="@returnurl">English</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-holder">
+            <div class="mobClick mobClick1">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="site-nav">
+                <vc:main-header></vc:main-header>
+            </div>
+
+            <div class="search-wrap">
+                <div class="search">
+                    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                    {
+                        <input id="output" type="text" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" autocomplete="off" placeholder="Search...">
+                    }
+                    else
+                    {
+                        <input id="output" type="text" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" autocomplete="off" placeholder="खोजें...">
+                    }
+                    <span id="datasubmit" aria-hidden="true" class="icon-icons4"></span>
+                </div>
+                <div class="mobClick mobClick2">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+
+    @RenderBody()
+   
+
+    <section class="logo-sec">
+        <div class="container">
+            @* <div class="owl-carousel logo-carousal">
+                <div class="item">
+                    <a title="Department Of Defence Production" onclick="return confirm('External site that opens in a new window.');" href="https://www.ddpmod.gov.in/hi/investmentcell/defence-investor-cell" target="_blank">
+                        <img alt="Department Of Defence Production" src="/Assets/images/logo-4.png">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="GeM Logo, Government of India" onclick="return confirm('External site that opens in a new window.');" href="https://gem.gov.in/?lang=hindi" target="_blank">
+                        <img alt="GeM Logo, Government of India" src="/Assets/images/gem-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Digital India" onclick="return confirm('External site that opens in a new window.');" href="https://digitalindia.gov.in/" target="_blank">
+                        <img alt="Digital India" src="/Assets/images/digital-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Skill Development And Entrepreneurship" onclick="return confirm('External site that opens in a new window.');" href="https://www.skilldevelopment.gov.in/" target="_blank">
+                        <img alt="Skill Development And Entrepreneurship" src="/Assets/images/skill-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="National Career Service" onclick="return confirm('External site that opens in a new window.');" href="https://www.ncs.gov.in/hi-in/Pages/default.aspx" target="_blank">
+                        <img alt="National Career Service" src="/Assets/images/National-Career-Service.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="India Gov Logo" onclick="return confirm('External site that opens in a new window.');" href="https://www.india.gov.in/" target="_blank">
+                        <img alt="India Gov Logo" src="/Assets/images/India-gov.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="National Voter's Services Portal" onclick="return confirm('External site that opens in a new window.');" href="https://www.nvsp.in/" target="_blank">
+                        <img alt="National Voter's Services Portal" src="/Assets/images/National-voters-Service-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Central Public Procurement Portal" onclick="return confirm('External site that opens in a new window.');" href="https://eprocure.gov.in/cppp/hi" target="_blank">
+                        <img alt="Central Public Procurement Portal" src="/Assets/images/Central-Public-Procurement-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="NITI Aayog" href="https://niti.gov.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="NITI Aayog" src="/Assets/images/niti-ayog.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Aero India" href="https://www.aeroindia.gov.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="Aero India" src="/Assets/images/logo-1.png">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="G20 logo" href="https://www.g20.org/en/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="G20 logo" src="/Assets/images/G2-Bharat.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="India Investment Grid" href="https://indiainvestmentgrid.gov.in/index.jsp" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="India Investment Grid" src="/Assets/images/logo-2.png">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Samanvay Logo" href="https://samanvay.cpse.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="Samanvay Logo" src="/Assets/images/samanvay-logo.jpg">
+                    </a>
+                </div>
+            </div> *@
+            @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+            {
+                <div class="owl-carousel logo-carousal">
+                        <div class="item">
+                            <a title="Data.Gov.in" onclick="return confirm('External site that opens in a new window.');" href="https://srijandefence.gov.in/CMMLogin" target="_blank">
+                                <img alt="Data.Gov.in" src="./Assets/images/Sreejan-Deep-logo.png">
+                            </a>
+                        </div>
+                    <div class="item">
+                        <a title="Data.Gov.in" onclick="return confirm('External site that opens in a new window.');" href="https://www.data.gov.in/ " target="_blank">
+                            <img alt="Data.Gov.in" src="./Assets/images/DataGov.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="MyGov.in" onclick="return confirm('External site that opens in a new window.');" href="https://www.mygov.in/" target="_blank">
+                            <img alt="MyGov.in" src="./Assets/images/MyGov.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Department Of Defence Production" onclick="return confirm('External site that opens in a new window.');" href="https://defenceinvestorcell.gov.in" target="_blank">
+                            <img alt="Department Of Defence Production" src="./Assets/images/logo-4.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="GeM Logo, Government of India" onclick="return confirm('External site that opens in a new window.');" href="https://gem.gov.in/?lang=hindi" target="_blank">
+                            <img alt="GeM Logo, Government of India" src="./Assets/images/gem-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Digital India" onclick="return confirm('External site that opens in a new window.');" href="https://digitalindia.gov.in/" target="_blank">
+                            <img alt="Digital India" src="./Assets/images/digital-india-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Skill Development And Entrepreneurship" onclick="return confirm('External site that opens in a new window.');" href="https://www.skillindiadigital.gov.in" target="_blank">
+                            <img alt="Skill Development And Entrepreneurship" src="./Assets/images/skill-india-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="National Career Service" onclick="return confirm('External site that opens in a new window.');" href="https://www.ncs.gov.in/hi-in/Pages/default.aspx" target="_blank">
+                            <img alt="National Career Service" src="./Assets/images/National-Career-Service.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="India Gov Logo" onclick="return confirm('External site that opens in a new window.');" href="https://www.india.gov.in/" target="_blank">
+                            <img alt="India Gov Logo" src="./Assets/images/India-gov.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="National Voter's Services Portal" onclick="return confirm('External site that opens in a new window.');" href="https://www.nvsp.in/" target="_blank">
+                            <img alt="National Voter's Services Portal" src="./Assets/images/National-voters-Service-Portal.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Central Public Procurement Portal" onclick="return confirm('External site that opens in a new window.');" href="https://eprocure.gov.in/cppp/hi" target="_blank">
+                            <img alt="Central Public Procurement Portal" src="./Assets/images/Central-Public-Procurement-Portal.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="NITI Aayog" href="https://niti.gov.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                            <img alt="NITI Aayog" src="./Assets/images/niti-ayog.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Aero India" href="https://www.aeroindia.gov.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                            <img alt="Aero India" src="./Assets/images/logo-1.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="G20 logo" onclick="return confirm('External site that opens in a new window.');" href="https://www.g20.org/en/" target="_blank">
+                            <img alt="G20 logo" src="./Assets/images/G2-Bharat.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="India Investment Grid" onclick="return confirm('External site that opens in a new window.');" href="https://indiainvestmentgrid.gov.in/index.jsp" target="_blank">
+                            <img alt="India Investment Grid" src="./Assets/images/logo-2.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="Samanvay Logo" onclick="return confirm('External site that opens in a new window.');" href="https://samanvay.cpse.in/" target="_blank">
+                            <img alt="Samanvay Logo" src="./Assets/images/samanvay-logo.jpg">
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="owl-carousel logo-carousal">
+                    <div class="item">
+                        <a title="रक्षा उत्पादन विभाग" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://defenceinvestorcell.gov.in" target="_blank">
+                            <img alt="रक्षा उत्पादन विभाग" src="./Assets/images/logo-4.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="जीईएम लोगो, भारत सरकार" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://gem.gov.in/?lang=hindi" target="_blank">
+                            <img alt="जीईएम लोगो, भारत सरकार" src="./Assets/images/gem-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="डिजिटल इंडिया" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://digitalindia.gov.in/" target="_blank">
+                            <img alt="डिजिटल इंडिया" src="./Assets/images/digital-india-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="कौशल विकास और उद्यमिता" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://www.skillindiadigital.gov.in" target="_blank">
+                            <img alt="कौशल विकास और उद्यमिता" src="./Assets/images/skill-india-logo.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="राष्ट्रीय कैरियर सेवा" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://www.ncs.gov.in/hi-in/Pages/default.aspx" target="_blank">
+                            <img alt="राष्ट्रीय कैरियर सेवा" src="./Assets/images/National-Career-Service.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="भारत सरकार लोगो" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://www.india.gov.in/" target="_blank">
+                            <img alt="भारत सरकार लोगो" src="./Assets/images/India-gov.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="राष्ट्रीय मतदाता सेवा पोर्टल" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://www.nvsp.in/" target="_blank">
+                            <img alt="राष्ट्रीय मतदाता सेवा पोर्टल" src="./Assets/images/National-voters-Service-Portal.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="केंद्रीय सार्वजनिक खरीद पोर्टल" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://eprocure.gov.in/cppp/hi" target="_blank">
+                            <img alt="केंद्रीय सार्वजनिक खरीद पोर्टल" src="./Assets/images/Central-Public-Procurement-Portal.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="नीति आयोग" href="https://niti.gov.in/" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                            <img alt="नीति आयोग" src="./Assets/images/niti-ayog.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="एयरो इंडिया" href="https://www.aeroindia.gov.in/" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                            <img alt="एयरो इंडिया" src="./Assets/images/logo-1.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="जी20 लोगो" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://www.g20.org/en/" target="_blank">
+                            <img alt="जी20 लोगो" src="./Assets/images/G2-Bharat.jpg">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="भारत निवेश ग्रिड" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://indiainvestmentgrid.gov.in/index.jsp" target="_blank">
+                            <img alt="भारत निवेश ग्रिड" src="./Assets/images/logo-2.png">
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a title="समन्वय लोगो" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="https://samanvay.cpse.in/" target="_blank">
+                            <img alt="समन्वय लोगो" src="./Assets/images/samanvay-logo.jpg">
+                        </a>
+                    </div>
+                </div>
+            }
+            <div class="owlCtrl owlCtrl-5">
+                <span class="play5 active"><i title="Play" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                <span class="stop5"><i title="Pause"  aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+            </div>
+        </div>
+    </section>
+    </main>
+    <vc:footer></vc:footer>
+
+    @*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+    <script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <script src="/assets/js/jquery.easy-ticker.min.js"></script>
+    <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+    @*<script src="/Assets/js/bootstrap.min.js" asp-append-version="true"></script>*@
+    <script src="/Assets/js/bootstrap-5.2.3.min.js" asp-append-version="true"></script>
+    <script src="/assets/js/custom.js" asp-append-version="true"></script>
+    <script src="/js/blissaccess.js" asp-append-version="true"></script>
+
+    <script asp-append-version="true">
+        $(document).ready(function () {
+            if (location.hash) {
+                setTimeout(function () {
+                    window.scrollTo(0, 0);
+                    $('html,body').animate({
+                        scrollTop: $(window.location.hash).offset().top - 170
+                    });
+                }, 1);
+            }
+        });
+
+        $('#datasubmit').click(function () {
+            var getinput = $('#search-input').val();
+            if ($('#hdn_lang').val() == "eng") {
+                if (getinput != null && getinput != "") {
+                    window.location = '/English/Search?output=' + getinput;
+                }
+                else {
+                    window.location = '/';
+                }
+            }
+            else {
+                if (getinput != null && getinput != "") {
+                    window.location = '/Hindi/Search?output=' + getinput;
+                }
+                else {
+                    window.location = '/';
+                }
+            }
+        });
+
+        $(document).on("keypress", "input", function (e) {
+            if (e.which == 13) {
+                var getinput = $('#output').val();
+                if ($('#hdn_lang').val() == "eng") {
+                    if (getinput != null && getinput != "") {
+                        window.location = '/English/Search?output=' + getinput;
+                    }
+                    else {
+                        window.location = '/';
+                    }
+                }
+                else {
+                    if (getinput != null && getinput != "") {
+                        window.location = '/Hindi/Search?output=' + getinput;
+                    }
+                    else {
+                        window.location = '/';
+                    }
+                }
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

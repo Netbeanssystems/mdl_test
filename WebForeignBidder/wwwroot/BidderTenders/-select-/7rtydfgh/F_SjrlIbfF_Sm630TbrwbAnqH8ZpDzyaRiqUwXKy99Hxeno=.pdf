@@ -1,0 +1,69 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 3 0 R ]
+>>
+endobj
+2 0 obj
+<<
+/Producer (PyPDF2)
+/NeedAppearances true
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 1 0 R
+/Resources <<
+>>
+/MediaBox [ 0 0 72 72 ]
+>>
+endobj
+4 0 obj
+<<
+/Type /Action
+/S /JavaScript
+/JS (app.alert('XSS inside PDF - ' + this.documentFileName);)
+>>
+endobj
+5 0 obj
+<<
+/JavaScript <<
+/Names [ (c0666f5f\055e52d\05545ec\055b173\055c355af6b9d76) 4 0 R ]
+>>
+>>
+endobj
+6 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/AcroForm 2 0 R
+/OpenAction 4 0 R
+/Names <<
+/JavaScript <<
+/Names [ (c0666f5f\055e52d\05545ec\055b173\055c355af6b9d76) 4 0 R ]
+>>
+>>
+>>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000074 00000 n 
+0000000136 00000 n 
+0000000224 00000 n 
+0000000336 00000 n 
+0000000443 00000 n 
+trailer
+<<
+/Size 7
+/Root 6 0 R
+/Info 2 0 R
+>>
+startxref
+625
+%%EOF

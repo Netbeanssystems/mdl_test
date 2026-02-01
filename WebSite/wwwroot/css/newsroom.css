@@ -1,0 +1,174 @@
+.newsroom-header {
+    background-image: url(../images/pressrelease.jpg);
+    height: 250px;
+}
+.newsarchive-header {
+    background-image: url(../images/newsarchive.jpg);
+    height: 250px;
+}
+.ourFacilities-header {
+    background-image: url(../images/Facility-min.jpg);
+    height: 250px;
+    background-size: contain;
+    background-position: 100%;
+    background-color: #0060ac;
+}
+.ourCUSTOMERS-header {
+    background-image: url(../images/Our-Customers-min.jpg);
+    height: 250px;
+}
+.Customer-e-Service-header {
+    background-image: url(../images/customer-e-service-min.jpg);
+    height: 250px;
+}
+.Jet-Fuel-Price-header {
+    background-image: url('../images/E-fuel-service-min.jpg');
+    height: 250px;
+}
+.ENQUIRIES-header {
+    background-image: url('../images/Enquiry-min.jpg');
+    height: 250px;
+}
+.QualityPolicy-header {
+    background-image: url('../images/Quality-Policy-min.jpg');
+    height: 250px;
+}
+.Training-header {
+    background-image: url('../images/Training-min.jpg');
+    height: 250px;
+}
+.CorporateCitizenCSR-header {
+    background-image: url('../images/CSR-min.jpg');
+    height: 250px;
+}
+.SODInitiatives-header {
+    background-image: url('../images/SOD-Initiatives-min.jpg');
+    height: 250px;
+}
+
+.SustainabilitySocietalValue-header {
+    background-image: url('../images/Sustainability-1-min.jpg');
+    height: 250px;
+}
+.SolarEnergy-header {
+    background-image: url('../images/solar-Energy-min.jpg');
+    height: 250px;
+}
+.BioFuels-header {
+    background-image: url('../images/Bio-feul-min.jpg');
+    height: 250px;
+}
+.news-item{
+    box-shadow: 0px 0px 4px rgba(0,0,0,0.3);
+}
+.news-item .news-image{
+    height: 250px;
+    background-position: center;
+    background-size: cover;
+}
+.news-item .news-desc{
+    min-height: 110px;
+}
+    .news-item .news-desc h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #626262;
+    }
+    .news-item .news-desc p {
+        font-size: 0.85rem;
+        color: #003f85;
+        font-weight: 500;
+    }
+
+.news-item .news-category{
+    text-transform: uppercase;
+    color: #003f85;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.newsroom-mediaqueries-section p{
+    color: #626262;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.main-btn-links.with-desc p{
+    font-weight: 500;
+}
+
+.main-btn-links.with-desc .main-btn-label{
+    margin-bottom: 0.5rem;
+}
+.mediaqueries-head{
+    font-weight: 600;
+    color: #003f85;
+    font-size: 1.2rem;
+}
+
+.media-query-icons li{
+    padding: 0.2rem 0.3rem;
+    color: #061453;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+.media-query-icons li .icon:before{
+    color: #061453;
+}
+.media-query-icons li.media-query-list-divider{
+    color: #929292;
+}
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+
+}
+
+@media only screen and (max-width : 991px) {
+    .key-performance .key-performance-head{
+        width: 100%;
+    }
+    .key-performance-list{
+        width: 100%;
+    }
+    .pdf-links-divider{
+        border: 0;
+    }
+}
+
+
+@media only screen and (max-width : 767px) {
+    .heritage-header{
+        height: 110px;
+    }
+    
+}
+
+@media only screen and (max-width : 576px) {
+  
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+}
+

@@ -1,0 +1,33 @@
+﻿@page
+@model WebSite.Pages.Errors.UnderMaintainenceModel
+@{
+    Layout = "_InternalLayout";
+    ViewData["Title"] = "Site Under Maintainence";
+}
+
+<div class="hero" style="position: relative;">
+    <div class="item"><div class="heading">302</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+    <div class="strip"><span>302 Temporarily Unavailable</span></div>
+</div>
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+            <h3 class="inner-heading">Oops! Requested resource has been temporarily Unavailable.</h3>
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="text-danger text-center mb-2">
+                        <p>
+                            The page you are looking for does not exist, have been removed, name changed or is temporarity unavailable.
+                        </p>
+                        <p>
+                            Meanwhile, you may <a asp-page="/Index">return to Home Page</a>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

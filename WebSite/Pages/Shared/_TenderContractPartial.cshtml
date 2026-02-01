@@ -1,0 +1,15 @@
+﻿@model Application.Dtos.ContractDTO
+
+<div class="pdfBox" >
+    @if (!string.IsNullOrEmpty(Model.html))
+    {
+        @Html.Raw(Model.html);
+    }
+    else
+    {
+        <div class="pdfBox" style="text-align:center;">
+            <span>No Record Found</span>
+        </div>
+    }
+</div>
+

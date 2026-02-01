@@ -1,0 +1,215 @@
+﻿@page
+@model WebForeignBidder.Pages.Admin.ForeignBidder.AddTenderDocModel
+@{
+    ViewData["Title"] = "List Of Tenders";
+    int serialNumber = 0;
+}
+@section Styles{
+    <style>
+        .card-title
+        {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+    </style>
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left font-weight-bold">Tender Upload</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group col-md-3">
+                            <label asp-for="ModelDto.TenderNo" class="col-form-label">Tender No<span class="required">*</span></label>
+                            <select asp-for="ModelDto.TenderNo" class="form-control" asp-items="ViewBag.TenderNos">
+                                <option>-select-</option>
+                            </select>
+                            <span asp-validation-for="ModelDto.TenderNo" class="text-danger"></span>
+                        </div>
+
+
+
+                        <span class="text-warning pb-2 mt-2 ml-3">Each CV file should not exceed 20MB, except for Excel files, which can be up to 70MB. Allowed file formats: PDF and Excel. </span>
+                        <div class="card-header" style="background-color: #ee3c3c;">
+                            <h4 class="card-title float-left" style="color:white;">
+                                <span>Upload CV Documents</span>
+                                <button id="btnAddResCVFiles" type="button" class="btn btn-sm btn-primary btn-circle pull-right mt-2" data-toggle="tooltip" data-placement="top" title="Add New" style="float: right;">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </h4>
+                        </div>
+                        <div class="body mt-3 p-3">
+
+                            <div class="form-group form-row row">
+                                <div class="col-md-1">
+                                    <label class="w-100 mb-0">Sr. No.</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="w-100 mb-0">Document Title</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="w-100 mb-0">
+                                        Document File
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="w-100 mb-0">
+                                        Remarks
+                                    </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="w-100 mb-0">
+                                        Doc Type
+                                    </label>
+                                </div>
+                                <div class="col-md-1 text-right">
+                                    <label class="w-100 mb-0">Action</label>
+                                </div>
+                            </div>
+                            @* @if (Model.Petition?.CVFiles != null && Model.Petition.CVFiles.Count > 0)
+                            {
+
+                                var count = 1;
+                                foreach (var items in Model.Petition.CVFiles.OrderByDescending(s => s.Id))
+
+                                {
+
+
+                                    var extension = System.IO.Path.GetExtension(items.UploadedFile).ToLower();
+                                    string iconClassQ1;
+
+                                    // Determine the icon class based on the file extension
+                                    switch (extension)
+                                    {
+                                        case ".pdf":
+                                            iconClassQ1 = "fa fa-file-pdf fa-2x text-danger";
+
+                                            break;
+                                        case ".jpg":
+                                        case ".jpeg":
+                                        case ".png":
+                                            iconClassQ1 = "fa fa-file-image fa-2x text-primary";
+                                            break;
+                                        case ".doc":
+                                        case ".docx":
+                                            iconClassQ1 = "fa fa-file-word fa-2x text-primary";
+                                            break;
+                                        default:
+                                            iconClassQ1 = "fa fa-file fa-2x text-muted";
+                                            break;
+                                    }
+
+                                    <div class="form-group form-row row">
+                                        <div class="col-md-1 mt-1">
+                                            <span>@count</span>
+                                        </div>
+                                        <div class="col-md-4 mt-1">
+                                            <label>@items.FileName</label> <i class="@iconClassQ1"></i> @items.FileSize
+                                        </div>
+
+                                        <div class="col-md-2 mt-1">
+                                            @if (items.UploadedFile != null)
+                                            {
+                                                <a class="btn-download downloadcv" data-id="@items.Id">
+                                                    <span class="btn-download">
+                                                        View
+
+                                                    </span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <p>NA</p>
+                                            }
+                                        </div>
+
+                                        <div class="col-md-4 mt-1">
+                                            @{
+                                                if (items.IsAccepted == true)
+                                                {
+
+                                                    <p class="text-success">Accepted</p>
+
+                                                }
+                                                else if (items.IsAccepted == false)
+                                                {
+                                                    <p class="text-danger">Rejected</p>
+
+                                                    <h6>@items.Remark</h6>
+                                                }
+                                                else
+                                                {
+                                                    <a onclick='DeleteCV(@items.Id);'><i class="fa fa-trash fa-2x text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+
+                                                }
+                                            }
+
+                                        </div>
+
+                                    </div>
+                                    count++;
+
+
+                                }
+
+                            } *@
+
+
+
+                            <div id="cvfiles">
+                            </div>
+
+                            <div class="form-group form-row row mt-4" id="cvSaveContainer" style="display:none">
+                                <div class="col-md-10 text-center">
+                                    <button type="button" class="btn btn-primary" id="saveCVFilesBtn">Save CV Files</button>
+                                </div>
+                            </div>
+                            @* @if (Model.Petition?.CVFiles != null && Model.Petition.CVFiles.Count > 0)
+                            {
+                                <div class="row align-items-end mt-2">
+
+                                    <div class="col-md-6 urlinput">
+                                        <label>Upload File Drive link (google etc for heavy size file)</label>
+                                        <input type="text" id="txtDLink" class="form-control" maxlength="300" />
+                                        <small id="linkError" style="color: red; display: none;">Please enter a valid Google Drive link.</small>
+                                    </div>
+
+                                    <div class="col-md-3 form_btn mb-3">
+                                        <button type="button" id="SaveDriveLink" onclick="validateDriveLink()">Save</button>
+                                        @if (Model.Petition.DiveLink != null)
+                                        {
+                                            <a class="btn-download" href="@Model.Petition.DiveLink" target="_blank">View Link</a>
+                                        }
+
+                                    </div>
+
+                                </div>
+                            }
+ *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer">
+    <div id="validationToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+        <div class="d-flex">
+            <div class="toast-body">
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+@Html.AntiForgeryToken()
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/custom/AddTenderDoc.js" asp-append-version="true"></script>
+}

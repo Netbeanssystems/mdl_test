@@ -1,0 +1,133 @@
+.heritage-header{
+    background-image: url('../images/haritage image.jpg');
+    height: 250px;
+}
+
+
+.portfolio-item .portfolio-item-image{
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+}
+
+.portfolio-item-body{
+  background-color: #245993;
+}
+.portfolio-item-body h3{
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.portfolio-item-body h4{
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.portfolio-item-body span{
+    font-size: 0.75rem;
+}
+.portfolio-item-body{
+  color: #fff;
+  font-size: 0.65rem;
+  letter-spacing: 0.5px;
+}
+.walk-down-section-head{
+    font-weight: 700;
+    color: #003f85;
+}
+
+.walk-down-section .portfolio-item-body{
+    height: 80px;
+    background-color: #003f85;
+    overflow:auto;
+}
+.walk-down-section .slick-prev, .walk-down-section .slick-next{
+    width: 30px;
+}
+.walk-down-section .slick-prev:before, .walk-down-section .slick-next:before{
+    color: #003f85;
+}
+.walk-down-section .portfolio-item-body h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.walk-down-section .portfolio-item .portfolio-item-image{
+    height: 190px;
+}
+
+.pdf-dowload-section{
+    background-color: #003f85;
+}
+.pdf-links-divider{
+    border-left: 1px solid rgba(255, 255, 255,0.30);
+}
+
+.pdf-list{
+    margin: 0;
+}
+.pdf-list li{
+    color: #fff;
+    font-weight: 700;
+}
+.pdf-view-more-link{
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+
+}
+
+@media only screen and (max-width : 991px) {
+    .key-performance .key-performance-head{
+        width: 100%;
+    }
+    .key-performance-list{
+        width: 100%;
+    }
+    .pdf-links-divider{
+        border: 0;
+    }
+}
+
+
+@media only screen and (max-width : 767px) {
+    .heritage-header{
+        height: 110px;
+    }
+    
+}
+
+@media only screen and (max-width : 576px) {
+  
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+}
+

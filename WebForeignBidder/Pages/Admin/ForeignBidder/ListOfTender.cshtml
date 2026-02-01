@@ -1,0 +1,154 @@
+﻿@page
+@model WebForeignBidder.Pages.Admin.ForeignBidder.ListOfTenderModel
+@{
+    ViewData["Title"] = "List Of Tenders";
+    int serialNumber = 0;
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">List Of Tenders</h3>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Id</th>
+                                <th>Project</th>
+                                <th>Yard</th>
+                                <th>Tender No.</th>
+                                <th>Tender Description</th>
+                                <th>Tender Document</th>
+                                <th>Selected Foreign Bidders</th>
+                                <th>Tender Start Date</th>
+                                <th>Closing Date</th>
+                                <th>Uploaded By</th>
+                                <th>Upload Date & Time</th>
+                                <th>Extended Tender Closing Date</th>
+                                <th>Edited By</th>
+                                <th>Date Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                int corSerial = 1;
+                                <tr>
+                                    <td>@(++serialNumber)</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.YardId</td>
+                                    <td>@item.TenderNo</td>
+                                    <td>@item.TenderDescription</td>
+                                    <td>
+                                        <a class=" btn btn-primary genfile" data-id="@item.EncryptedId">
+                                            @item.TenderDocDecrypted
+                                        </a>
+                                       @*  <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@item.TenderDoc">@item.TenderDocDecrypted</a> *@
+                                        @foreach (var cor in item.TenderCorrigendums)
+                                        {
+                                            <div>
+                                                Corrigendum @corSerial:
+                                                <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@cor.CorrigendumDoc">
+                                                    @cor.CorrigendumDocDecrypted
+                                                </a>
+                                            </div>
+                                            corSerial++;
+                                        }
+                                    </td>
+                                    <td>@item.ForeignBidderId</td>
+                                    <td>@item.TenderOpeningDate</td>
+                                    <td>@item.TenderClosingDate</td>
+                                    <td>@item.CreatedBy</td>
+                                    <td>@item.CreatedDate</td>
+                                    <td>@item.LatestExtendedDate</td>
+                                    <td>@item.ModifiedBy</td>
+                                    <td>@item.ModifiedDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@Html.AntiForgeryToken();
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        $('.genfile').on('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+
+            var Id = $(this).data('id');
+
+            console.log("Button clicked, Id: ", Id); // Debugging statement
+
+            var clickedButton = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: "?handler=DownloadGenFile", // Ensure the URL is correct
+                beforeSend: function (xhr) {
+                    console.log("Setting XSRF-TOKEN header"); // Debugging statement
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: { Id: Id },
+                success: function (data) {
+                    if (data != null && data.success !== false) {
+                        var filename = data.filename;
+                        var bytes = Base64ToBytes(data.encdata);
+                        // Convert Byte Array to BLOB.
+                        var blob = new Blob([bytes], { type: "application/octet-stream" });
+
+                        // Check the Browser type and download the File.
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, filename);
+                        } else {
+                            var url = window.URL || window.webkitURL;
+                            var link = url.createObjectURL(blob);
+                            var a = $("<a />");
+                            a.attr("download", filename);
+                            a.attr("href", link);
+                            $("body").append(a);
+                            a[0].click();
+                            $("body").remove(a);
+                        }
+                    } else {
+                        alert('Invalid details or file not found !');
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Download failed: ' + error);
+                }
+            });
+        });
+
+        $('#tblDataTable').DataTable();
+
+        $(document).ready(function () {
+            // Add Validations here
+        });
+        function Base64ToBytes(base64) {
+            var binary_string = window.atob(base64);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes;
+        }
+        $(document).ready(function () {
+            // Add Validations here
+        });
+    </script>
+}

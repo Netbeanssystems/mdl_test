@@ -1,0 +1,170 @@
+﻿@page "/{lang}/Contracts/SBMP-Contracts"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.Contracts.SBMP_ContractsModel
+@{
+    Layout = "_InternalPagesLayout";
+    ViewData["Title"] = "SBMP-Contracts";
+        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        ViewData["Title"] = "SBMP-Contracts";
+    }
+    else
+    {
+
+        ViewData["Title"] = "एसबी-एमपी अनुबंध का सारांश";
+    }
+}
+
+@* <style>
+    .hero img {
+        width: 100% !important;
+    }
+
+    ul.pdf li {
+        background: url('/img/icon-pdf.png') no-repeat;
+        padding-left: 22px;
+    }
+</style> *@
+<link rel="stylesheet" href="/css/jquery.datatables.min.css" />
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">SB MP Summary of Contracts</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip"><span><a href="/">Home</a> > <a href="/English/procurement">Procurement</a> > <a href="/English/pages/Tenders">Tenders</a> > <a href="/English/pages/ship-building-material-purchase">SB Material Purchase</a> > SB MP Summary of Contracts</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">एसबी-एमपी अनुबंध का सारांश</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip"><span><a href="/">मुख्य पृष्ठ</a> > <a href="/Hindi/procurement">प्रोक्योरमें</a> > <a href="/Hindi/pages/Tenders">निविदाओं</a> > <a href="/Hindi/pages/ship-building-material-purchase">जहाज निर्माण सामग्री की खरीद</a> >एसबी एमपी अनुबंधों का सारांश</span></div>
+    </div>
+}
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+            @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+            {
+                <h3 class="inner-heading">SB-MP Summary of Contracts</h3>
+            }
+            else
+            {
+                <h3 class="inner-heading">एसबी-एमपी अनुबंध का सारांश</h3>
+            }
+
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="theinformatoryinfos">
+                        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                        {
+                            <p>
+                                <strong>Important Information:</strong> All the advertisement Documents, are in PDF format. To view and print the same you need to have Adobe Acrobat Reader which can be freely downloaded from <a onclick="return confirm('External site that opens in a new window.');" href="http://www.adobe.com/" target="_blank">www.adobe.com</a>
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                <strong>महत्वपूर्ण सूचना:</strong>सभी विज्ञापन दस्तावेज़ पीडीएफ प्रारूप में हैं। इसे देखने और प्रिंट करने के लिए आपके पास Adobe Acrobat Reader होना चाहिए जिसे आसानी से डाउनलोड किया जा सकता है<a onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" href="http://www.adobe.com/" target="_blank">www.adobe.com</a>
+                            </p>
+                        }
+
+                        <div class="adobeholds text-center">
+                            <a onclick="return confirm('External site that opens in a new window.');" href="https://get.adobe.com/reader/" target="_blank">Get Adobe Reader </a>
+                            <div class="abds">
+                                <a onclick="return confirm('External site that opens in a new window.');" href="https://get.adobe.com/reader/" target="_blank">
+                                    <img src="/img/holdadbicon.jpg">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                            </div>
+                            <div class="col">
+                            </div>
+                            <div class="col text-right p-0">
+                                <div class="form-group mt-3">
+                                     @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                                    {
+                                        <button id="btnSave" onclick="GetArchieved();" type="button" class="btn btn-primary">Click here for Archive</button>
+                                    }
+                                    else
+                                    {
+                                        <button id="btnSave" onclick="GetArchievedHindi();" type="button" class="btn btn-primary">पुरालेख के लिए यहां क्लिक करें</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") //AkashS
+                    {
+                        <div id="tbl_partial">
+                            <partial name="_TenderContractPartial" model="@Model.cont" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="tbl_partial">
+                            <partial name="_TenderContractPartialHindi" model="@Model.cont1" />
+                        </div>
+                    }
+                   @* <div id="tbl_partial">
+                        <partial name="_TenderContractPartial" model="@Model.cont" />
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        // Get lists on dropdown change
+        function GetArchieved() {
+            ShowLoader();
+            var status = "";
+
+            if ($("#btnSave").text() == "Click here for Archive") {
+                status = "archive";
+                $("#btnSave").text("Back to Current")
+            }
+            else {
+                status = "current";
+                $("#btnSave").text("Click here for Archive")
+            }
+            $.get('../Contracts/SBMP-Contracts?handler=BindSelectdata', { Status: status })
+                .done(function (data) {
+                    if (data) {
+                        $("#tbl_partial").html('').html(data);
+                        HideLoader();
+                    }
+                });
+        }
+    </script>
+    <script>
+        // Get lists on dropdown change
+        function GetArchievedHindi() {
+            ShowLoader();
+            var status = "";
+
+            if ($("#btnSave").text() == "पुरालेख के लिए यहां क्लिक करें") {
+                status = "archive";
+                $("#btnSave").text("वर्तमान पर वापस जाएँ")
+            }
+            else {
+                status = "current";
+                $("#btnSave").text("पुरालेख के लिए यहां क्लिक करें")
+            }
+            $.get('../Contracts/SBMP-Contracts?handler=BindSelectdata', { Status: status })
+                .done(function (data) {
+                    if (data) {
+                        $("#tbl_partial").html('').html(data);
+                        HideLoader();
+                    }
+                });
+        }
+    </script>
+}

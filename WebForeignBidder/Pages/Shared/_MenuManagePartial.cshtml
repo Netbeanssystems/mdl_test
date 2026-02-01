@@ -1,0 +1,52 @@
+﻿@model MenuDTO
+<div class="modal fade" id="ManageMenuModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ManageMenuModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Manage">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ParentId" />
+                <input type="hidden" asp-for="CreatedDate" />
+                <input type="hidden" asp-for="CreatedBy" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ManageMenuModalTitle">Menu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Sequence" class="col-form-label">Sequence*</label>
+                        <input asp-for="Sequence" class="form-control" placeholder="Sequence">
+                        <span asp-validation-for="Sequence" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MenuText" class="col-form-label">Menu Text*</label>
+                        <input asp-for="MenuText" class="form-control" placeholder="Menu Text">
+                        <span asp-validation-for="MenuText" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IconClass" class="col-form-label">Icon Class*</label>
+                        <span class="ml-3"><i id="faPreview"></i></span>
+                        <input asp-for="IconClass" class="form-control" placeholder="Icon Class">
+                        <span asp-validation-for="IconClass" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PageUrl" class="col-form-label">Page Url</label>
+                        <input asp-for="PageUrl" class="form-control" placeholder="Page Url">
+                        <span asp-validation-for="PageUrl" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch custom-switch-on-primary">
+                            <input asp-for="IsActive" class="custom-control-input">
+                            <label asp-for="IsActive" class="custom-control-label">Is Active</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

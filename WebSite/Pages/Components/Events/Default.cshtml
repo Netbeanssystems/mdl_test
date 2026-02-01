@@ -1,0 +1,71 @@
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration config
+@model List<Application.ViewModels.TopEventsVM>
+
+
+@if (Model?.Count > 0)
+{
+    <div class="owl-carousel gallery-carousal">
+        @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+        {
+            @foreach (var item in Model)
+            {
+
+                <div class="item">
+                    <div class="gallery-img">
+                        <a title="@item.EventName" href="/English/Events/ViewEvent/@item.Id">
+                            <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName">
+                        </a>
+                        <span class="gallery-icon"><a class="image-link" href="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment">
+                                <img src="./Assets/images/zoom.png" alt="zoom @item.EventName">
+                            </a>
+                        </span>
+                    </div>
+                    <a href="/English/Events/ViewEvent/@item.Id">
+                        <p>
+                            @item.EventName
+                        </p>
+                    </a>
+                </div>
+
+            }
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="item">
+                    <div class="gallery-img">
+                        <a title="@item.EventName" href="/English/Events/ViewEvent/@item.Id">
+                            <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName">
+                        </a>
+                        <span class="gallery-icon"><a class="image-link" href="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment">
+                                <img src="./Assets/images/zoom.png" alt="zoom @item.EventNameHindi">
+                            </a>
+                        </span>
+                    </div>
+                    <a title="@item.EventNameHindi" href="/Hindi/Events/ViewEvent/@item.Id">
+                        <p>
+                            @item.EventNameHindi
+                        </p>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+}
+
+<div class="owlCtrl owlCtrl-3">
+    <span class="play3 active"><i title="Play" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+    <span class="stop3"><i title="Pause"  aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+</div>
+    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+    {
+    <a href="/English/Events/EventCategory" class="btn btn-primary" id="v1" aria-labelledby="v1 e1">View All</a>
+    }
+    else
+    {
+        <a href="/Hindi/Events/EventCategory" class="btn btn-primary" aria-labelledby="v1 e1">सभी देखें</a>
+    }
+

@@ -1,0 +1,64 @@
+﻿@page
+@model WebApp.Pages.Admin.Document.IndexModel
+@{
+    ViewData["Title"] = "Bank Documents";
+    int serialNumber = 0;
+}
+
+<section class="content">
+
+    <!-- Add this hidden live region for screen readers -->
+<span id="tblDataTable_status" role="status" aria-live="polite" class="sr-only"></span>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">List of uploaded Documents</h3>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>    
+                                <th class="search">Id</th>
+                                @* <th class="search">Document Name</th> *@
+                                <th>View Document</th>
+                                <th>Uploaded Date and Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td>@(++serialNumber)</td>
+                                    @* <td>@item.DocumentName</td> *@
+                                    <td><a target="_blank" href="/admin/img/UploadedFiles/Documents/@item.DocumentName">@item.DocumentNameDecrypted</a> </td>
+                                    <td>@item.CreatedDate</td> 
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblDataTable').DataTable();
+
+
+        $(document).ready(function () {
+            // Add Validations here
+
+        $(" #tblDataTable_wrapper .dropdown-menu ").attr("role", "button");
+        });
+    </script>
+}

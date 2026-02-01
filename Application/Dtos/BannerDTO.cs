@@ -1,0 +1,51 @@
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Application.Dtos
+{
+    public class BannerDTO
+    {
+        public int Id { get; set; }
+        public string Linkopen { get; set; }
+
+        [Required(ErrorMessage = "Heading required !")]
+        public string EnglishHeadingName { get; set; }
+        public string EnglishBanner { get; set; }
+        public string HindiBanner { get; set; }
+        public int? ParentId { get; set; }
+        [Required(ErrorMessage = "Heading required !")]
+        public string HindiHeadingName { get; set; }
+        public string EnglishLink { get; set; }
+        public string HindiLink { get; set; }
+        public DateTime? ValidTill { get; set; }
+        public long? ForReview { get; set; }
+        public int? Priority { get; set; }
+        public string Status { get; set; }
+        public DateTime? ArchiveDate { get; set; }
+        public DateTime? SubmitDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public string IsSubHeading { get; set; }
+        public long? LoginUserId { get; set; }
+        public long? AcceptedBy { get; set; }
+        public bool Show { get; set; }
+        public IFormFile EnglishFile { get; set; }
+        public IFormFile HindiFile { get; set; }
+        public string Title { get; set; }
+        public string Alt { get; set; }
+    }
+
+
+    public class BannerDTOModal
+    {
+        public string Linkopen { get; set; }
+        public string EnglishHeadingName { get; set; }
+        public string EnglishBanner { get; set; }
+        public string EnglishLink { get; set; }
+
+        public string Title { get; set; }
+        public string Alt { get; set; }
+    }
+
+
+}

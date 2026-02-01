@@ -1,0 +1,125 @@
+﻿@page "{Id?}"
+@model RoleModel
+@{
+    ViewData["Title"] = "User Role Mapping";
+    var userId = ViewContext.RouteData.Values["id"] != null ? ViewContext.RouteData.Values["id"].ToString() : "";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title font-weight-bold">User Role Mapping</h3>
+            @if (!string.IsNullOrEmpty(userId))
+            {
+                <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                <div class="clearfix"></div>
+            }
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-5 col-sm-12">
+                    <div class="form-group">
+                        <label for="lstUsers" class="col-form-label w-100">User</label>
+                        <select id="lstUsers" class="form-control" asp-items="ViewBag.Users">
+                            <option value="">-select-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-12">
+                    <div class="form-group">
+                        <label for="lstRoles" class="col-form-label w-100">Role</label>
+                        <select id="lstRoles" class="form-control" asp-items="ViewBag.Roles">
+                            <option value="">-select-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                        <label class="col-form-label w-100"></label>
+                        <button id="btnSave" class="btn btn-block btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript">
+        var uid = '@userId';
+        if (uid != '') {
+            $("#lstUsers").val(uid).attr("disabled", true);
+            getUserRole(uid);
+        }
+        function getUserRole(uid, event) {
+            $.getJSON(`?handler=UserRole&uid=${uid}`, (data) => {
+                if (data != null) {
+                    $("#lstRoles").val(data);
+                }
+                else {
+                    $("#divClientAlert").addClass("alert-danger");
+                    $("#divClientAlert > p.m-0").text("Role not found");
+                    $("#divClientAlert").show();
+                    SetTimeOut($("#divClientAlert"));
+                }
+            });
+        }
+        $("#lstUsers").on("change", function () {
+            var uid = $(this).val();
+            if (uid != '') {
+                getUserRole(uid);
+            }
+            else {
+                $("#divClientAlert").addClass("alert-danger");
+                $("#divClientAlert > p.m-0").text("Please select a user");
+                $("#divClientAlert").show();
+                SetTimeOut($("#divClientAlert"));
+            }
+        });
+        $('#btnSave').click(function (event) {
+            var flag = 0;
+            var userid = $('select#lstUsers').val();
+            if (userid == '') {
+                $("#divClientAlert").addClass("alert-danger");
+                $("#divClientAlert > p.m-0").text("Please select a user");
+                $("#divClientAlert").show();
+                SetTimeOut($("#divClientAlert"));
+                event.preventDefault();
+                flag++;
+                return;
+            }
+            var role = $('select#lstRoles').val();
+            if (role == '') {
+                $("#divClientAlert").addClass("alert-danger");
+                $("#divClientAlert > p.m-0").text("Please select a role");
+                $("#divClientAlert").show();
+                SetTimeOut($("#divClientAlert"));
+                event.preventDefault();
+                flag++;
+                return;
+            }
+            getConfirm('Are you sure you want to update?', function (result) {
+                if (flag == 0 && result) {
+                    var obj = { UserId: userid, Role: role };
+                    var urVm = JSON.stringify(obj);
+                    $.post('?handler=SaveUserRole', { urVm: urVm }, function (data) {
+                        if (data != null) {
+                            if (data === 'unauthorized') {
+                                $("#divClientAlert").addClass("alert-warning");
+                                $("#divClientAlert > p.m-0").text("Please login to access this resource");
+                                $("#divClientAlert").show();
+                                SetTimeOut($("#divClientAlert"));
+                                window.location.href = "/Account/Login";
+                            } else {
+                                $("#divClientAlert").addClass("alert-success");
+                                $("#divClientAlert > p.m-0").text(data);
+                                $("#divClientAlert").show();
+                                SetTimeOut($("#divClientAlert"));
+                            }
+                        }
+                    });
+                } else {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+}

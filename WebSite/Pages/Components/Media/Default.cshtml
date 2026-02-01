@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration config
+@model List<Application.Dtos.MediaDTO>
+
+@if (Model?.Count > 0)
+{
+    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+    {
+        @foreach (var item in Model.Where(x => x.Show))
+        {
+            <div class="item">
+                <div class="cal mb-3" style="display: flex; align-items: center;">
+                    <div class="yr" style="border: 2px  solid #192c64; border-radius: 6px; text-align: center;width: 10%;">
+                        <div class="mnt" style="background-color: #192c64;padding: 8px;border-radius: 3px;">
+                            <p style="color: white; margin: 0;">@item.UploadedDate?.ToString("MMM")</p>
+                            <p style="color: white; margin: 0;">@item.UploadedDate?.ToString("yyyy")</p>
+                        </div>
+                        <div class="date">
+                            <p style="margin: 0;">@item.UploadedDate?.ToString("dd")</p>
+                        </div>
+                    </div>
+                    <div class="head" style="margin-left: 2%;">
+                        <h3>@item.EnglishHeading</h3>
+                    </div>
+                </div>
+
+                <div class="media-img"><img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/Media/File/EnglishImage/@item.EnglishImage" title="@item.EnglishHeading" ></div>
+                <div class="media-txt" style="overflow: visible;">
+                    @Html.Raw(item.EnglishContent)
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        @foreach (var item in Model.Where(x => x.Show))
+        {
+            <div class="item">
+                <div class="cal mb-3" style="display: flex; align-items: center;">
+                    <div class="yr" style="border: 2px  solid #192c64; border-radius: 6px; text-align: center;width: 10%;">
+                        <div class="mnt" style="background-color: #192c64;padding: 8px;border-radius: 3px;">
+                            <h6 style="color: white; margin: 0;">@item.UploadedDate?.ToString("MMM")</h6>
+                            <p style="color: white; margin: 0;">@item.UploadedDate?.ToString("yyyy")</p>
+                        </div>
+                        <div class="date">
+                            <p style="margin: 0;">@item.UploadedDate?.ToString("dd")</p>
+                        </div>
+                    </div>
+                    <div class="head" style="margin-left: 2%;">
+                        <h3>@item.HindiHeading</h3>
+                    </div>
+                </div>
+
+                <div class="media-img"><img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/Media/File/EnglishImage/@item.EnglishImage" title="@item.HindiHeading" ></div>
+                <div class="media-txt" style="overflow: visible;">
+                    @Html.Raw(item.HindiContent)
+                </div>
+            </div>
+        }
+    }
+}

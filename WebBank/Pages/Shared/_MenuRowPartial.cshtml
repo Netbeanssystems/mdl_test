@@ -1,0 +1,40 @@
+﻿@model MenusVM
+<tr>
+    <td>
+        @if (Model.ParentId == null)
+        {
+            <b>@Model.Sequence</b>
+        }
+        else
+        {
+            <b class="ml-3">@Model.Sequence</b>
+        }
+    </td>
+    <td>
+        @if (Model.ParentId == null)
+        {
+            <b>@Model.MenuText</b>
+        }
+        else
+        {
+            <b class="ml-3">@Model.MenuText</b>
+        }
+    </td>
+    <td class="text-center">@(!string.IsNullOrEmpty(Model.IconClass)? Html.Raw($"<i class=\"{Model.IconClass}\"></i>") : Html.Raw(""))</td>
+    <td>@Model.PageUrl</td>
+    <td class="text-center"><i class="@(Model.IsActive?"fa fa-check-circle text-success":"fa fa-times-circle text-danger")"></i></td>
+    <td class="text-center">
+        <a asp-page="Edit" asp-route-id="@Model.Id">
+            <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
+        </a>
+    </td>
+    <td class="text-center">
+        @*@if (Model.ParentId == null)
+            {*@
+        <a asp-page="Add" asp-route-pid="@Model.Id">
+            <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Add SubMenus"></i>
+        </a>
+        @*}*@
+        @*<a class="btn btn-danger btn-sm" asp-page="Add" asp-route-pid="@Model.Id"><i class="fas fa-trash"></i>Delete</a>*@
+    </td>
+</tr>

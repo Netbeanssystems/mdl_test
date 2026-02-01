@@ -1,0 +1,37 @@
+﻿@model CommonRemarksUpdaterDTO
+<div class="modal fade" id="StatusCommonModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="StatusCommonModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="StatusCommonModalTitle">Update Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Flag" />
+                <input type="hidden" asp-for="Flag1" />
+                <input type="hidden" asp-for="Status" />
+                <input type="hidden" asp-for="Param1" />
+                @if (ViewBag.Statuses != null)
+                {
+                    <div class="form-group">
+                        <label asp-for="StatusId" class="col-form-label">Status<span class="required">*</span></label>
+                        <select asp-for="StatusId" class="form-control" asp-items="ViewBag.Statuses"></select>
+                    </div>
+                }
+                <div class="form-group">
+                    <label class="col-form-label">Remarks (If any)</label>
+                    <div class="input-group">
+                        <textarea asp-for="Remarks" class="form-control" placeholder="Enter Remarks" autocomplete="on"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>

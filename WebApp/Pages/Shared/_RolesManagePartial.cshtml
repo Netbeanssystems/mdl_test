@@ -1,0 +1,68 @@
+﻿@model RoleDTO
+<div class="modal fade" id="ManageModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ManageModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="post" asp-page-handler="Manage">
+            <input type="hidden" asp-for="Id" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ManageModalTitle">Role</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Name" class="col-form-label">Name<span class="required">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Name" autocomplete="on" />
+                        <span id="nameerror" asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="CanView" class="custom-control-input">
+                                    <label asp-for="CanView" class="custom-control-label">Can View</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="CanCreate" class="custom-control-input">
+                                    <label asp-for="CanCreate" class="custom-control-label">Can Create</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="CanEdit" class="custom-control-input">
+                                    <label asp-for="CanEdit" class="custom-control-label">Can Edit</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="CanDelete" class="custom-control-input">
+                                    <label asp-for="CanDelete" class="custom-control-label">Can Delete</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divUsers" class="card" style="display: none;">
+                        <div class="card-header">
+                            <h3 class="card-title float-left font-weight-bold">Users in this role</h3>
+                        </div>
+                        <div id="UsersInRole" class="card-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSave" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

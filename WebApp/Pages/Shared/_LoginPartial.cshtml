@@ -1,0 +1,35 @@
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration _config;
+@inject IHttpContextAccessor _httpContextAccessor
+@if (User.Identity.IsAuthenticated)
+{
+    var UserImage = _httpContextAccessor.HttpContext?.Session.GetString("ProfileImage");
+    <a class="nav-link py-0" data-toggle="dropdown" href="#">
+        <img id="imgProfileImage" style="width: 40px; height: 40px; border-radius: 20px;"
+             src="@($"{_config["BaseUrl"]}/img/users/f8225ab7f56d456985358b0d6352ea32.jpg")"
+             alt="Profile Image"
+             onerror=@($"src='{_config["BaseUrl"]}/img/users/default_user100.png'")
+             asp-append-version="true" />
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <a asp-page="/Account/Profile" class="dropdown-item"><i class="fa fa-user mr-2"></i> Profile</a>
+        <a asp-page="/Account/ChangePassword" class="dropdown-item"><i class="fa fa-key mr-2"></i> Change Password</a>
+        <div class="dropdown-divider"></div>
+        <a asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/")" class="dropdown-item"><i class="fas fa-sign-out-alt mr-2"></i> Signout</a>
+    </div>
+}
+else
+{
+    <a class="nav-link py-0" data-toggle="dropdown" href="#">
+        <img style="width: 40px; height: 40px; border-radius: 20px;"
+             src="@($"{_config["BaseUrl"]}/img/users/default_user100.png")"
+             alt="Profile Image"
+             asp-append-version="true" />
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <a asp-page="/Account/Login" class="dropdown-item"><i class="fas fa-sign-in-alt mr-2"></i> Sign in</a>
+        @*<div class="dropdown-divider"></div>
+            <a asp-page="/Account/Register" class="dropdown-item"><i class="fa fa-user-plus mr-2"></i> Sign up</a>*@
+    </div>
+}

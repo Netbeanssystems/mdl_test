@@ -1,0 +1,119 @@
+﻿@model List<Application.ViewModels.TopEventsVM>
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@if (Model !=  null && Model.Count > 0)
+{
+    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+    {
+        var groupedEvents = Model.GroupBy(item => item.EventCategory);
+
+        @* @foreach (var item in Model)
+        {
+            <div class="col-sm-12 col-md-3">
+                <div>
+                    <div class=" px-2 py-2">
+                        <a href="/English/Events/ViewEvent/@item.Id" data-caption="@item.EventName" title="@item.EventName">
+                            <div class="substainability-item-image" style="background-image: url(@config["FileBaseUrl"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment);" tabindex="0">
+                                <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName" class="img-fit" title="@item.EventName">
+                            </div>
+                            <div class="px-2 pt-3 pb-2">
+                                @item.EventName
+                            </div>
+                        </a>
+                        <div class="px-2 pt-3 pb-2">
+                            @item.EventCategory
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } *@
+        var isFirst = true;
+        @foreach (var group in groupedEvents)
+        {
+            <div class="category-container">
+                @if (isFirst == true)
+                {
+                    <details open>
+                        <summary>@group.Key</summary> <!-- Display the category name as a heading -->
+                        <div class="d-flex flex-wrap">
+                            @foreach (var item in group)
+                            {
+                                <div class="col-sm-12 col-md-3">
+                                    <div>
+                                        <div class=" px-2 py-2">
+                                            <a href="/English/Events/ViewEvent/@item.Id" data-caption="@item.EventName" title="@item.EventName">
+                                                <div class="substainability-item-image" style="background-image: url(@config["FileBaseUrl"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment);" tabindex="0">
+                                                    <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName" class="img-fit" title="@item.EventName">
+                                                </div>
+                                                <div class="px-2 pt-3 pb-2">
+                                                    @item.EventName
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </details>
+                }
+                else 
+                {
+                    <details>
+                        <summary>@group.Key</summary> <!-- Display the category name as a heading -->
+                        <div class="d-flex flex-wrap">
+                            @foreach (var item in group)
+                            {
+                                <div class="col-sm-12 col-md-3">
+                                    <div>
+                                        <div class=" px-2 py-2">
+                                            <a href="/English/Events/ViewEvent/@item.Id" data-caption="@item.EventName" title="@item.EventName">
+                                                <div class="substainability-item-image" style="background-image: url(@config["FileBaseUrl"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment);" tabindex="0">
+                                                    <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName" class="img-fit" title="@item.EventName">
+                                                </div>
+                                                <div class="px-2 pt-3 pb-2">
+                                                    @item.EventName
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </details>
+                }
+            </div>
+            isFirst = false;
+        }
+
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-sm-12 col-md-3">
+                <div>
+                    <div class=" px-2 py-2">
+                        <a href="/Hindi/Events/ViewEvent/@item.Id" data-caption="@item.EventNameHindi" title="@item.EventNameHindi">
+                            <div class="substainability-item-image" style="background-image: url(@config["FileBaseUrl"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment);" tabindex="0">
+                                <img src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" alt="@item.EventName" class="img-fit" title="@item.EventNameHindi">
+                            </div>
+                            <div class="px-2 pt-3 pb-2">
+                                @item.EventNameHindi
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>          
+        }     
+    }
+   
+}
+@if (Model != null && Model.Count > 0)
+{
+    <span style="float: right; color: #00008B;">Last Updated Date: @Model.FirstOrDefault().Added_on.ToString("dd/MM/yyyy hh:mm tt")</span>
+}
+else
+{
+    <div>No Events Found</div>
+}

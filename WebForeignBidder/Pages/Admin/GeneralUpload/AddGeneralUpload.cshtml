@@ -1,0 +1,110 @@
+﻿@page
+@model WebForeignBidder.Pages.Admin.GeneralUpload.AddGeneralUploadModel
+@{
+    ViewData["Title"] = "Add URLs Timing";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left">Enable Upload Link</h3>
+                        <a class="btn btn-sm btn-secondary float-right d-none" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="GeneraluploadURLDTO.Id" />
+
+                            <div class="form-group form-row">
+                                <label asp-for="GeneraluploadURLDTO.Description" class="col-md-3 col-lg-2" style="margin-top: 6px;">Description<span class="required">*</span></label>
+                                <div class="col-md-9 col-lg-9">
+                                    <input type="text" id="FromTime" asp-for="GeneraluploadURLDTO.Description" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control bg-white" placeholder="Description" />
+                                    <span asp-validation-for="GeneraluploadURLDTO.Description " class="text-danger"></span>
+                                    <input type="hidden" asp-for="GeneraluploadURLDTO.Description" />
+                                </div>
+                                </div>
+                                <div class="form-group form-row">
+                                <label asp-for="GeneraluploadURLDTO.FromTime" class="col-md-3 col-lg-2" style="margin-top: 6px;">From Date<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="date" id="FromTime" asp-for="GeneraluploadURLDTO.FromTime" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control bg-white" placeholder="dd-mm-yyyy" />
+                                    <span asp-validation-for="GeneraluploadURLDTO.FromTime " class="text-danger"></span>
+                                    <input type="hidden" asp-for="GeneraluploadURLDTO.FromTime" />
+                                </div>
+
+                                <label asp-for="GeneraluploadURLDTO.ToTime" class="col-md-3 col-lg-2" style="margin-top: 6px;">To Date<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="date" id="ToTime" asp-for="GeneraluploadURLDTO.ToTime" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control bg-white" placeholder="dd-mm-yyyy" />
+                                    <span asp-validation-for="GeneraluploadURLDTO.ToTime " class="text-danger"></span>
+                                    <input type="hidden" asp-for="GeneraluploadURLDTO.ToTime" />
+                                </div>
+                            </div>
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Heading</button>&nbsp;
+                                    <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    @*                     <div class="card-header">
+                    <h3 class="card-title float-left font-weight-bold">Bank Documents</h3>
+                    <div class="clearfix"></div>
+                    </div> *@
+                    <div class="card-body">
+                        @if (Model.GeneraluploadURLVM?.Count > 0)
+                        {
+
+                            <div class="table-responsive">
+                                <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Sr. No</th>
+                                            <th class="text-center"> General Upload Description
+                                            </th>
+                                            <th class="text-center noExport noSort">Opening Date</th>
+                                            <th class="search">Closing Date</th>
+                                            <th class="search">Created By</th>
+                                            <th class="search">Created Date & Time
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.GeneraluploadURLVM.Count; i++)
+                                        {
+                                            var item = Model.GeneraluploadURLVM[i];
+                                            <tr>
+                                                <td class="text-center">@(i + 1)</td>
+                                                <td class="text-center">@item.Description</td>
+                                                <td>@item.FromTime</td>
+                                                <td>@item.ToTime</td>
+                                                <td>@item.CreatedBy</td>
+                                                <td class="text-right">@item.CreatedDate</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>No records has been added yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

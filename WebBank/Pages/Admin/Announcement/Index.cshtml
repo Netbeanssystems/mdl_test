@@ -1,0 +1,100 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Announcement Update";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Announcement Heading</h3>
+            <a class="btn btn-sm btn-success float-right" asp-page="Add"><i class="fa fa-plus"></i> Create New</a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            <div id="alert"></div>
+            <form method="post" accept-charset="UTF-8">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="control-label mt-1">
+                            Announcements:
+                        </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <select name="number" id="FirstLabelMenu" onchange="GetMenuID(this)" class="form-control Menu">
+                        </select>
+                        <span class="information text-danger">Select Announcement</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <a id="toponeEdit" title="Edit"><i class="fa fa-edit"></i></a>&nbsp;
+                        <a id="topone" style="display:none;" title="Add Sub Menu"><i class="fa fa-plus"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table" style="border: 1px solid;">
+                        <tbody id="FF">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-2 mb-2">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-PageLink-tab" data-toggle="tab" href="#nav-PageLink" role="tab" aria-controls="nav-home" aria-selected="true">Page Link</a>
+                            <a class="nav-item nav-link" id="nav-UploadFile-tab" data-toggle="tab" href="#nav-UploadFile" role="tab" aria-controls="nav-profile" aria-selected="false">Upload File</a>
+                            <a class="nav-item nav-link" id="nav-Content-tab" data-toggle="tab" href="#nav-Content" role="tab" aria-controls="nav-profile" aria-selected="false">Content</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content p-3 border" id="nav-tabContent">
+                        <input type="hidden" id="LastSelectedId" />
+                        <div class="tab-pane fade show active" id="nav-PageLink" role="tabpanel" aria-labelledby="nav-PageLink-tab">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span class="FD">English Link</span><input class="form-control" asp-for="FirstLblMenuDTO.EnglishPageLink" />
+                                    <span asp-validation-for="FirstLblMenuDTO.EnglishPageLink" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <span class="FD">Hindi Link</span><input class="form-control" asp-for="FirstLblMenuDTO.HindiPageLink" />
+                                    <span asp-validation-for="FirstLblMenuDTO.HindiPageLink" class="text-danger"></span>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-UploadFile" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                            <div class="row">
+                                <div class="col-md-4"><span class="FD">English File</span><input class="form-control Attachment" asp-for="FirstLblMenuDTO.EnglishFile" /></div>
+                                <div class="col-md-4"><span class="FD">Hindi File</span><input class="form-control Attachment" asp-for="FirstLblMenuDTO.HindiFile" /></div>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-Content" role="tabpanel" aria-labelledby="nav-Contact-tab">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <span class="FD">English Content</span>
+                                    <textarea class="form-control" asp-for="FirstLblMenuDTO.EnglishContentDesc" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                </div>
+                                <br />
+                                <div class="col-md-10">
+                                    <span class="FD">Hindi Content</span>
+                                    <textarea class="form-control" cols="30" rows="3" asp-for="FirstLblMenuDTO.HindiContentDesc" id="HindiContentDesc"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="col-sm-6" id="Priority">
+                <ul id="SortList">
+                </ul>
+                <br />
+                <input id="btnPriorty" class="btn btn-success" type="button" value="Set Priorty" />
+            </div>
+            <div class="col-sm-6">
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts{
+   @* <script src="~/plugins/Tinymce/tinymce.min.js"></script>*@
+    <script src="~/plugins/Tinymce/tinymce.min-6.4.2.js"></script>
+    <script src="~/js/custom/Announcement.js"></script>
+    <script src="~/js/custom/MenuTextEditor.js"></script>
+}

@@ -1,0 +1,148 @@
+﻿@page "{id?}"
+@model WebBank.Pages.Admin.PhotoGallery.Events.EditModel
+@{
+    ViewData["Title"] = "Manage Events";
+}
+
+
+@section Styles
+    {
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+    }
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 col-sm-12 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        @if (!Model.IsNew)
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Edit Event</h3>
+                            <div class="btn-group btn-group-sm float-right">
+                                @if (Model.permissions["CanDelete"])
+                                {
+                                    @*<a href="#" class="text-dark mr-3" data-toggle="modal" data-target="#confirmationModal" title="Delete"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>*@
+                                }
+                                <a class="text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                        else
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Create Event</h3>
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="Event.Id" />
+                                <input type="hidden" asp-for="Event.CreatedDate" />
+                                <input type="hidden" asp-for="Event.CreatedBy" />
+                            }
+
+
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label asp-for="Event.EventName" class="col-form-label">English Event Name<span class="required">*</span></label>
+                                            <input asp-for="Event.EventName" class="form-control" placeholder="English Event Name" autocomplete="on" />
+                                            <span asp-validation-for="Event.EventName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label asp-for="Event.EventNameHindi" class="col-form-label">Hindi Event Name<span class="required">*</span></label>
+                                            <input asp-for="Event.EventNameHindi" class="form-control" placeholder="Hindi Event Name" autocomplete="on" />
+                                            <span asp-validation-for="Event.EventNameHindi" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label asp-for="Event.EventDate" class="col-form-label">Event Date<span class="required">*</span></label>
+                                            <input asp-for="Event.EventDate" class="form-control" placeholder="Event Date" autocomplete="on" />
+                                            <span asp-validation-for="Event.EventDate" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <label asp-for="Event.EventCategory" class="col-form-label">Event Category<span class="required">*</span></label>
+                                        <select asp-for="Event.EventCategory" class="form-control" placeholder="Event Category" autocomplete="on">
+                                            <option value="">Select a Category</option>
+                                            <option value="Awards to Employees">Awards to Employees</option>
+                                            <option value="Awards to MDL">Awards to MDL</option>
+                                            <option value="CSR">CSR</option>
+                                            <option value="Dignitaries' Visit">Dignitaries' Visit</option>
+                                            <option value="Other Events">Other Events</option>
+                                            <option value="Product Events">Product Events</option>
+                                        </select>
+                                        <span asp-validation-for="Event.EventCategory" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <span class="FD">English Description</span><span class="required">*</span>
+                                    <textarea class="form-control" asp-for="Event.EnglishEventDescp" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <span class="FD">Hindi Description</span><span class="required">*</span>
+                                    <textarea class="form-control" asp-for="Event.HindiEventDescp" cols="30" rows="3" id="HindiContentDesc"></textarea>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="Event.IsActive" class="custom-control-input" checked="@Model.IsNew">
+                                    <label asp-for="Event.IsActive" class="custom-control-label">Active</label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if (!Model.IsNew && Model.permissions["CanDelete"])
+            {
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" asp-for="Event.Id" />
+                    <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                </form>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts
+    {
+    <script src="~/plugins/summernote/summernote-bs4.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" asp-append-version="true">
+        //Initialize wysihtml
+        $("#EnglishContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $("#HindiContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+    </script>
+}

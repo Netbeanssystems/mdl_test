@@ -1,0 +1,174 @@
+﻿@page "/{lang}/Search/{output?}"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.SearchModel
+@{
+    ViewData["Title"] = "Search";
+    Layout = "_InternalPagesLayout";
+}
+<link rel="stylesheet" href="/css/jquery.datatables.min.css" />
+
+<style>
+    .hero img {
+        width: 100% !important;
+    }
+
+    ul.pdf li {
+        background: url('/img/icon-pdf.png') no-repeat;
+        padding-left: 22px;
+    }
+</style>
+<link rel="stylesheet" href="/css/jquery.datatables.min.css" />
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero">
+        <div class="item">
+            <div class="heading">Search</div>
+            <img class="image1" src="/assets/images/banners/products.jpg" alt="">
+        </div>
+        <div class="strip">Home > Search</div>
+    </div>
+}
+else
+{
+    <div class="hero">
+        <div class="item">
+            <div class="heading">खोज</div>
+            <img class="image1" src="/assets/images/banners/products.jpg" alt="">
+        </div>
+        <div class="strip">होम > खोज</div>
+    </div>
+}
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+
+            @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+            {
+                <h3 class="inner-heading">Search</h3>
+            }
+            else
+            {
+                <h3 class="inner-heading">खोज</h3>
+            }
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+
+                            <section class="financial-block-section mt-2">
+                                <div class="container">
+                                    <div class="sprt-container py-4">
+                                        <h3>
+                                            <span class="float-left">Searched Result(s)</span>
+                                        </h3>
+                                        @Html.AntiForgeryToken()
+
+                                        <div class="card-body">
+                                            @if (Model.searchVMList != null && Model.searchVMList.Count > 0)
+                                            {
+                                                <div class="table-responsive">
+                                                    <table id="example" class="table theme-table" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="text-align: left;">Particulars</th>
+                                                                <th style="text-align:center;">Detailed View</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                                                            {
+                                                                @foreach (var item in Model.searchVMList.ToList().OrderByDescending(x => x.Id))
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-left">@item.Particulars</td>
+                                                                        @if (item.Content != null)
+                                                                        {
+                                                                            <td class="text-center"><a href="@item.Content" title="View">View</a></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-center"><a href="/English/@item.Particulars.Replace(" ","-")" id="txtParticulars" title="View">View</a></td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                @foreach (var item in Model.searchVMList.ToList().OrderByDescending(x => x.Id))
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-left">@item.Particulars</td>
+                                                                        @if (item.Content != null)
+                                                                        {
+                                                                            <td class="text-center"><a href="@item.Content" title="View">View</a></td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-center"><a href="/English/@item.Particulars.Replace(" ","-")" id="txtParticulars" title="View">View</a></td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                            
+                                                        </tbody>
+                                                        <tfoot style="display:none;">
+                                                            <tr>
+                                                                <th style="text-align:center;">Particulars</th>
+                                                                <th style="text-align:center;">Detailed View</th>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p style="margin-top: 81px;text-align: center;">Data not found.</p>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </section>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@*<script src="~/plugins/jquery/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/plugins/jquery/jquery-3.6.4.min.js" asp-append-version="true"></script>
+
+@*<script type="text/javascript" asp-append-version="true">
+    $('#example').DataTable({
+        initComplete: function () {
+            var r = $('#example tfoot tr');
+            r.find('th').each(function () {
+                if ($(this).hasClass('search')) {
+                    $(this).css('padding', 5);
+                    var title = $(this).text();
+                    $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                } else {
+                    $(this).html('');
+                }
+            });
+            $('#example thead').prepend(r);
+            this.api().columns().every(function () {
+                var that = this;
+                $('input', this.footer()).on('keyup change clear',
+                    function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+            });
+        }
+    });
+</script>*@

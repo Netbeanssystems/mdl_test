@@ -1,0 +1,130 @@
+﻿@model Application.Dtos.NotificationDTO
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration config
+
+<div class="table-responsive">
+    <table id="tbl_sbmp_notification" class="table table-bordered table-striped">
+        <thead style="background-color: #192c64;color: white;">
+            <tr>
+                <th>Sr.No.</th>
+                <th class="search">Tender No</th>
+                <th>Work Description</th>
+                <th class="search">Tender Date</th>
+                <th class="search">Tender Closing date & Time</th>
+                <th>Tender Fee</th>
+                <th>EMD</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+            }
+
+            @if (Model != null)
+            {
+                @if (Model.not != null)
+                {
+                    @foreach (var item in Model.not)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                    i++;
+                                }
+                                @i
+                            </td>
+                            <td>
+                                @Html.Raw(item.TenderNo)
+                                @if (item.TenderNumberMoreInfo != null || item.TenderNumberMoreInfo != "")
+                                {
+                                    <span class="text-danger">@Html.Raw(item.TenderNumberMoreInfo)</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.Raw(item.Description)
+                                @if (item.Updated_Work_Description != null)
+                                {
+                                    <span class="text-danger">@Html.Raw(item.Updated_Work_Description)</span>
+                                }
+
+                                @if (item.LinkURL != null)
+                                {
+                                    <a href="@item.LinkURL" target="_blank">
+                                        @item.LinkName
+                                    </a>
+                                    <br />
+                                }
+
+                                @if (Model.docs != null)
+                                {
+                                    @foreach (var d in Model.docs)
+                                    {
+                                        @if (d.Tender_id == item.Tender_Id.ToString())
+                                        {
+                                            @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                                            {
+                                                <a href="@config["FileBaseUrl"]/writereaddata/tenders/@d.Document_PDF" target="_blank">
+                                                    @* <i class="fa fa-file-pdf-o text-dark" data-toggle="tooltip" data-placement="top" title="Click here to view or download"></i> *@
+                                                    <img src="/assets/images/PDF_file_icon.png" alt="pdf File">
+                                                    @d.Document_Name
+                                                </a>
+                                                <br />
+                                            }
+                                            else
+                                            {
+                                                <a href="@config["FileBaseUrl"]/writereaddata/tenders/@d.Document_PDF" target="_blank">
+                                                   @*  <i class="fa fa-file-pdf-o text-dark" data-toggle="tooltip" data-placement="top" title="देखने / डाउनलोड करने के ललए यहाीं क्ललक करें"></i> *@
+                                                    <img src="/assets/images/PDF_file_icon.png" alt="pdf File">
+                                                    @d.Document_Name
+                                                </a>
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>@item.TenderDate</td>
+                            <td>
+                                @item.TenderCloseDate
+                                @if (item.TenderClosingTime != null || item.TenderClosingTime != "")
+                                {
+                                    <span>@item.TenderClosingTime</span>
+                                }
+                                @if (item.UpdatedTenderClosingDate != null)
+                                {
+                                    <br />
+                                    <span class="text-danger">@Html.Raw(item.UpdatedTenderClosingDate)</span>
+                                }
+                            </td>
+                            <td>@item.TenderFee</td>
+                            <td>@item.EMD</td>
+                        </tr>
+                    }
+                }
+            }
+
+
+        </tbody>
+        @* <tfoot>
+            <tr>
+                <th>Sr.No.</th>
+                <th class="search">TENDER NO</th>
+                <th>WORK DESCRIPTION</th>
+                <th class="search">TENDER DATE</th>
+                <th class="search">TENDER CLOSING DATE & TIME</th>
+                <th>TENDER FEE</th>
+                <th>EMD</th>
+            </tr>
+        </tfoot>*@
+
+    </table>
+</div>
+
+@{
+    if (Model?.not != null && Model.not.Count > 0)
+    {
+        <span style="float: right; color: #00008B;">Last Updated Date: @Model.not.FirstOrDefault()?.Added_on</span>
+    }
+}
+
+

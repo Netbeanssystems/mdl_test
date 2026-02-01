@@ -1,0 +1,95 @@
+﻿using Application.Dtos;
+using Application.ServiceInterfaces;
+using Application.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+
+namespace WebApp.Pages.Admin.MenuHeadings
+{
+    [Authorize(Roles = "SuperAdmin,Editors,Admin,ContentCreator,Moderator,Publisher")]
+
+    [IgnoreAntiforgeryToken]
+    public class IndexModel : PageModel
+    {
+        private readonly IHttpClientService _httpClient;
+        public IndexModel(
+            IHttpClientService httpClient
+        )
+        {
+            _httpClient = httpClient;
+        }
+        public List<MenuHeadingsVM> Headings { get; set; }
+        public MenuHeadingsDTO FirstLblMenuDTO { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int CategoryId { get; set; }
+        public string Status = "";
+
+        //.......................................Test............................
+        public async Task<IActionResult> OnGetFirstLayerMenuList()
+        {
+            var Result = await _httpClient.GetAsync("MenuHeadings/GetMenuHeadingsWithAll", true);
+            Headings = !string.IsNullOrEmpty(Result) ? JsonConvert.DeserializeObject<List<MenuHeadingsVM>>(Result) : null;
+            if (Result == "unauthorized")
+            {
+                Status = "Unauthorized";
+                return new JsonResult(Status);
+            }
+            else
+            {
+                if (Headings == null)
+                    Status = "Failed";
+                else
+                    Status = "Success";
+            }
+            return new JsonResult(Headings);
+        }
+        public async Task<IActionResult> OnGetSubCategories(int CategoryId)
+        {
+            var Result = await _httpClient.GetAsync("MenuHeadings/GetTest", true, CategoryId);
+            Headings = !string.IsNullOrEmpty(Result) ? JsonConvert.DeserializeObject<List<MenuHeadingsVM>>(Result) : null;
+            if (Result == "unauthorized")
+            {
+                Status = "Unauthorized";
+                return new JsonResult(Status);
+            }
+            else
+            {
+                if (Headings == null)
+                    Status = "Failed";
+                else
+                    Status = "Success";
+            }
+            return new JsonResult(Headings);
+        }
+        public async Task<JsonResult> OnGetMenuHeading(int ID)
+        {
+            var Result = await _httpClient.GetAsync("MenuHeadings/Get", true, ID);
+            FirstLblMenuDTO = !string.IsNullOrEmpty(Result) ? JsonConvert.DeserializeObject<MenuHeadingsDTO>(Result) : null;
+            if (Result == "unauthorized")
+            {
+                Status = "Unauthorized";
+                return new JsonResult(Status);
+            }
+            else
+            {
+                if (FirstLblMenuDTO == null)
+                    Status = "Failed";
+                else
+                    Status = "Success";
+            }
+            return new JsonResult(Result);
+        }
+        public async Task<IActionResult> OnGetPriority(string menuHeadingDTOs)
+        {
+            var menuHeadings = JsonConvert.DeserializeObject<List<MenuHeadingsListPriorityDto>>(menuHeadingDTOs);
+            var Result = await _httpClient.PostAsync("MenuHeadings/UpdatePriority", true, menuHeadings);
+            string Headings = JsonConvert.DeserializeObject<string>(Result);
+            return new JsonResult(Headings);
+        }
+    }
+}

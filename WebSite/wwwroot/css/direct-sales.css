@@ -1,0 +1,246 @@
+.quick-access-list .quick-access-item .quick-access-icon .icon {
+    /*font-size: 3.5rem;*/
+    font-size: 3rem;
+    position: relative;
+    z-index: 1;
+}
+.quick-access-list .quick-access-item .quick-access-icon {
+    /*height: 110px;*/
+    padding: 1rem;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.quick-access-list .quick-access-item .quick-access-head {
+    /*height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;*/
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    padding: 1rem;
+    height: 90px;
+    background-color: #005095;
+    position: relative;
+    z-index: 1;
+}
+.service-item .icon {
+    font-size: 4.5rem;
+}
+
+.service-list-custom-col{
+    flex: 0 0 20%;   
+}
+.quick-access .slick-list{
+    width: 80%;
+}
+
+
+/*//--------Service---------------//*/
+.service-hp-direct-sales-bg {
+    background-image: url(../images/HSD-min.jpg);
+    background-size: cover;
+    transition: all 1.2s ease;
+    -webkit-ransform: scale(1.05);
+    -ms-ransform: scale(1.05);
+    transform: scale(1.05);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-0 {
+    background-image: url(../images/MS-min.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-1 {
+    background-image: url(../images/Bitumen-min.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-2 {
+    /*  background-image: url(../images/MTO-min.jpg);*/
+ background-image: url(../images/HSD-min.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-3 {
+    background-image: url(../images/Hexang-min.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-4 {
+    background-image: url(../images/LDO-min.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-5 {
+    /* background-image: url(../images/FO-min.jpg);*/
+    background-image: url(../images/PROPYLENE-Background.jpg);
+}
+
+#hpdirectsaleswelcome_servicesection .service-bg-6 {
+    background-image: url(../images/R&D-Products-Background.jpg); 
+}
+
+/*#hpdirectsaleswelcome_servicesection .service-bg-7 {
+     /*  background-image: url(../images/Naphtha-min.jpg);*/
+   /* // background-image: url(../images/Sulfur-min.jpg);*/
+/*}*/
+
+
+#hpdirectsaleswelcome_servicesection .service-bg-8 {
+    background-image: url(../images/SKO-min.jpg);
+}
+/*#hpdirectsaleswelcome_servicesection .service-bg-8 {
+    background-image: url(../images/Bitumen-min.jpg);
+}
+*/
+/*------- quick access----------*/
+
+.quick-access-item.products:hover .quick-access-icon {
+    background-image: url(../images/Product-Price-enquiry-form-image.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.apply-location:hover .quick-access-icon {
+    background-image: url(../images/apply-Location-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.pricing:hover .quick-access-icon {
+    /*background-image: url(../images/Product-Price-min.jpg);*/
+    background-image: url(../images/advertisment-image.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.download:hover .quick-access-icon {
+    background-image: url(../images/Downloads-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.knwoledge:hover .quick-access-icon {
+    background-image: url(../images/Knowledge-Portal-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.vendor:hover .quick-access-icon {
+    background-image: url(../images/Vendor-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+   /*------------------------------------ Banners---------------------------------*/
+
+.sko-header {
+    background-image: url(../images/sko.jpg);
+    height: 250px;
+}
+.hexane-header {
+    background-image: url(../images/hexane.jpg);
+    height: 250px;
+}
+.industrialcommerciallpg-header {
+    background-image: url(../images/industrial-and-commercial.jpg);
+    height: 250px;
+}
+.mineralturpentineoil-header {
+    background-image: url(../images/mineral-turpentine-oil.jpg);
+    height: 250px;
+}
+.sulphur-header {
+    background-image: url(../images/sulphur.jpg);
+    height: 250px;
+}
+.advertisements-header {
+    background-image: url(../images/advertisements.jpg);
+    height: 250px;
+}
+.bulkfuelsspecialties-header {
+    background-image: url(../images/bulk-fuels-and-specialties.jpg);
+    height: 250px;
+}
+.bitumen-header {
+    background-image: url(../images/bitumen.jpg);
+    height: 250px;
+}
+.fuels-header {
+    background-image: url(../images/fuel.jpg);
+    height: 250px;
+}
+.solvent-header {
+    background-image: url(../images/solvent.jpg);
+    height: 250px;
+}
+.hpclconsumerpumps-header {
+    background-image: url(../images/hpcl-consumer-pumps.jpg);
+    height: 250px;
+}
+.fuel-managementcustomerpremises-header {
+    background-image: url(../images/fuel-management-customer-premises.jpg);
+    height: 250px;
+}
+.specialproducts-header {
+    background-image: url(../images/special-products.jpg);
+    height: 250px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+    .quick-access .slick-list{
+        width: 100%;
+    }
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+    .service-list-custom-row{
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width : 991px) {
+    .service-list-custom-col{
+        flex: 0 0 25%;
+    }
+}
+
+
+@media only screen and (max-width : 767px) {
+   
+}
+
+@media only screen and (max-width : 576px) {
+  
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+   
+}
+

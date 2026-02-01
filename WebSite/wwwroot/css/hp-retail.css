@@ -1,0 +1,181 @@
+.quick-access-list .quick-access-item .quick-access-icon .icon {
+    /*font-size: 5rem;*/
+    font-size: 3rem;
+    position: relative;
+    z-index: 1;
+}
+.quick-access-list .quick-access-item .quick-access-icon {
+    /*height: 110px;*/
+    padding: 1rem;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.quick-access-list .quick-access-item .quick-access-head {
+    /*height: 80px;
+    display: flex;
+    align-items: center;*/
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+    padding: 1rem;
+    height: 90px;
+    background-color: #005095;
+    position: relative;
+    z-index: 1;
+}
+.service-item .icon {
+    font-size: 4.5rem;
+}
+
+.service-list-custom-col{
+    flex: 0 0 20%;   
+}
+
+.service-hp-retail-bg {
+    background-image: url(../images/Petrol-min.jpg);
+    background-size: cover;
+    transition: all 1.2s ease;
+    -webkit-ransform: scale(1.05);
+    -ms-ransform: scale(1.05);
+    transform: scale(1.05);
+}
+
+
+/*//--------Service---------------//*/
+#hpretailwelcome_servicesection .service-bg-0 {
+    background-image: url(../images/Petrol-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-1 {
+    background-image: url(../images/Power-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-2 {
+    background-image: url(../images/99-power-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-3 {
+    background-image: url(../images/Diesel-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-4 {
+    background-image: url(../images/Turbojet-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-5 {
+    background-image: url(../images/PDS-Kerosene-SKO-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-6 {
+    background-image: url(../images/LPG-Auto-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-7 {
+    background-image: url(../images/CNG-min.jpg);
+}
+#hpretailwelcome_servicesection .service-bg-8 {
+    background-image: url(../images/EV-Charging.jpg);
+}
+
+/*//quick - Access//*/
+.quick-access-item.club-hp:hover .quick-access-icon {
+    background-image: url(../images/HP-Club-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.club-hp-star:hover .quick-access-icon {
+    background-image: url(../images/HP-Star-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.loyality-program:hover .quick-access-icon {
+    background-image: url(../images/Loyality-Program-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.fuel-station:hover .quick-access-icon {
+    background-image: url(../images/Efuel-Station-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.fuel-promise:hover .quick-access-icon {
+    background-image: url(../images/Good-Fuel-Promise-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.retail-dealerships:hover .quick-access-icon {
+    background-image: url(../images/Retail-Dealership-min.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.Mobile-App:hover .quick-access-icon {
+    background-image: url(../images/Mobile-App.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.Allied-Retail:hover .quick-access-icon {
+    background-image: url(../images/Allied-Retail.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.EV-Charging:hover .quick-access-icon {
+    background-image: url(../images/EV-Charging.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.Mobile-Dispenser:hover .quick-access-icon {
+    background-image: url(../images/MobileDispenser.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+.quick-access-item.Highway-Outlets:hover .quick-access-icon {
+    background-image: url(../images/Highway.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+    .service-list-custom-row{
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width : 991px) {
+    
+}
+
+
+@media only screen and (max-width : 767px) {
+   
+}
+
+@media only screen and (max-width : 576px) {
+  
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+   
+}
+

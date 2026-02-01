@@ -1,0 +1,158 @@
+﻿@page "{id?}"
+@model ManageModel
+@{
+    ViewData["Title"] = "Manage User";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        @if (!Model.IsNew)
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Edit User</h3>
+                            @*<div class="btn-group btn-group-sm float-right">
+                                    <a href="#" class="text-dark mr-3" data-toggle="modal" data-target="#confirmationModal" title="Delete"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                </div>*@
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                        else
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Create User</h3>
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="user.Id" />
+                                <input type="hidden" asp-for="user.Role" />
+                                <input type="hidden" asp-for="user.YardId" />
+                            }
+                            else
+                            {
+                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("BidderSuperAdmin"))
+                                {
+                                    @* 
+                                    <div class="form-group">
+                                        <label asp-for="user.Role" class="col-form-label">Role<span class="required">*</span></label>
+                                        <select asp-for="user.Role" class="form-control" readonly asp-items="ViewBag.Roles">
+                                            <option>CommercialExecutive</option>
+                                        </select>
+                                        <span asp-validation-for="user.Role" class="text-danger"></span>
+                                    </div> *@
+                                    <div class="form-group">
+                                        <label asp-for="user.Role" class="col-form-label">Role<span class="required">*</span></label>
+                                        <input asp-for="user.Role" class="form-control" value="CommercialExecutive" readonly placeholder="Commercial Executive P No">
+                                        <span id="usererror" asp-validation-for="user.Role" class="text-danger"></span>
+                                    </div>
+                                }
+                            }
+                            <div class="form-group">
+                                <label asp-for="user.ProjectIds" class="col-form-label">Project<span class="required">*</span></label>
+                                <select asp-for="user.ProjectIds" class="form-control js-example-basic-multiple" asp-items="ViewBag.Projects" multiple="multiple">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="user.ProjectIds" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.YardIds" class="col-form-label">Yard<span class="required">*</span></label>
+                                <select asp-for="user.YardIds" class="js-example-basic-multiple form-control" multiple="multiple">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="user.YardId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.ExPNo" class="col-form-label">Commercial Executive P No<span class="required">*</span></label>
+                                <input asp-for="user.ExPNo" class="form-control" placeholder="Commercial Executive P No">
+                                <span id="usererror" asp-validation-for="user.ExPNo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.Name" class="col-form-label">Commercial Executive Name<span class="required">*</span></label>
+                                <input asp-for="user.Name" class="form-control" placeholder="Name">
+                                <span id="usererror" asp-validation-for="user.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.Designation" class="col-form-label">Designation<span class="required">*</span></label>
+                                <input asp-for="user.Designation" class="form-control" placeholder="Designation">
+                                <span id="usererror" asp-validation-for="user.Designation" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.Email" class="col-form-label">Email<span class="required">*</span></label>
+                                <input asp-for="user.Email" class="form-control" placeholder="Email">
+                                <span asp-validation-for="user.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.ExtensionNo" class="col-form-label">Extension No<span class="required">*</span></label>
+                                <input asp-for="user.ExtensionNo" class="form-control" placeholder="Extension No">
+                                <span asp-validation-for="user.ExtensionNo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.PhoneNumber" class="col-form-label">Phone Number<span class="required">*</span></label>
+                                <input asp-for="user.PhoneNumber" class="form-control" placeholder="Phone Number">
+                                <span asp-validation-for="user.PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.LoginValidFrom" class="col-form-label">Login Valid From<span class="required">*</span></label>
+                                <input asp-for="user.LoginValidFrom" type="date" class="form-control">
+                                <span asp-validation-for="user.LoginValidFrom" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="user.LoginValidTill" class="col-form-label">Login Valid Till<span class="required">*</span></label>
+                                <input asp-for="user.LoginValidTill" type="date" class="form-control">
+                                <span asp-validation-for="user.LoginValidTill" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="user.Approved" class="custom-control-input">
+                                    <label asp-for="user.Approved" class="custom-control-label">Approved</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="user.IsActive" class="custom-control-input" checked="@Model.IsNew">
+                                    <label asp-for="user.IsActive" class="custom-control-label">IsActive</label>
+                                </div>
+                            </div>
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="user.ChangePassword" />
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input asp-for="user.ChangePassword" class="custom-control-input">
+                                        <label asp-for="user.ChangePassword" class="custom-control-label">Change Password On First Login</label>
+                                    </div>
+                                </div>
+                            }
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if (!Model.IsNew)
+            {
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" asp-for="user.Id" />
+                    <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                </form>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script src="~/js/custom/User.js" asp-append-version="true"></script>
+}

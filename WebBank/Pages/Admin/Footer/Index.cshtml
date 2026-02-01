@@ -1,0 +1,90 @@
+﻿@page
+@model WebBank.Pages.Admin.Footer.IndexModel
+@{
+    ViewData["Title"] = "Footer";
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title text-bold">Footer Content</h3>
+            @*<a class="btn btn-sm btn-success float-right" asp-page="Add"><i class="fa fa-plus"></i> Create New</a>
+            <div class="clearfix"></div>*@
+        </div>
+        <div class="card-body">
+            <partial name="Shared/_Loading" />
+
+            <div class="row">
+
+                @*Bind the data which have column = 1*@
+                <div class="col-sm-6" id="Priority">
+                    For Column 1 <a class="float-right" asp-route="/Create" id="topone" style="cursor:pointer;" title="Add New Link in Column 1"><i class="fa fa-plus"></i></a>
+                    <ul id="SortList">
+                        <li><input type="hidden" name="Priorty" value="5"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>About Us (हमारे बारे में)<i class="fa fa-edit text-dark float-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></li>
+                        <li><input type="hidden" name="Priorty" value="109"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Business (व्यवसाय)<i class="fa fa-edit text-dark float-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></li>
+                    </ul>
+                    <input id="btnPriorty" class="btn btn-success" type="button" value="Set Priorty" />
+                </div>
+
+                @*Bind the data which have column = 2*@
+                <div class="col-sm-6" id="Priority">
+                    For Column 2 <a class="float-right" asp-route="Create" style="cursor:pointer;" id="topone" title="Add New Link in Column 2"><i class="fa fa-plus"></i></a>
+                    <ul id="SortList">
+                        <li><input type="hidden" name="Priorty" value="5"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>About Us (हमारे बारे में)<i class="fa fa-edit text-dark float-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></li>
+                        <li><input type="hidden" name="Priorty" value="109"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Business (व्यवसाय)<i class="fa fa-edit text-dark float-right" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"></i></li>
+                    </ul>
+                    <input id="btnPriorty" class="btn btn-success" type="button" value="Set Priorty" />
+                </div>
+            </div>
+
+            <form method="post" accept-charset="UTF-8">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="mt-2 mb-2">
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-PageLink-tab" data-toggle="tab" href="#nav-PageLink" role="tab" aria-controls="nav-home" aria-selected="true">Bottom Content</a>
+                                    <a class="nav-item nav-link" id="nav-UploadFile-tab" data-toggle="tab" href="#nav-UploadFile" role="tab" aria-controls="nav-profile" aria-selected="false">Copyright Content</a>
+                                </div>
+                            </nav>
+                            <div class="tab-content p-3 border" id="nav-tabContent">
+                                <input type="hidden" id="LastSelectedId" />
+                                <div class="tab-pane fade show active" id="nav-PageLink" role="tabpanel" aria-labelledby="nav-PageLink-tab">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <span class="FD">English Content</span>
+                                            <textarea class="form-control" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                        </div>
+                                        <br />
+                                        <div class="col-md-10">
+                                            <span class="FD">Hindi Content</span>
+                                            <textarea class="form-control" cols="30" rows="3" id="HindiContentDesc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-UploadFile" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <span class="FD">English Link</span><input class="form-control" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <span class="FD">Hindi Link</span><input class="form-control" />
+                                        </div>
+                                        <br />
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    @*<script src="~/plugins/Tinymce/tinymce.min.js"></script>*@
+    <script src="~/plugins/Tinymce/tinymce.min-6.4.2.js"></script>
+    <script src="~/js/custom/MenuTextEditor.js"></script>
+}

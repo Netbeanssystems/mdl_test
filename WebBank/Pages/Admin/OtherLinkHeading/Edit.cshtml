@@ -1,0 +1,213 @@
+﻿@page "{id:int}"
+@model WebBank.Pages.Admin.OtherLinkHeading.EditModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+@section Styles
+    {
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+}
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left">Create Heading</h3>
+                            <div class="btn-group btn-group-sm float-right">
+                                <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#confirmationModal"><i class="fa fa-times"></i> Delete</button>&nbsp;
+                                <a class="btn btn-sm btn-secondary float-right" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" asp-page-handler="Delete">
+                                <input type="hidden" asp-for="OtherLinkHeading.Id" />
+                                <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                            </form>
+                            <form method="post">
+                                <input type="hidden" asp-for="OtherLinkHeading.Id" />
+                                <input type="hidden" asp-for="OtherLinkHeading.ParentId" />
+                                <input type="hidden" asp-for="OtherLinkHeading.AcceptedBy" />
+                                <input type="hidden" asp-for="OtherLinkHeading.ArchiveDate" />
+                                <input type="hidden" asp-for="OtherLinkHeading.EnglishAttachment" />
+                                <input type="hidden" asp-for="OtherLinkHeading.ForReview" />
+                                <input type="hidden" asp-for="OtherLinkHeading.HindiAttachment" />
+                                <input type="hidden" asp-for="OtherLinkHeading.IsSubHeading" />
+                                <input type="hidden" asp-for="OtherLinkHeading.LoginUserId" />
+                                <input type="hidden" asp-for="OtherLinkHeading.Priority" />
+                                <input type="hidden" asp-for="OtherLinkHeading.Status" />
+                                <input type="hidden" asp-for="OtherLinkHeading.SubmitDate" />
+                                <input type="hidden" asp-for="OtherLinkHeading.ValidTill" />
+                                <div class="form-group form-row">
+                                    <label asp-for="OtherLinkHeading.EnglishHeadingName" class="col-md-3 col-lg-2">English Heading<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.EnglishHeadingName" id="txtenglishname" class="form-control" placeholder="English Name" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.EnglishHeadingName" class="text-danger"></span>
+
+                                    </div>
+                                    <label asp-for="OtherLinkHeading.HindiHeadingName" class="col-md-3 col-lg-2">&nbsp;&nbsp;  Hindi Heading<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.HindiHeadingName" id="txthindiname" class="form-control" placeholder="Hindi Name" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.HindiHeadingName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label asp-for="OtherLinkHeading.Title" class="col-md-3 col-lg-2">English Title<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.Title" id="txttitle" class="form-control" placeholder="Title" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.Title" class="text-danger"></span>
+
+                                    </div>
+                                    <label asp-for="OtherLinkHeading.HindiTitle" class="col-md-3 col-lg-2">Hindi Title<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.HindiTitle" id="txtHindiTitle" class="form-control" placeholder="Hindi Title" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.HindiTitle" class="text-danger"></span>
+
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label asp-for="OtherLinkHeading.Keyword" class="col-md-3 col-lg-2"> Keyword<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.Keyword" id="txtKeyword" class="form-control" placeholder="Keyword" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.Keyword" class="text-danger"></span>
+
+                                    </div>
+                                    <label asp-for="OtherLinkHeading.Description" class="col-md-3 col-lg-2"> Description<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="OtherLinkHeading.Description" id="txtDescription" class="form-control" placeholder="Description" autocomplete="on" />
+                                        <span asp-validation-for="OtherLinkHeading.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <a class="nav-item nav-link active" id="nav-PageLink-tab" data-toggle="tab" href="#nav-PageLink" role="tab" aria-controls="nav-home" aria-selected="true">Page Link</a>
+                                        <a class="nav-item nav-link" id="nav-UploadFile-tab" data-toggle="tab" href="#nav-UploadFile" role="tab" aria-controls="nav-profile" aria-selected="false">Upload File</a>
+                                        <a class="nav-item nav-link" id="nav-Content-tab" data-toggle="tab" href="#nav-Content" role="tab" aria-controls="nav-profile" aria-selected="false">Content</a>
+                                    </div>
+                                </nav>
+                                <div class="tab-content p-3 border" id="nav-tabContent">
+                                    <input type="hidden" id="LastSelectedId" />
+                                    <div class="tab-pane fade show active" id="nav-PageLink" role="tabpanel" aria-labelledby="nav-PageLink-tab">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="FD">English Link</span><input class="form-control" asp-for="OtherLinkHeading.EnglishPageLink" />
+                                                <span asp-validation-for="OtherLinkHeading.EnglishPageLink" class="text-danger"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span class="FD">Hindi Link</span><input class="form-control" asp-for="OtherLinkHeading.HindiPageLink" />
+                                                <span asp-validation-for="OtherLinkHeading.HindiPageLink" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-row">
+                                        <label class="col-md-2 col-lg-2 col-form-label">File Uploaded<span class="required">*</span></label>
+                                        <div class="col-md-3 col-lg-3">
+                                            @if (!string.IsNullOrEmpty(@Model.OtherLinkHeading.EnglishAttachment))
+                                        {
+                                            <a href="~/img/UploadedFiles/OtherLinkHeading/Files/English/@Model.OtherLinkHeading.EnglishAttachment" target="_blank" class="btn btn-success"><i class="fa fa-search"></i> File (English)</a>
+                                        }
+                                        else
+                                        {
+                                            <span>NA</span>
+                                        }
+                                    </div>
+                                    <div class="col-md-3 col-lg-3">
+                                        @if (!string.IsNullOrEmpty(@Model.OtherLinkHeading.HindiAttachment))
+                                        {
+                                            <a href="~/img/UploadedFiles/OtherLinkHeading/Files/Hindi/@Model.OtherLinkHeading.HindiAttachment" target="_blank" class="btn btn-success"><i class="fa fa-search"></i> File (Hindi)</a>
+                                        }
+                                        else
+                                        {
+                                            <span>NA</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-Content" role="tabpanel" aria-labelledby="nav-Contact-tab">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <span class="FD">English Content</span>
+                                            <textarea class="form-control" asp-for="OtherLinkHeading.EnglishContentDesc" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                        </div>
+
+                                        <div class="col-md-10">
+                                            <span class="FD">Hindi Content</span>
+                                            <textarea class="form-control" cols="30" rows="3" asp-for="OtherLinkHeading.HindiContentDesc" id="HindiContentDesc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-row">
+                                <label class="col-md-3 col-lg-2"></label>
+                                <div class="col-md-9 col-lg-10">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input asp-for="OtherLinkHeading.Show" class="custom-control-input">
+                                        <label asp-for="OtherLinkHeading.Show" class="custom-control-label">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+                                    <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script src="~/plugins/summernote/summernote-bs4.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" asp-append-version="true">
+        $("#EnglishContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $("#HindiContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        //$('ul.dashboard-list li').each(function () {
+        //    var anchorTag = $(this).find('a');
+        //    if (anchorTag.text() === "Add/Update Menu") {
+        //        anchorTag.addClass('active');
+        //    }
+        //});
+
+        $(document).ready(function() {
+            //< !--Allow only alphanumeric-- >
+            $('#txtenglishname').on('keypress', function(e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#txthindiname').on('keypress', function(e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
+

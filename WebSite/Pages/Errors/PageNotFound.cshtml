@@ -1,0 +1,32 @@
+﻿@page
+@{
+    Layout = "_InternalLayout";
+    ViewData["Title"] = "Error 404";
+}
+
+<div class="hero" style="position: relative;">
+    <div class="item"><div class="heading">404</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+    <div class="strip"><span>404 Page not found</span></div>
+</div>
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+            <h3 class="inner-heading">Oops! Page not found.</h3>
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="text-danger text-center mb-2">
+                        <p>
+                            Something went wrong.
+                        </p>
+                        <p>
+                            Meanwhile, you may <a asp-page="/Index">return to Home Page</a>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

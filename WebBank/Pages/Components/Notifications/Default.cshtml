@@ -1,0 +1,31 @@
+﻿@model List<NotificationsVM>
+@if (User.Identity.IsAuthenticated && Model?.Count > 0)
+{
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-bell"></i>
+        <span class="badge badge-warning navbar-badge">@Model.Count</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <span class="dropdown-item dropdown-header">@Model.Count Notifications</span>
+        <div class="dropdown-divider"></div>
+        @foreach (var item in Model)
+        {
+            <div class="dropdown-item">
+                <a asp-page="/Notifications/Details" asp-route-nid="@item.Id"
+                   class="float-left link-black text-dark" style="width: 100%;">
+                    @if (!string.IsNullOrEmpty(item.Icon))
+                    {
+                        <i class="@(item.Icon) mr-2"></i>
+                    }
+                    @item.Title (@item.NotificationDetails.Count)
+                    @*<br />
+                    <span class="float-left text-muted text-sm">@($"{DateTime.Now.Subtract(item.CreatedDate).TotalHours:F2} hrs")</span>*@
+                </a>
+                @*<a onclick="removeNotification(@item.Id)" class="float-right text-right" style="width: 5%;"><i class="fa fa-times-circle text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>*@
+                <div class="clearfix"></div>
+            </div>
+            <div class="dropdown-divider w-100"></div>
+        }
+        <a asp-page="/Notifications/Details" asp-route-nid="0" class="dropdown-item dropdown-footer">See All Notifications</a>
+    </div>
+}

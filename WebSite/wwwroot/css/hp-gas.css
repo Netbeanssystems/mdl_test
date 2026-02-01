@@ -1,0 +1,129 @@
+.quick-access-list .quick-access-item .quick-access-icon .icon{
+    font-size: 4rem;
+}
+.quick-access-list .quick-access-item .quick-access-icon{
+    height: 110px;
+}
+
+
+.service-list-custom-col{
+flex: 0 0 20%;   
+}
+.service-hp-gas-bg {
+    background-image: url(../images/Domestic-LPG.jpg);
+    background-size: cover;
+    transition: all 1.2s ease;
+    -webkit-ransform: scale(1.05);
+    -ms-ransform: scale(1.05);
+    transform: scale(1.05);
+}
+#hpgaswelcome_servicesection .service-bg-0 {
+    background-image: url(../images/Domestic-LPG.JPG);
+}
+
+#hpgaswelcome_servicesection .service-bg-1 {
+    background-image: url(../images/Free-Trade-LPG-Image-1.JPG);
+}
+
+#hpgaswelcome_servicesection .service-bg-2 {
+    background-image: url(../images/Free-Trade-LPG-background-image.jpg);
+}
+
+#hpgaswelcome_servicesection .service-bg-3 {
+    /*background-image: url(../images/Free-Trade-LPG-background-image.jpg);*/
+    background-image: url(../images/Free-Trade-LPG-Image.jpg);
+    /*background-image: url(../images/my-hp1.JPG);*/
+}
+
+
+.quick-access-item.my-hp-gas:hover .quick-access-icon {
+    background-image: url(../images/my-hp1.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.get-new-connection:hover .quick-access-icon {
+    background-image: url(../images/Get-New-Connection.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.order-refill:hover .quick-access-icon {
+    background-image: url(../images/Order-Fill.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.time-delivery:hover .quick-access-icon {
+    background-image: url(../images/Preferred-Time-Delivery.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.change-distributor:hover .quick-access-icon {
+    background-image: url(../images/Change-your-Distributor.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.distributor-locator:hover .quick-access-icon {
+    background-image: url(../images/Distributor-Locator.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.new-distributorship:hover .quick-access-icon {
+    /* background-image: url(../images/New-Distributor.jpg);*/
+    background-image: url(../images/image-hp-anytime.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.faqs:hover .quick-access-icon {
+    background-image: url(../images/FAQ.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+.quick-access-item.Distributorship-Selection:hover .quick-access-icon {
+    background-image: url(../images/HPGAS-Distributorship-Selection-image.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+    .service-list-custom-row{
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width : 991px) {
+    
+}
+
+
+@media only screen and (max-width : 767px) {
+   
+}
+
+@media only screen and (max-width : 576px) {
+  
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+   
+}
+

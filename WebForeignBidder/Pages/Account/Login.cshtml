@@ -1,0 +1,335 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@model LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+    Layout = "_LoginLayout";
+}
+<div class="col-md-4 offset-md-4">
+    <div class="card">
+        <h5 class="card-header text-center">Signin Foreign Bidder App</h5>
+        <div class="card-body login-card-body">
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post" autocomplete="off">
+                <input type="hidden" asp-for="Input.EncUsername" />
+                <input type="hidden" asp-for="Input.EncPassword" />
+                <input type="hidden" value="@HttpContext.Session.GetString("CaptchaCode")" />
+                <div class="form-group">
+                    <label asp-for="Input.Username" class="col-form-label">Username*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Username" asp-for="Input.Username" autocomplete="given-name" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span id="usererror" asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="col-form-label">Password*</label>
+                    <div class="input-group">
+                        <input class="form-control" autocomplete="new-password" placeholder="Password" asp-for="Input.Password" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span  id="passerror" asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="custom-control custom-switch custom-switch-on-success">
+                        <input asp-for="Input.RememberMe" data-glass="@HttpContext.Session.GetString("Glass")" class="custom-control-input remMe">
+                        <label asp-for="Input.RememberMe" class="custom-control-label">Remember Me</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <img id="img-captcha" src="/bidder/Common/GetCaptchaImage" alt="captcha" />
+                        </div>
+                         <button onclick="speakCaptcha()">🔊</button>
+                        <input type="text" class="form-control" placeholder="Captcha Code" asp-for="Input.CaptchaCode" />
+                        <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                            <div class="input-group-text">
+                                <span id="captchaRefresh" class="fa fa-redo"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.CaptchaCode" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button id="btnSave" type="button" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+            </form>
+            <div class="form-group float-left">
+                <a asp-page="ForgotPassword">Forgot Password?</a>
+            </div>
+         @*    <div class="form-group float-right">
+                <a asp-page="ForgotUsername">Forgot Username?</a>
+            </div> *@
+            <div class="clearfix"></div>
+            @*<div class="social-auth-links text-center m-0">
+            <p>- OR -</p>
+            <a class="btn btn-primary btn-block" asp-page="Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
+            <a href="#" class="btn btn-block btn-primary">
+            <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+            </a>
+            <a href="#" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+            </a>
+            </div>*@
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="otpModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="OtpVerification">
+                <div class="modal-header">
+                    <h5 class="modal-title">OTP Verification</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Enter OTP</label>
+                        <input type="text" maxlength="6" name="OtpCode" id="OtpCode" class="form-control" />
+                        <span class="text-danger" asp-validation-for="OtpCode"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Verify</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script language="JavaScript" type="text/javascript" src="/bidder/js/sha512.min.js">  </script>
+    <script language="JavaScript" type="text/javascript">
+        function sha512auth(str) {
+            var seed = '@HttpContext.Session.GetString("Glass")';
+            var pswd = sha512($('#Input_Password').val());
+            //var hash = sha512(seed + pswd);
+            var hash = seed + pswd;
+            return hash;
+        }
+    </script>
+    <script>
+    function speakCaptcha() {
+     fetch("../../Common/GetCaptchaCode")
+            .then(response => response.json())
+            .then(data => {
+                const captcha = data.captcha;
+
+                if (!captcha || captcha.length === 0) {
+                    alert("Captcha not loaded");
+                    return;
+                }
+
+                const msg = new SpeechSynthesisUtterance(captcha);
+                msg.lang = 'en-US';
+                msg.rate = 0.5;
+                window.speechSynthesis.speak(msg);
+            })
+            .catch(err => {
+                console.error("Failed to get captcha", err);
+                alert("Failed to get captcha.");
+            });
+    }
+</script>
+    <script type="text/javascript">
+        $("#img-captcha,#captchaRefresh").click(function () {
+            resetCaptchaImage();
+                    setTimeout(() => speakCaptcha(), 300);
+        });
+        function resetCaptchaImage() {
+            var d = new Date();
+            $("#img-captcha").attr("src", "/bidder/Common/GetCaptchaImage?" + d.getTime());
+        }
+        function SubmitForm(event) {
+             var ctrlOldHtml = $('#btnSave').html();
+             var theForm = $('#btnSave').parents('form:first');
+             if (theForm.valid()) {
+                 var txtUsername = $('#Input_Username').val();
+                 var txtPassword = $('#Input_Password').val();
+                 if (txtUsername === "") {
+                     $("#divClientAlert").addClass("alert-danger");
+                     $("#divClientAlert > p.m-0").text("User Name is required");
+                     $("#divClientAlert").show();
+                     SetTimeOut($("#divClientAlert"));
+                     return false;
+                 } else if (txtPassword === "") {
+                     $("#divClientAlert").addClass("alert-danger");
+                     $("#divClientAlert > p.m-0").text("Password is required");
+                     $("#divClientAlert").show();
+                     SetTimeOut($("#divClientAlert"));
+                     return false;
+                 } else {
+                     // $('#Input_EncUsername').val(txtUsername);
+                     $('#Input_EncUsername').val(Encrypt(txtUsername));
+                     //$('#Input_EncPassword').val(Encrypt(txtPassword));
+                     $('#Input_EncPassword').val(sha512auth(txtPassword));
+
+                     $('#Input_Username').val('************************');
+                     $('#Input_Password').val('Pa$$w0rdPa$$w0rd');
+                     $('#btnSave').attr('disabled', true);
+                     $('#btnSave').html('<i class="fa fa-spinner fa-spin"></i> Please wait');
+                 
+                    const data = {
+                        Username: $('#Input_Username').val(),
+                        Password: $('#Input_Password').val(),
+                        CaptchaCode: $('#Input_CaptchaCode').val(),
+                        EncUsername: $('#Input_EncUsername').val(),
+                        EncPassword: $('#Input_EncPassword').val(),
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "?handler=ValidateUser",
+                        data: data,
+                        success: function (res) {
+                            if (res.success) {
+                                $('#otpModal').modal('show');
+                            } else {
+                                alert(res.message);
+                                $('#btnSave').attr('disabled', false);
+                                $('#btnSave').html('Sign In');
+                            }
+                        }
+                    });
+                 }
+             } else {
+                 event.preventDefault();
+                 $('#btnSave').attr('disabled', false);
+                 $('#btnSave').html(ctrlOldHtml);
+                 return false;
+             }
+         };
+
+        $('#btnSave').click(function (event) {
+            SubmitForm(event);
+        });
+
+        $('form').keypress((e) => {
+            if (e.which === 13) {
+                SubmitForm(e);
+                return true;
+            }
+        });
+
+        $(document).ready(function () {
+            var some_id = $('#Input_Password');
+            some_id.prop('type', 'password');
+            some_id.removeAttr('autocomplete');
+
+            var some_id1 = $('#Input_Username');
+            some_id1.prop('type', 'text');
+            some_id1.removeAttr('autocomplete');
+        });
+
+        $(function () {
+            $("#Input_Username").keypress(function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                $("#usererror").html("");
+
+                //Regex for Valid Characters i.e. Alphabets and Numbers.
+                var regex = /^[ A-Za-z0-9_@@.-]*$/
+                //Validate TextBox value against the Regex.
+                var isValid = regex.test(String.fromCharCode(keyCode));
+                if (!isValid) {
+                    $("#usererror").html("Invalid Input.");
+                }
+
+                return isValid;
+            });
+        });
+        $(function () {
+            $("#Input_Password").keypress(function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                $("#usererror").html("");
+
+                //Regex for Valid Characters i.e. Alphabets and Numbers.
+                var regex = /^[ A-Za-z0-9$#@@&]*$/
+                //Validate TextBox value against the Regex.
+                var isValid = regex.test(String.fromCharCode(keyCode));
+                if (!isValid) {
+                    $("#passerror").html("Invalid Input.");
+                }
+
+                return isValid;
+            });
+        });
+        
+
+        // $('#Input_CaptchaCode').on('blur', function () {
+        //     var capcha = $(this).val();
+        //     if (capcha.length > 0) {
+        //         $.get("/bidder/Account/Login?handler=Validatecapcha", { CaptchaCode: capcha })
+        //             .done(function (data) {
+
+        //                 if (data != capcha) {
+        //                     $("#divClientAlert").addClass("alert-danger");
+        //                     $("#divClientAlert > p.m-0").text("Please Enter Valid Captcha");
+        //                     $("#divClientAlert").show();
+        //                     SetTimeOut($("#divClientAlert"));
+        //                     resetCaptchaImage();
+        //                     $("#Input_CaptchaCode").val("");
+        //                 }
+        //             });
+        //     }
+        // });
+
+        // $('#Input_CaptchaCode').on('blur', function () {
+        //     var captcha = $(this).val();
+        //     if (captcha.length > 0) {
+        //         $.ajax({
+        //             url: "/bidder/Account/Login?handler=Validatecapcha",
+        //             type: "POST",  
+        //             data: { CaptchaCode: captcha },
+        //             success: function (data) {
+        //                 debugger;
+        //                 if (data !== captcha) {
+        //                     $("#divClientAlert").addClass("alert-danger");
+        //                     $("#divClientAlert > p.m-0").text("Please Enter Valid Captcha");
+        //                     $("#divClientAlert").show();
+        //                     SetTimeOut($("#divClientAlert"));
+        //                     resetCaptchaImage();
+        //                     $("#Input_CaptchaCode").val("");  
+        //                 }
+        //             },
+                    
+        //         });
+
+        //     }
+        // });
+
+        $('#OtpCode').on('input', function () {
+            // Allow only digits
+            this.value = this.value.replace(/\D/g, '');
+
+            // Limit to 6 digits
+            if (this.value.length > 6) {
+                this.value = this.value.slice(0, 6);
+            }
+        });
+
+        $('#OtpCode').on('change', function (e) {
+            const otp = $(this).val();
+            const regex = /^\d{6}$/;
+
+            if (!regex.test(otp)) {
+                e.preventDefault();
+                alert('Please enter exactly 6 digits.');
+            }
+        });
+
+
+    </script>
+
+}

@@ -1,0 +1,51 @@
+﻿@model Application.ViewModels.PetrolPriceBuildupListVM
+@if (Model?.ListProduct?.Count > 0)
+{
+    <div class="table-responsive">
+        <table id="tblTempNewProjects" class="table table-sm table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Menu</th>
+                    <th class="text-center">Show</th>
+                    <th>Request Date</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Row Id</th>
+                    @if (Model.role == "SuperAdmin" || Model.role == "Admin" || Model.role == "Publisher")
+                    {
+                        <th>Action</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ListProduct.Where(c => c.Show))
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.EnglishHeadingName (@item.HindiHeadingName)</td>
+                        <td class="text-center">@Html.Raw(item.Show ? "<i class=\"fa fa-check-circle text-success\"></i>" : "<i class=\"fa fa-times-circle text-danger\"></i>")</td>
+                        <td>@($"{item.ActionDate.AddHours(5.5):dd/MMM-yyyy hh:mm tt}")</td>
+                        <td>@item.UserName</td>
+                        <td>@item.RoleName</td>
+                        <td>@item.Action</td>
+                        <td>@item.Status</td>
+                        <td>@item.RowId</td>
+                        <td>
+                            @if ((Model.role == "SuperAdmin" || Model.role == "Admin" || Model.role == "Publisher") && item.Status != "Approved")
+                            {
+                                <a class="fa fa-edit text-danger" title="Approve" asp-page="Approve" asp-route-id="@item.Id"></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>No records has been added yet. Click 'Create New' to start adding.</p>
+}

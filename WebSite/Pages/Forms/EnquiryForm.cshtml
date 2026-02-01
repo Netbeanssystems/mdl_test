@@ -1,0 +1,118 @@
+﻿@page
+@model WebSite.Pages.Forms.EnquiryFormModel
+@{
+    Layout = "_InternalPagesLayout";
+    ViewData["Title"] = "MDL | Enquiry";
+}
+
+<div class="hero" style="position: relative;">
+    <div class="item"><div class="heading"></div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+    <div class="strip"><span><a href="/">Home</a> > Enquiry</span></div>
+</div>
+
+<div class="mid-content">
+    <div class="container">
+        <h5 class="main-head"><b>Your comments and suggestions will go a long way for guiding us towards improving our services and responses to our valued customers.</b></h5>
+        <hr>
+        <div class="row">
+            <p>(<span class="astricks">*</span>) Information Required</p>
+            <div class="col-md-12 mb-4">
+                <form method="post" class="row g-3">
+                     <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
+                    <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
+                    <div class="col-md-4">
+                        <label for="inputEmail4" asp-for="vigi.Name" class="form-label">Name<span class="astricks">*</span></label>
+                        <input asp-for="vigi.Name" onkeypress="return myKeyPress(event)" class="form-control" id="inputEmail4">
+                         <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="inputPassword4" asp-for="vigi.Designation" class="form-label">Designation<span class="astricks">*</span></label>
+                        <input type="text"  onkeypress="return myKeyPress(event)" asp-for="vigi.Designation" class="form-control" id="inputPassword4">
+                         <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="inputPassword4" asp-for="vigi.Organization" class="form-label">Organization<span class="astricks">*</span></label>
+                        <input asp-for="vigi.Organization" onkeypress="return myKeyPress(event)" class="form-control" id="inputPassword4">
+                         <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="inputPassword4" asp-for="vigi.Email" class="form-label">E-Mail<span class="astricks">*</span></label>
+                        <input asp-for="vigi.Email" class="form-control" id="inputPassword4">
+                         <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-4">
+                        <label for="inputAddress2" asp-for="vigi.Contact" class="form-label">Contact No<span class="astricks">*</span></label>
+                        <input asp-for="vigi.Contact" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                         <span asp-validation-for="vigi.Contact" class="text-danger"></span>
+                    </div>
+                    <div class="col-4">
+                        <label for="inputAddress2" asp-for="vigi.Fax" class="form-label">Fax No</label>
+                        <input  asp-for="vigi.Fax" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                    </div>
+                    <div class="col-6">
+                        <label for="inputAddress" asp-for="vigi.PostalAddress" class="form-label">Postal Address<span class="astricks">*</span></label>
+                        <textarea asp-for="vigi.PostalAddress" onkeypress="return myKeyPress(event)" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                         <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
+                    </div>
+                    <div class="col-6">
+                        <label for="inputAddress" asp-for="vigi.ComplaintDetails" class="form-label">Queries<span class="astricks">*</span></label>
+                        <textarea class="form-control" onkeypress="return myKeyPress(event)" asp-for="vigi.ComplaintDetails" id="exampleFormControlTextarea1" rows="3"></textarea>
+                         <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="inlineCheckbox3">Queries Regarding</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                            <label class="form-check-label" for="inlineCheckbox1">Ship Building</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                            <label class="form-check-label" for="inlineCheckbox2">Submarine & Heavy Engg</label>
+                        </div>
+
+                    </div>
+                    <div class="col-12">
+                     
+                        <button type="submit" class="btn btn-primary">Submit</button> <button type="submit" class="btn btn-primary">Reset</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+@*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+<script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+<script>
+    $("#inlineCheckbox1").change(function() {
+    if(this.checked) {
+        $("#vigi_ShipBuildRelated").val(1);
+    }
+    else{
+    $("#vigi_ShipBuildRelated").val(0);
+    }
+    });
+
+
+    $("#inlineCheckbox2").change(function() {
+    if(this.checked) {
+        $("#vigi_SubHeavyRelated").val(1);
+    }
+    else{
+    $("#vigi_SubHeavyRelated").val(0);
+    }
+    });
+
+    $.validator.setDefaults({
+        onkeyup: false
+    })
+</script>

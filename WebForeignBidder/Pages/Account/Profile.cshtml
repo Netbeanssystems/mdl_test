@@ -1,0 +1,241 @@
+﻿@page
+@using Microsoft.Extensions.Configuration
+
+@inject IConfiguration _config;
+@model ProfileModel
+@{
+    ViewData["Title"] = "Manage Profile";
+}
+@*<section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profile</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+                        <li class="breadcrumb-item active">User Profile</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>*@
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-3 offset-md-3">
+                <div class="card">
+                    <h5 class="card-header">Manage Profile</h5>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="UserProfileDto.ProfileImage" />
+                            <input type="hidden" asp-for="UserProfileDto.YardId" id="HDUserProfileDto_YardId" name="tt"/>
+                            <div class="form-group text-center" style="display:none;">
+                                <input type="file" id="UserImage" name="UserImage" onchange="PreviewImage(this, '@_config["BaseUrl"]', '@Request.Path')" style="display: none;">
+                                <label for="UserImage" style="cursor: pointer; position: relative;" data-toggle="tooltip" data-placement="top" title="Choose Image">
+                                    <img id="imgPreview" class="profile-user-img img-fluid img-circle"
+                                    src="@($"{_config["BaseUrl"]}/img/users/{Model.UserProfileDto.ProfileImage}")"
+                                    onerror=@($"src='{_config["BaseUrl"]}/img/users/default_user100.png'")
+                                    alt="Profile Image"
+                                    asp-append-version="true">
+                                    <span style="position: absolute; top: 0; right: 0;"><i class="far fa-edit"></i></span>
+                                </label>
+                                <div class="col-12 text-center">
+                                    <button type="button" class="btn btn-primary" id="btnUserImage" onclick="UploadFile('#UserImage', '@Request.Path')" data-toggle="tooltip" data-placement="top" title="Upload Image" disabled="disabled"><i class="fa fa-upload"></i></button>
+                                    <button type="button" class="btn btn-danger" id="delUserImage" onclick="DeleteFile('#UserImage', '@_config["BaseUrl"]')" data-toggle="tooltip" data-placement="top" title="Delete Image"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            @if (User.IsInRole("CommercialExecutive"))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Name" class="col-form-label">Executive Name*</label>
+                                    <input asp-for="UserProfileDto.Name" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Designation" class="col-form-label">Designation<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.Designation" disabled class="form-control" placeholder="Designation">
+                                    <span id="usererror" asp-validation-for="UserProfileDto.Designation" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.ProjectId" class="col-form-label">Project<span class="required">*</span></label>
+                                    <select asp-for="UserProfileDto.ProjectId"  class="form-control" asp-items="ViewBag.Projects">
+                                        <option>-select-</option>
+                                    </select>
+                                    <span asp-validation-for="UserProfileDto.ProjectId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.YardId" class="col-form-label">Yard<span class="required">*</span></label>
+                                    <select asp-for="UserProfileDto.YardId" class="form-control" asp-items="ViewBag.Yards">
+                                        <option>-select-</option>
+                                    </select>
+                                    <span asp-validation-for="UserProfileDto.YardId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Email" class="col-form-label">Email*</label>
+                                    <input asp-for="UserProfileDto.Email" disabled class="form-control" placeholder="Email">
+                                    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.ExtensionNo" class="col-form-label">Extension No<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.ExtensionNo" disabled class="form-control" placeholder="Extension No">
+                                    <span asp-validation-for="UserProfileDto.ExtensionNo" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone*</label>
+                                    <input asp-for="UserProfileDto.PhoneNumber" disabled class="form-control" placeholder="Phone">
+                                    <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            }
+                            else if (User.IsInRole("HOD"))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Name" class="col-form-label">Name*</label>
+                                    <input asp-for="UserProfileDto.Name" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.OrganizationName" class="col-form-label">OrganizationName<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.OrganizationName" disabled class="form-control" placeholder="OrganizationName">
+                                    <span id="usererror" asp-validation-for="UserProfileDto.OrganizationName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Address" class="col-form-label">Address*</label>
+                                    <input asp-for="UserProfileDto.Address" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Address" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Email" class="col-form-label">Email*</label>
+                                    <input asp-for="UserProfileDto.Email" disabled class="form-control" placeholder="Email">
+                                    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone*</label>
+                                    <input asp-for="UserProfileDto.PhoneNumber" disabled class="form-control" placeholder="Phone">
+                                    <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            }
+                            else if (User.IsInRole("ForeignBidder"))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Name" class="col-form-label">Name*</label>
+                                    <input asp-for="UserProfileDto.Name" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.OrganizationName" class="col-form-label">OrganizationName<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.OrganizationName" disabled class="form-control" placeholder="OrganizationName">
+                                    <span id="usererror" asp-validation-for="UserProfileDto.OrganizationName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Address" class="col-form-label">Address*</label>
+                                    <input asp-for="UserProfileDto.Address" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Address" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Country" class="col-form-label">Country<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.Country" disabled class="form-control" placeholder="Country">
+                                    <span id="usererror" asp-validation-for="UserProfileDto.Country" class="text-danger"></span>
+                                </div>
+                              
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Email" class="col-form-label">Email*</label>
+                                    <input asp-for="UserProfileDto.Email" disabled class="form-control" placeholder="Email">
+                                    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone*</label>
+                                    <input asp-for="UserProfileDto.PhoneNumber" disabled class="form-control" placeholder="Phone">
+                                    <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.LoginValidTill" class="col-form-label">Login Valid Till*</label>
+                                    <input asp-for="UserProfileDto.LoginValidTill" disabled class="form-control" placeholder="Login Valid Till">
+                                    <span asp-validation-for="UserProfileDto.LoginValidTill" class="text-danger"></span>
+                                </div>
+                            }
+                            else if (User.IsInRole("GeneralUpload"))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Name" class="col-form-label">Name*</label>
+                                    <input asp-for="UserProfileDto.Name" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.OrganizationName" class="col-form-label">OrganizationName<span class="required">*</span></label>
+                                    <input asp-for="UserProfileDto.OrganizationName" disabled class="form-control" placeholder="OrganizationName">
+                                    <span id="usererror" asp-validation-for="UserProfileDto.OrganizationName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Address" class="col-form-label">Address*</label>
+                                    <input asp-for="UserProfileDto.Address" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Address" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Email" class="col-form-label">Email*</label>
+                                    <input asp-for="UserProfileDto.Email" disabled class="form-control" placeholder="Email">
+                                    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone*</label>
+                                    <input asp-for="UserProfileDto.PhoneNumber" disabled class="form-control" placeholder="Phone">
+                                    <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Name" class="col-form-label">Name*</label>
+                                    <input asp-for="UserProfileDto.Name" disabled class="form-control" placeholder="Name">
+                                    <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.Email" class="col-form-label">Email*</label>
+                                    <input asp-for="UserProfileDto.Email" disabled class="form-control" placeholder="Email">
+                                    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone*</label>
+                                    <input asp-for="UserProfileDto.PhoneNumber" disabled class="form-control" placeholder="Phone">
+                                    <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                                </div>
+                                 <div class="form-group">
+                                    <label asp-for="UserProfileDto.Designation" class="col-form-label">Designation*</label>
+                                    <input asp-for="UserProfileDto.Designation" disabled class="form-control" placeholder="Designation">
+                                    <span asp-validation-for="UserProfileDto.Designation" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserProfileDto.ExPNo" class="col-form-label">Employee Pno*</label>
+                                    <input asp-for="UserProfileDto.ExPNo" disabled class="form-control" placeholder="Employee Pno">
+                                    <span asp-validation-for="UserProfileDto.ExPNo" class="text-danger"></span>
+                                </div>
+                            }
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    @if (User.IsInRole("CommercialExecutive") || User.IsInRole("ForeignBidder") || User.IsInRole("GeneralUpload") || User.IsInRole("HOD"))
+                                    {
+                                        <button type="submit" disabled class="btn btn-block btn-primary">Save</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" disabled class="btn btn-block btn-primary">Save</button>
+                                    }
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="/Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script src="~/js/custom/UserProfile.js" asp-append-version="true"></script>
+}

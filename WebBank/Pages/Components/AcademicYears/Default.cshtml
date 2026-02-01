@@ -1,0 +1,10 @@
+﻿@model List<AcademicYearsVM>
+@if (User.Identity.IsAuthenticated && Model?.Count > 0)
+{
+    <select class="form-control" id="GlobalAcademicYearId">
+        @foreach (var item in Model.Take(10))
+        {
+            <option value="@item.Id" selected="@item.IsSelect">@item.Year</option>
+        }
+    </select>
+}

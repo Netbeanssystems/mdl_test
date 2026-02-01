@@ -1,0 +1,71 @@
+﻿<div id="SessionExpireNotification" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="submitModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white p-2">
+                <h5 class="modal-title" id="submitModalTitle">Session Timeout</h5>
+            </div>
+            <div class="modal-body" style="display: inline-block;">
+                <p class="mb-2">
+                    Your session is about to expire. You will be automatically signed out in
+                </p>
+                <h3 class="text-center">
+                    <span id="logout-counter-span">60 seconds</span>
+                </h3>
+            </div>
+            <div class="modal-footer text-right">
+                <button id="stay-logged-in-button" type="button" class="btn btn-primary">
+                    Stay Signed In
+                </button>
+                <a class="btn btn-secondary" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/")">Signout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var notificationInterval,
+        logoutInterval,
+        logoutCounterSpan;
+    function startNotificationCounter() {
+        var counter = 50;
+        notificationInterval = setInterval(function () {
+            counter--;
+            if (counter === 1) {
+                $("#SessionExpireNotification").modal('show');
+                startLogoutCounter();
+            }
+        }, 60000);
+    }
+    function startLogoutCounter() {
+        var counter = 60;
+        logoutInterval = setInterval(function () {
+            counter--;
+            if (counter < 0) {
+                window.location.href = "/Account/Logout";
+            } else {
+                //var m = Math.floor(counter / 60);
+                var s = Math.floor(counter % 60);
+                //var mDisplay = m < 10 ? "0" + m : m;
+                var sDisplay = s < 10 ? "0" + s : s;
+                logoutCounterSpan.text(sDisplay + ' seconds');
+            }
+        }, 1000);
+    }
+    function resetCounters() {
+        clearInterval(notificationInterval);
+        clearInterval(logoutInterval);
+        logoutCounterSpan.text("60 seconds");
+        startNotificationCounter();
+    }
+    function onSessionExpireNotificationClose() {
+        resetCounters();
+    }
+    $(function () {
+        logoutCounterSpan = $("#logout-counter-span");
+        startNotificationCounter();
+        $("#stay-logged-in-button").click(function () {
+            resetCounters();
+            $("#SessionExpireNotification").modal('hide');
+            window.location.reload(true);
+        });
+    });
+</script>

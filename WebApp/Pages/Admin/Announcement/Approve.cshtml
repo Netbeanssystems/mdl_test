@@ -1,0 +1,187 @@
+﻿@page "{id}"
+@model ApproveModel
+@{
+    ViewData["Title"] = "Announcement Approval";
+}
+
+@section Styles
+    {
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left">Approve</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                <input type="hidden" asp-for="TempDTO.Id" />
+                                <input type="hidden" asp-for="TempDTO.ParentId" />
+                                <input type="hidden" asp-for="TempDTO.ActionDate" />
+                                <input type="hidden" asp-for="TempDTO.RowId" />
+                                <input type="hidden" asp-for="TempDTO.HindiAttachment" />
+                                <input type="hidden" asp-for="TempDTO.EnglishAttachment" />
+                                <input type="hidden" asp-for="TempDTO.Priority" />
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Pending For</label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <input asp-for="TempDTO.Action" class="form-control" readonly="readonly" />
+                                        <span asp-validation-for="TempDTO.Action" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Requested On</label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <input value="@($"{Model.TempDTO.ActionDate.AddHours(5.5):dd/MMM/yyyy hh:mm tt}")" class="form-control" readonly="readonly" />
+                                        <span asp-validation-for="TempDTO.ActionDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Requested By</label>
+                                    <div class="col-md-4 col-lg-5">
+                                        <input asp-for="TempDTO.RoleName" class="form-control" readonly="readonly" />
+                                    </div>
+                                    <div class="col-md-5 col-lg-5">
+                                        <input asp-for="TempDTO.UserName" class="form-control" readonly="readonly" />
+                                    </div>
+                                    <span asp-validation-for="TempDTO.RoleName" class="text-danger"></span>
+                                    <span asp-validation-for="TempDTO.UserName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">English Heading<span class="required">*</span></label>
+                                    <div class="col-md-4 col-lg-5">
+                                        <input asp-for="TempDTO.EnglishHeadingName" id="txtenglishname" class="form-control" placeholder="Heading(English)" autocomplete="on" />
+                                    </div>
+                                    <span asp-validation-for="TempDTO.EnglishHeadingName" class="text-danger"></span>
+                                    <span asp-validation-for="TempDTO.EnglishHeadingName" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Hindi Heading<span class="required">*</span></label>
+                                    <div class="col-md-5 col-lg-5">
+                                        <input asp-for="TempDTO.HindiHeadingName" id="txthindiname" class="form-control" placeholder="Heading(Hindi)" autocomplete="on" rows="3" />
+                                    </div>
+                                    <span asp-validation-for="TempDTO.HindiHeadingName" class="text-danger"></span>
+                                    <span asp-validation-for="TempDTO.HindiHeadingName" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Page Links<span class="required">*</span></label>
+                                    <div class="col-md-4 col-lg-5">
+                                        <input asp-for="TempDTO.EnglishPageLink" class="form-control" placeholder="Page Link(English)" autocomplete="on" rows="3" />
+                                    </div>
+                                    <div class="col-md-5 col-lg-5">
+                                        <input asp-for="TempDTO.HindiPageLink" class="form-control" placeholder="Page Link(Hindi)" autocomplete="on" rows="3" />
+                                    </div>
+                                    <span asp-validation-for="TempDTO.EnglishPageLink" class="text-danger"></span>
+                                    <span asp-validation-for="TempDTO.HindiPageLink" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">English Content<span class="required">*</span></label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <textarea asp-for="TempDTO.EnglishContentDesc" class="form-control" id="EnglishContentDesc" autocomplete="on" rows="3"></textarea>
+                                        <span asp-validation-for="TempDTO.EnglishContentDesc" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Hindi Content<span class="required">*</span></label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <textarea asp-for="TempDTO.HindiContentDesc" class="form-control" id="HindiContentDesc" autocomplete="on" rows="3"></textarea>
+                                        <span asp-validation-for="TempDTO.HindiContentDesc" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-2 col-lg-2 col-form-label">File Uploaded<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                    @if (!string.IsNullOrEmpty(@Model.TempDTO.EnglishAttachment))
+                                    {
+                                        <a href="~/img/UploadedFiles/News/Images/@Model.TempDTO.EnglishAttachment" target="_blank" class="btn btn-success"><i class="fa fa-search"></i> File (English)</a>
+                                    }
+                                    else
+                                    {
+                                        <span>NA</span>
+                                    }
+                                </div>
+                                <div class="col-md-3 col-lg-3">
+                                    @if (!string.IsNullOrEmpty(@Model.TempDTO.HindiAttachment))
+                                    {
+                                        <a href="~/img/UploadedFiles/News/Images/@Model.TempDTO.HindiAttachment" target="_blank" class="btn btn-success"><i class="fa fa-search"></i> File (Hindi)</a>
+                                    }
+                                    else
+                                    {
+                                        <span>NA</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-3 col-lg-10 offset-lg-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input asp-for="TempDTO.Show" class="custom-control-input" checked>
+                                        <label asp-for="TempDTO.Show" class="custom-control-label">Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <input type="submit" class="btn btn-success" asp-page-handler="Approve" value="Approve" />
+                                    <input type="submit" asp-page-handler="Reject" class="btn btn-danger" value="Reject" />
+                                    <a class="btn btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @*@if (!Model.IsNew)
+            {
+            <form method="post" asp-page-handler="Delete">
+            <input type="hidden" asp-for="TempNewProject.Id" />
+            <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+            </form>
+            }*@
+        </div>
+    </div>
+</section>
+
+@section Scripts
+    {
+    <script src="~/plugins/summernote/summernote-bs4.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" asp-append-version="true">
+        //Initialize wysihtml
+        $("#EnglishContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $("#HindiContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+
+        $(document).ready(function () {
+            //< !--Allow only alphanumeric-- >
+            $('#txtenglishname').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#txthindiname').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

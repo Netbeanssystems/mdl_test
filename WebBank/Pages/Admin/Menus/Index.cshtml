@@ -1,0 +1,117 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Menus";
+}
+@*<section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Menus</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+                        <li class="breadcrumb-item active">Menus</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>*@
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Menus</h3>
+            <div class="btn-group btn-group-sm float-right">
+                <a class="text-dark" asp-page="Add">
+                    <i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Create"></i>
+                </a>
+                <a class="text-dark ml-3" asp-page="Tree">
+                    <i class="fa fa-tree" data-toggle="tooltip" data-placement="top" title="Tree View"></i>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.Menus?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblMenus" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sequence</th>
+                                <th>Menu Text</th>
+                                <th class="text-center">Icon</th>
+                                <th>Url</th>
+                                <th class="text-center">Show</th>
+                                <th class="text-center noExport noSort">Edit</th>
+                                <th class="text-center noExport noSort">Add Sub Menus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var mm in Model.Menus)
+                            {
+                                @if (mm.ParentId == null)
+                                {
+                                    <partial name="_MenuRowPartial" model="mm" />
+                                    @if (mm.Children?.Count > 0)
+                                    {
+                                        @foreach (var sm in mm.Children)
+                                        {
+                                            <partial name="_MenuRowPartial" model="sm" />
+                                            @if (sm.Children?.Count > 0)
+                                            {
+                                                @foreach (var ssm in sm.Children)
+                                                {
+                                                    <partial name="_MenuRowPartial" model="ssm" />
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblMenus').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "columnDefs": [ {
+                "targets": 'noSort',
+                "orderable": false
+            } ],
+            "responsive": true,
+            dom: "<'row'<'col-sm-6'l><'col-sm-6 text-right'<'d-inline-block'f><'d-inline-block'B>>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-4'i><'col-sm-8'p>>",
+            buttons: [
+                {
+                    extend: 'excel',
+                    className: 'btn btn-sm btn-primary ml-2',
+                    text: '<i class="fa fa-file-excel" data-toggle="tooltip" data-placement="top" title="Download Excel"></i>',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    },
+                    title: null
+                }
+            ],
+            "drawCallback": function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+        });
+    </script>
+}

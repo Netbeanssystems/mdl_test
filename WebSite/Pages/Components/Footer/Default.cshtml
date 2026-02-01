@@ -1,0 +1,168 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model Application.Dtos.WebsiteCounterDTO
+
+@if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+{
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="footer-single">
+
+                                    <ul>
+                                        @* <li><a title="Accessibility Statement" href="#">Accessibility Statement</a></li> *@
+                                        <li><a title="Copyright Policy" href="/English/pages/Copyright-Policy">Copyright Policy</a></li>
+                                        @*<li><a title="Disclaimer" href="/English/pages/Disclaimer">Disclaimer</a></li>*@
+                                        <li><a title="Sitemap" href="/English/pages/Site-Map">Sitemap</a></li>
+                                        <li><a title="Feedback" href="/English/Forms/Feedback">Feedback</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="footer-single">
+
+                                    <ul>
+                                        <li><a title="Hyperlinking Policy" href="/English/pages/Hyperlinking-Policy">Hyperlink Policy</a></li>
+                                        <li><a title="Privacy Policy" href="/English/pages/Privacy-Policy">Privacy Policy</a></li>
+                                        <li><a title="Terms & Conditions" href="/English/pages/Terms-&-Conditions">Terms & Conditions</a></li>
+                                        @*<li><a title="Terms & Conditions" href="/English/pages/#">Terms of Use</a></li>*@
+                                        <li><a title="Website Policy" href="/English/pages/Website-Policies">Website Policy</a></li>
+                                        <li><a title="Security Policy" href="/English/pages/Security-Policy">Security Policy</a></li>
+                                        <li><a title="Help" href="/English/pages/help">Help</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="footer-single">
+                            @{
+                                var lastDateStr = Context.Session.GetString("LastDate");
+                                var dateToDisplay = DateTime.Now;
+
+                                if (!string.IsNullOrEmpty(lastDateStr) && DateTime.TryParse(lastDateStr, out var parsedDate))
+                                {
+                                    dateToDisplay = parsedDate;
+                                }
+                            }
+                            <h5 style="color: #eaecf1;">Last Updated Date @dateToDisplay.ToString("dd/MM/yyyy hh:mm tt")</h5>
+                            <div class="footer-update"></div>
+                            @* <p>Official Website of Mazagon Dock Shipbuilders Ltd. Content on this website is published and managed by Mazagon Dock Shipbuilders Ltd. Best viewed on "Google chrome v80+,  Firefox v 80+ and Microsoft edge".</p> *@
+
+                            <p>
+                                Copyright © 2025 - All Rights Reserved – Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India<br /> Content on this website is published and managed by Mazagon Dock Shipbuilders Limited, Ministry of Defence<br /> For any query regarding this website, please contact the web information manager – Mr. P Kumaresan, Deputy General Manager, cit-support[dot]mdl[at]mazdock[dot]com, +91-22-2376-2202/2203
+                            </p>
+                        </div>
+                        <div class="footer-single">
+                            <a href="https://jigsaw.w3.org/css-validator/check/referer" target="_blank" onclick="return confirm('External site that opens in a new window.');" title="W3C CSS Validator"><img style="border:0;width:88px;height:31px" src="https://jigsaw.w3.org/css-validator/images/vcss-blue" alt="Valid CSS!"></a>
+                            <a href="~/Assets/Doc/ITQCR-GIGW-N.pdf" target="_blank" title="STQC"><img style="border:0;width:88px;height:31px" src="~/Assets/img/STQC.png" alt="STQC"></a>
+                            <a href="~/Assets/Doc/ITQCR-GIGW-N-3.pdf" target="_blank" title="GIGW3"><img style="border:0;width:88px;height:31px" src="~/Assets/img/itqcr-gigw3.png" alt="GIGW3"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-main">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <p>Site Visitors: @Model.NoofCount</p>
+                        </div>
+                        <div class="col-lg-7"><p>Supports: Google Chrome 138+ | Firefox 140+ | Microsoft Edge 138+ | Safari 18+</p></div>
+                        <div class="col-lg-3">
+                            <p class="text-end">@* Copyright © 2024 MDL. All Rights Reserved.  *@Designed & Developed by <a style="text-decoration:underline" title="PECS" href="https://www.planetecomsolutions.com/" onclick="return confirm('External site that opens in a new window.');" target="_blank">PECS</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+}
+else
+{
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-12">
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="footer-single">
+
+                                    <ul>
+                                        @* <li><a title="अभिगम्यता कथन" href="#">अभिगम्यता कथन</a></li> *@
+                                        <li><a title="कॉपीराइट नीति" href="/Hindi/pages/Copyright-Policy">कॉपीराइट नीति</a></li>
+                                        <li><a title="अस्वीकरण" href="/Hindi/pages/Disclaimer">अस्वीकरण</a></li>
+                                        <li><a title="साइट मैप" href="/Hindi/pages/Site-Map">साइट मैप</a></li>
+                                        <li><a title="प्रतिक्रिया" href="/English/Forms/Feedback">प्रतिक्रिया</a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="footer-single">
+                                    <ul>
+                                        <li><a title="हाइपरलिंकिंग नीति" href="/Hindi/pages/HyperLinking-Policy">हाइपरलिंकिंग नीति</a></li>
+                                        <li><a title="गोपनीयता नीति" href="/Hindi/pages/Privacy-Policy">गोपनीयता नीति</a></li>
+                                        <li><a title="नियम एवं शर्तें" href="/Hindi/pages/Terms-&-Conditions">नियम एवं शर्तें</a></li>
+                                        <li><a title="मदद" href="/Hindi/pages/help">मदद</a></li>
+                                        <li><a title="वेबसाइट नीति" href="/Hindi/pages/Website-Policies">वेबसाइट नीति</a></li>
+                                        <li><a title="सुरक्षा नीति" href="/Hindi/pages/Security-Policy">सुरक्षा नीति</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="footer-single">
+                            @if (Context.Session.GetString("LastDate") != null)
+                            {
+                                <h5 style="color: #eaecf1;">अंतिम अद्यतन तिथि @Convert.ToDateTime(Context.Session.GetString("LastDate").ToString()).ToString("dd/MM/yyyy hh:mm tt")</h5>
+                                <div class="footer-update"></div>
+                                @* <h5 style="color: #eaecf1;">साइट आगंतुक @System.DateTime.Now.ToString("dd/MM/yyyy")</h5> *@
+                            }
+                            else
+                            {
+                                <h5 style="color: #eaecf1;">अंतिम अद्यतन तिथि @System.DateTime.Now.ToString("dd/MM/yyyy hh:mm tt")</h5>
+                                <div class="footer-update"></div>
+                            }
+                            @* <p>मझगांव डॉक शिपबिल्डर्स लिमिटेड की आधिकारिक वेबसाइट। इस वेबसाइट पर सामग्री मझगांव डॉक शिपबिल्डर्स लिमिटेड द्वारा प्रकाशित और प्रबंधित की जाती है। "गूगल क्रोम v80+, फायरफॉक्स वी 80+ और माइक्रोसॉफ्ट एज" पर सबसे अच्छा देखा जा सकता है।</p> *@
+                            <p>
+                                कॉपीराइट © 2025 - सर्वाधिकार सुरक्षित - मझगांव डॉक शिपबिल्डर्स लिमिटेड की आधिकारिक वेबसाइट, रक्षा मंत्रालय, भारत सरकार<br />इस वेबसाइट की सामग्री रक्षा मंत्रालय, मझगांव डॉक शिपबिल्डर्स लिमिटेड द्वारा प्रकाशित और प्रबंधित की जाती है।<br />इस वेबसाइट के संबंध में किसी भी प्रश्न के लिए, कृपया वेब सूचना प्रबंधक से संपर्क करें – श्री पे. कुमरेसन, उप महाप्रबंधक, cit-support[dot]mdl[at]mazdock[dot]com, +91-22-2376-2202/2203
+                            </p>
+                        </div>
+                        <div class="footer-single">
+                            <a href="https://jigsaw.w3.org/css-validator/check/referer" target="_blank" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" title="W3C CSS Validator"><img style="border:0;width:88px;height:31px" src="https://jigsaw.w3.org/css-validator/images/vcss-blue" alt="Valid CSS!"></a>
+                            <a href="~/Assets/Doc/ITQCR-GIGW-N.pdf" target="_blank" title="STQC"><img style="border:0;width:88px;height:31px" src="~/Assets/img/STQC.png" alt="STQC"></a>
+                            <a href="~/Assets/Doc/ITQCR-GIGW-N-3.pdf" target="_blank" title="GIGW3"><img style="border:0;width:88px;height:31px" src="~/Assets/img/itqcr-gigw3.png" alt="GIGW3"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-main">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <p>साइट आगन्तुक: @Model.NoofCount</p>
+                        </div>
+                        <div class="col-lg-7"><p>समर्थित ब्राउज़र: गूगल क्रोम 125+ | फायरफॉक्स 126+ | माइक्रोसॉफ्ट एज संस्करण 125+ | सफारी 17+</p></div>
+                        <div class="col-lg-2">
+                            <p class="text-end">@* कॉपीराइट © 2024 एमडीएल। सर्वाधिकार सुरक्षित।  *@यह वेबसाइट <a style="text-decoration:underline" title="पी ई सी एस" href="https://www.planetecomsolutions.com/" target="_blank">पी ई सी एस</a> द्वारा अभिकल्पित एवं विकसित की गई है</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+}

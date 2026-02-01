@@ -1,0 +1,51 @@
+﻿@page
+@model TreeModel
+@{
+    ViewData["Title"] = "Menus";
+}
+@section Styles{
+    <link href="~/plugins/treeview/treeview.css" rel="stylesheet" />
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Menus</h3>
+            <div class="btn-group btn-group-sm float-right">
+                <a data-toggle="modal" data-target="#ManageMenuModal" class="text-dark">
+                    <i class="fa fa-plus d-inline-block" data-toggle="tooltip" data-placement="top" title="Create"></i>
+                </a>
+                <a class="text-dark ml-3" asp-page="Index">
+                    <i class="fa fa-list" data-toggle="tooltip" data-placement="top" title="List View"></i>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <ul id="tree">
+                                <partial name="_MenuTreePartial" model="@Model.ModelVms" />
+                            </ul>
+                        </div>
+                    </div>
+                    <form method="post" asp-page-handler="Delete">
+                        <input id="hdnId" name="Id" type="hidden" />
+                        <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                    </form>
+                    <partial name="Shared/_MenuManagePartial" model="Model.ModelDto"/>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script src="~/js/custom/MenuTree.js" asp-append-version="true"></script>
+    <script src="~/plugins/treeview/treeview.js" asp-append-version="true"></script>
+}

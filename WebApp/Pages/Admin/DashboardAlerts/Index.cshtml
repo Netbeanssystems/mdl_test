@@ -1,0 +1,80 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard Alerts";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Dashboard Alerts</h3>
+            <a data-toggle="modal" data-target="#ManageModal" class="float-right">
+                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Background Color</th>
+                                <th class="search">Heading</th>
+                                <th class="search">Show Heading</th>
+                                <th class="search">Blink Heading</th>
+                                <th class="search">Message</th>
+                                <th class="search">Start Date</th>
+                                <th class="search">End Date</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td class="@(!string.IsNullOrEmpty(item.BackgroundColor)?$"bg-{item.BackgroundColor}":"bg-warning")">@item.Message</td>
+                                    <td>@item.Heading</td>
+                                    <td class="text-center"><i class="@(item.ShowHeading ? "fa fa-check-circle text-success" : "fa fa-minus")"></i></td>
+                                    <td class="text-center"><i class="@(item.BlinkHeading ? "fa fa-check-circle text-success" : "fa fa-minus")"></i></td>
+                                    <td>@item.Message</td>
+                                    <td>@($"{item.StartDate:dd-MM-yyyy hh:mm tt}")</td>
+                                    <td>@($"{item.EndDate:dd-MM-yyyy hh:mm tt}")</td>
+                                    <td class="text-center"><i class="@(item.IsActive ? "fa fa-check-circle text-success" : "fa fa-minus")"></i></td>
+                                    <td class="text-center">
+                                        <a data-id="@item.Id" data-toggle="modal" data-target="#ManageModal" class="ml-2 mr-2">
+                                            <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
+                                        </a>
+                                        <a onclick='Delete(@item.Id);'><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="search">Background Color</th>
+                                <th class="search">Heading</th>
+                                <th class="search">Show Heading</th>
+                                <th class="search">Blink Heading</th>
+                                <th class="search">Message</th>
+                                <th class="search">Start Date</th>
+                                <th class="search">End Date</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+    <partial name="Shared/_DashboardAlertsManagePartial" model="Model.ModelDto" />
+</section>
+@section Scripts{
+    <script src="~/js/custom/DashboardAlerts.js" asp-append-version="true"></script>
+}

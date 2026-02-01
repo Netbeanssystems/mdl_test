@@ -1,0 +1,151 @@
+﻿@page
+@model PermissionsModel
+@{
+    ViewData["Title"] = "Manage Roles Permissions";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title font-weight-bold">Roles and Permissions</h3>
+            <a class="float-right" asp-page="Index">
+                <i class="fa fa-arrow-left text-dark" data-toggle="tooltip" data-placement="top" title="Back"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.Roles?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblRoles" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input type="checkbox" class="custom-control-input" id="chkAllView">
+                                        <label class="custom-control-label" for="chkAllView">Can View</label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input type="checkbox" class="custom-control-input" id="chkAllCreate">
+                                        <label class="custom-control-label" for="chkAllCreate">Can Create</label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input type="checkbox" class="custom-control-input" id="chkAllEdit">
+                                        <label class="custom-control-label" for="chkAllEdit">Can Edit</label>
+                                    </div>
+                                </th>
+                                <th class="text-center">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input type="checkbox" class="custom-control-input" id="chkAllDelete">
+                                        <label class="custom-control-label" for="chkAllDelete">Can Delete</label>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.Roles.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Model.Roles[i].Name</td>
+                                    <td class="text-center">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input type="checkbox" class="custom-control-input" id="@($"chkView{i}")" checked="@Model.Roles[i].CanView">
+                                            <label class="custom-control-label" for="@($"chkView{i}")"></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input type="checkbox" class="custom-control-input" id="@($"chkCreate{i}")" checked="@Model.Roles[i].CanCreate">
+                                            <label class="custom-control-label" for="@($"chkCreate{i}")"></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input type="checkbox" class="custom-control-input" id="@($"chkEdit{i}")" checked="@Model.Roles[i].CanEdit">
+                                            <label class="custom-control-label" for="@($"chkEdit{i}")"></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input type="checkbox" class="custom-control-input" id="@($"chkDelete{i}")" checked="@Model.Roles[i].CanDelete">
+                                            <label class="custom-control-label" for="@($"chkDelete{i}")"></label>
+                                        </div>
+                                    </td>
+                                    <td style="display: none;"><input type="hidden" value="@Model.Roles[i].Id" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="btn-group" role="group">
+                            <button id="btnUpdate" class="btn btn-primary">Update</button>
+                            <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript">
+        //Check/Unckeck all checkboxes in column
+        $("thead th input[type='checkbox']").click(function () {
+            var cb = $(this),
+                isChecked = cb.prop("checked"),
+                th = cb.parent().parent(),
+                col = th.index() + 1;
+            $("tbody td:nth-child(" + col + ") input").prop("checked", isChecked);
+        });
+        //Update the data
+        $('#btnUpdate').click(function (event) {
+            getConfirm('Are you sure you want to update?', function (result) {
+                if (result) {
+                    var selectedPermissions = [];
+                    // loop over each table row (tr)
+                    $("#tblRoles tbody tr").each(function () {
+                        var currentRow = $(this);
+                        var obj = {
+                            Name: currentRow.find("td:eq(0)").text(),
+                            CanView: currentRow.find("td:eq(1)").find('input[type="checkbox"]').prop("checked"),
+                            CanCreate: currentRow.find("td:eq(2)").find('input[type="checkbox"]').prop("checked"),
+                            CanEdit: currentRow.find("td:eq(3)").find('input[type="checkbox"]').prop("checked"),
+                            CanDelete: currentRow.find("td:eq(4)").find('input[type="checkbox"]').prop("checked"),
+                            Id: currentRow.find("td:eq(5)").find('input[type="hidden"]').val()
+                        };
+                        selectedPermissions.push(obj);
+                    });
+                    var roles = JSON.stringify(selectedPermissions);
+                    $.post('?handler=UpdateRolePermissions', { roles: roles }, function (data) {
+                        if (data != null) {
+                            if (data === 'unauthorized') {
+                                $("#divClientAlert").addClass("alert-warning");
+                                $("#divClientAlert > p.m-0").text("Please login to access this resource");
+                                $("#divClientAlert").show();
+                                SetTimeOut($("#divClientAlert"));
+                                window.location.href = "/Account/Login";
+                            } else {
+                                $("#divClientAlert").addClass("alert-success");
+                                $("#divClientAlert > p.m-0").text(data);
+                                $("#divClientAlert").show();
+                                SetTimeOut($("#divClientAlert"));
+                            }
+                        }
+                    });
+                } else {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+}

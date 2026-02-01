@@ -1,0 +1,85 @@
+﻿@page
+@model WebApp.Pages.Admin.HomePage.Banner.IndexModel
+@{
+    ViewData["Title"] = "Home Page Banners";
+}
+
+<link href="~/css/Custom.css" rel="stylesheet" />
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Banners Section </h3>
+            <a class="btn btn-sm btn-success float-right" asp-page="Add"><i class="fa fa-save"></i> Create New Site Banner</a>
+            <div class="clearfix"></div>
+        </div>
+        <!--............................................................Using Jquery Bind Menu Here by JS....................................-->
+        <div class="card-body">
+            <div id="alert"></div>
+            <form class="" method="post" id="" accept-charset="UTF-8">
+                <div class="row" style="background-color:azure;padding: 5px;border: 1px solid;">
+                    <div class="col-sm-2" style="top:7px">
+                        <label class="control-label" for="edit-submitted-codepostal" style="color:#25b735;font-weight:500;font-size:18px">
+                            Banner Site Name :
+                        </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <select name="number" id="FirstLabelMenu" onchange="GetMenuID(this)" class="form-control Menu">
+                        </select>
+
+                        <spans style="font-size:12px;color:red">Select Site Name to add Banners</spans>
+                    </div>
+                    <div class="col-sm-2">
+                        <a id="toponeEdit" title="Edit"><i class="fa fa-edit"></i></a>&nbsp;
+                        <a id="topone" title="Add Seb Menu"><i class="fa fa-plus"></i></a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table class="table" style="border: 1px solid;">
+                        <tbody id="FF">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-2 mb-2">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" style="background-color: lavender;" role="tablist">
+                            <a class="nav-item nav-link" id="nav-UploadFile-tab" data-toggle="tab" href="#nav-UploadFile" role="tab" aria-controls="nav-profile" aria-selected="false">Upload File</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent" style="background-color: #f4f5f7; padding: 10px;">
+                        <input type="hidden" id="LastSelectedId" />
+                       
+                        <div class="tab-pane fade" id="nav-UploadFile" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                            <div class="row">
+                                <div class="col-md-4"><span class="FD">English File</span><input class="form-control Attachment" asp-for="FirstLblMenuDTO.EnglishFile" /></div>
+                                <div class="col-md-4"><span class="FD">Hindi File</span><input class="form-controlAttachment" asp-for="FirstLblMenuDTO.HindiFile" /></div>
+                                <br />
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+            <div class="col-sm-6" id="Priority">
+                <ul id="SortList">
+                </ul>
+                <br />
+                <input id="btnPriorty" class="btn btn-success" type="button" value="Set Priorty" />
+            </div>
+            <div class="col-sm-6">
+
+
+            </div>
+            <!--............................................................Using Jquery Bind Menu Here by JS....................................-->
+
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts{
+    <script src="~/plugins/Tinymce/tinymce.min-6.4.2.js"></script>
+    <script src="~/js/custom/Banner.js" asp-append-version="true"></script>
+    <script src="~/js/custom/MenuTextEditor.js"></script>
+}

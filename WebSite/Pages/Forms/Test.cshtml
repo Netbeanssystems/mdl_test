@@ -1,0 +1,28 @@
+﻿@page "/{lang}/Forms/Test"
+@model WebSite.Pages.Forms.TestModel
+@{
+    Layout = "_InternalPagesLayout";
+    ViewData["Title"] = "MDL | Enquiry";
+}
+
+<div class="hero" style="position: relative;">
+    <div class="item"><div class="heading"></div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+    <div class="strip"><span><a href="/">Home</a> > Enquiry</span></div>
+</div>
+
+<div class="mid-content">
+    <div class="container">
+        <h5 class="main-head"><b>Mail Test Page</b></h5>
+        <hr>
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <form method="post" class="row g-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

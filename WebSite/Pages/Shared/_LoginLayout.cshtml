@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] | Surplus Platform</title>
+    <link rel="icon" href="/favicon.ico" type="image/ico" />
+
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/alt-theme/css/adminlte.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/styles.min.css" rel="stylesheet" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet" asp-append-version="true" integrity="sha256-g0UQeCdhSYQjGkygQeEH2hIgDcT2QOBgmaMr5CaCFw0=" crossorigin="anonymous">
+
+</head>
+<body class="hold-transition">
+    <partial name="_ClientAlertPartial" />
+    <div class="mt-5">
+        <div class="col-sm-12">
+            <div class="login-logo text-center">
+                <img src="/assets/images/logo.png" alt="TEMP" asp-append-version="true" />
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    <!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/action_page.php" class="form-container">
+	<h3>Enquiry Form</h3>
+	
+	<label for="Name"><b>First Name</b></label>
+	<input type="text" placeholder="Enter First Name" name="name" required="">
+	
+	<label for="LastName"><b>Last Name</b></label>
+	<input type="text" placeholder="Enter Last Name" name="name" required="">
+	
+	<label for="Company"><b>Company</b></label>
+	<input type="text" placeholder="Enter Company Name" name="company" required="">
+	
+	<label for="Company"><b>Country</b></label>
+	<input type="text" placeholder="Enter Country Name" name="country" required="">	
+	
+	<label for="cars">Interested In:</label>
+	<select id="cars" name="cars">
+		<option value="New Vessel">New Vessel</option>
+		<option value="Services">Services</option>
+		<option value="Other">Other</option>
+	</select><br><br>
+	
+	<label for="email"><b>Email</b></label>
+	<input type="email" placeholder="Enter Email" name="email" required="">
+	
+	<label for="Contact"><b>Contact No.</b></label>
+	<input type="text" placeholder="Enter Contact No." name="contact" required="">
+	
+	<label for="Enquiry"><b>Your Enquiry</b></label>
+	<textarea placeholder="Message" required=""></textarea>
+	
+	<button type="submit" class="btn">Submit</button>
+	<button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+</form>
+      </div>
+      <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="~/plugins/jquery/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+    <script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/datatables/DataTables-1.10.25/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/alt-theme/js/adminlte.min.js" asp-append-version="true"></script>
+    <script src="~/js/scripts.min.js" asp-append-version="true"></script>
+
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

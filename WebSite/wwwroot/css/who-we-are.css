@@ -1,0 +1,255 @@
+.who-we-are-header {
+	background-image: url(../images/who-we-are-bg.png);
+	height: 250px;
+}
+
+.about-desc-section h5 {
+	font-weight: 700;
+}
+
+.about-desc-section p {
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+.about-desc-hr {
+	border-top-width: 3px;
+}
+
+.portfolio-block {
+	background-color: #004e8f;
+}
+
+.portfolio-block-head {
+	border: 1px solid #1f649d;
+	color: #fff;
+	font-weight: 700;
+	font-size: 1.1rem;
+}
+
+.portfolio-item .portfolio-item-image {
+	height: 120px;
+	background-size: cover;
+	background-position: center;
+}
+
+.portfolio-item-body {
+	background-color: #245993;
+}
+
+.portfolio-item-body h3 {
+	color: #fff;
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.portfolio-item-body h4 {
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.portfolio-item-body span {
+	font-size: 0.75rem;
+}
+
+.portfolio-item-body {
+	color: #fff;
+	font-size: 0.65rem;
+	letter-spacing: 0.5px;
+}
+
+.portfolio-marketing-item {
+	margin-bottom: 1rem;
+	width: 20%;
+	padding: 0 1rem;
+}
+
+.portfolio-marketing-item .portfolio-marketing-item-data .icon {
+	font-size: 2.5rem;
+	margin-right: 0.7rem;
+}
+
+.portfolio-marketing-item-line {
+	width: 3px;
+	height: 38px;
+	background-color: #fff;
+	margin-right: 0.5rem;
+	flex-shrink: 0;
+}
+
+.portfolio-marketing-item-cnt h3 {
+	font-weight: 700;
+	color: #fff;
+	font-size: 1.3rem;
+	margin-bottom: 0;
+}
+
+.portfolio-marketing-item-cnt .portfolio-marketing-item-label {
+	color: #fff;
+	font-weight: 500;
+	font-size: 0.8rem;
+	display: inline-block;
+	width: 140px;
+}
+
+.portfolio-two-col-item .icon {
+	font-size: 4.5rem;
+	margin-right: 0.7rem;
+}
+
+.portfolio-two-col-item h4 {
+	color: #fff;
+	font-weight: 700;
+	font-size: 1.3rem;
+	margin-bottom: 0.2rem;
+}
+
+.portfolio-two-col-item p {
+	font-size: 0.8rem;
+	color: #fff;
+	font-weight: 500;
+}
+
+.key-performance {
+	box-shadow: 0px 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.key-performance .key-performance-head {
+	width: 200px;
+	background-color: #004e8f;
+	font-size: 1.1rem;
+	color: #fff;
+	font-weight: 700;
+}
+
+.key-performance-list {
+	width: calc(100% - 200px)
+}
+
+.key-performance-list .slick-list {
+	width: 100%;
+}
+
+.key-performance-list .slick-prev,
+.key-performance-list .slick-next {
+	width: 30px;
+	height: 30px;
+}
+
+.key-performance-list .slick-arrow:before {
+	color: #004e8f;
+}
+
+.key-performance-list .slick-next {
+	right: -30px;
+}
+
+.key-performance-list .slick-prev {
+	left: -30px;
+}
+
+.key-performance-item {
+	padding: 0.6rem 0;
+}
+
+.key-performance-item .key-performance-item-details label {
+	font-weight: 500;
+	width: 80px;
+	color: #004e8f;
+	font-size: 0.9rem;
+	margin-bottom: 0;
+}
+
+.key-performance-item .key-performance-item-details h4 {
+	font-size: 1.1rem;
+	font-weight: 800;
+	color: #004e8f;
+	margin-bottom: 0;
+}
+
+.key-performance-item .key-performance-item-details span {
+	font-size: 0.9rem;
+	color: #004e8f;
+	font-weight: 500;
+}
+
+.key-performance-item-icon {
+	width: 55px;
+	height: 55px;
+	border-radius: 50%;
+	flex-shrink: 0;
+	border: 3px solid #004e8f;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+.key-performance-item-icon:before {
+	content: " ";
+	position: absolute;
+	z-index: -1;
+	top: 2px;
+	left: 2px;
+	right: 2px;
+	bottom: 2px;
+	border: 1px solid #004e8f;
+	border-radius: 50%;
+}
+
+.key-performance-item-icon .icon:before {
+	color: #004e8f;
+	font-size: 1.8rem;
+}
+
+@media only screen and (min-width: 1600px) {}
+
+@media only screen and (max-width: 1365px) {}
+
+@media only screen and (max-width: 1199px) {
+	.portfolio-marketing-item {
+		width: 25%;
+	}
+}
+
+@media only screen and (max-width: 1023px) {
+	.portfolio-marketing-item {
+		width: 25%;
+	}
+}
+
+@media only screen and (max-width: 1100px) {}
+
+@media only screen and (max-width: 1080px) {}
+
+@media only screen and (max-width: 991px) {
+	.portfolio-marketing-item {
+		width: 33.33%;
+	}
+	.key-performance .key-performance-head {
+		width: 100%;
+	}
+	.key-performance-list {
+		width: 100%;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.portfolio-marketing-item {
+		width: 50%;
+	}
+}
+
+@media only screen and (max-width: 576px) {
+	.portfolio-marketing-item {
+		width: 100%;
+	}
+	.portfolio-item .portfolio-item-image {
+		height: 250px;
+	}
+}
+
+@media only screen and (max-width: 480px) {}
+
+@media only screen and (max-width: 400px) {}

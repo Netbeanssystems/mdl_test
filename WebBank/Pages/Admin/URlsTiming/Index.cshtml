@@ -1,0 +1,190 @@
+﻿@page
+@model WebBank.Pages.Admin.URlsTiming.AddModel
+@{
+    ViewData["Title"] = "Add URLs Timing";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left">Enable Upload Link</h3>
+                        <a class="btn btn-sm btn-secondary float-right d-none" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="URLsTimingDTO.Id" />
+
+                            <div class="form-group form-row">
+                                <label asp-for="URLsTimingDTO.FromTime" class="col-md-3 col-lg-2" style="margin-top: 6px;">From Date<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" id="FromTime" asp-for="URLsTimingDTO.FromTime" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');"  class="form-control bg-white" placeholder="dd-mm-yyyy" />
+                                    <span asp-validation-for="URLsTimingDTO.FromTime " class="text-danger"></span>
+                                    <input type="hidden" asp-for="URLsTimingDTO.FromTime" />
+                                </div>
+
+                                <label asp-for="URLsTimingDTO.ToTime" class="col-md-3 col-lg-2" style="margin-top: 6px;">To Date<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" id="ToTime" asp-for="URLsTimingDTO.ToTime" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control bg-white" placeholder="dd-mm-yyyy" />
+                                    <span asp-validation-for="URLsTimingDTO.ToTime " class="text-danger"></span>
+                                    <input type="hidden" asp-for="URLsTimingDTO.ToTime" />
+                                </div>
+                            </div>
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Heading</button>&nbsp;
+                                    <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+@*                     <div class="card-header">
+                        <h3 class="card-title float-left font-weight-bold">Bank Documents</h3>
+                        <div class="clearfix"></div>
+                    </div> *@
+                    <div class="card-body">
+                        @if (Model.URLsTimingVM?.Count > 0)
+                        {
+
+                            <div class="table-responsive">
+                                <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Sr. No</th>
+                                            <th class="text-center noExport noSort">From Date</th>
+                                            <th class="search">To Date</th>
+                                            <th class="search">Enabled By</th>
+                                            <th class="search">Enabled Date and Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.URLsTimingVM.Count; i++)
+                                        {
+                                            var item = Model.URLsTimingVM[i];
+                                            <tr>
+                                                <td class="text-center">@(i + 1)</td>
+                                                <td>@item.FromTime</td>
+                                                <td>@item.ToTime</td>
+                                                <td>@item.CreatedBy</td>
+                                                <td class="text-right">@item.CreatedDate</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>No records has been added yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        // $('#FromTime').daterangepicker({
+        //     "showDropdowns": true,
+        //     "singleDatePicker": true,
+        //     "timePicker": true, // Enable time picker
+        //     "timePicker24Hour": true, // Use 24-hour format (optional)
+        //     "timePickerIncrement": 1, // Set time increment (optional)
+        //     "locale": {
+        //         "format": "DD/MM/YYYY HH:mm", // Update format to include time
+        //         "separator": " - "
+        //     },
+        // },
+        // function (start, end, label) {
+        //     $('#modelDTO_FromTime').val(start.format('YYYY-MM-DD HH:mm'));
+        //     $('#FromTime').val(start.format('DD/MM/YYYY HH:mm'));
+        // });
+
+        // $('#ToTime').daterangepicker({
+        //     "showDropdowns": true,
+        //     "singleDatePicker": true,
+        //     "timePicker": true, // Enable time picker
+        //     "timePicker24Hour": true, // Use 24-hour format (optional)
+        //     "timePickerIncrement": 1, // Set time increment (optional)
+        //     "locale": {
+        //         "format": "DD/MM/YYYY HH:mm", // Update format to include time
+        //         "separator": " - "
+        //     },
+        // },
+        // function (start, end, label) {
+        //     $('#modelDTO_ToTime').val(start.format('YYYY-MM-DD HH:mm'));
+        //     $('#ToTime').val(start.format('DD/MM/YYYY HH:mm'));
+        // });
+
+        $('#FromTime').daterangepicker({
+            "showDropdowns": true,
+            "singleDatePicker": true,
+            "timePicker": true,
+            "timePicker24Hour": true,
+            "timePickerIncrement": 1,
+            "locale": {
+                "format": "MM/DD/YYYY HH:mm",
+                "separator": " - "
+            },
+        },
+        function (start) { 
+                $('#URLsTimingDTO_FromTime').val(start.format('MM/DD/YYYY HH:mm')); // Correct format for server
+            $('#FromTime').val(start.format('MM/DD/YYYY HH:mm')); // Format for display
+        });
+
+        $('#ToTime').daterangepicker({
+            "showDropdowns": true,
+            "singleDatePicker": true,
+            "timePicker": true,
+            "timePicker24Hour": true,
+            "timePickerIncrement": 1,
+            "locale": {
+                "format": "MM/DD/YYYY HH:mm",
+                "separator": " - "
+            },
+        },
+        function (start) { 
+                $('#URLsTimingDTO_ToTime').val(start.format('MM/DD/YYYY HH:mm')); // Correct format for server
+            $('#ToTime').val(start.format('MM/DD/YYYY HH:mm')); // Format for display
+        });
+
+
+        $('#tblDataTable').DataTable();
+
+
+        $(document).ready(function () {
+            // Add Validations here
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('copy', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('cut', function (e) {
+                    e.preventDefault();
+                });
+            });
+        });
+    </script>
+}

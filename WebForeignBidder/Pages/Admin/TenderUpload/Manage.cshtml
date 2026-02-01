@@ -1,0 +1,136 @@
+﻿@page
+@model ManageModel
+@{
+    ViewData["Title"] = "Create Commercial Execute Login";
+}
+@section Styles {
+    <style>
+        #corrigendumTable {
+            background: white;
+            padding: 15px;
+        }
+    </style>
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left font-weight-bold">Tender Upload</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="IsNew" />
+                            <input type="hidden" asp-for="tenderUpload.Id" />
+                            <input type="hidden" asp-for="tenderUpload.TenderDoc" />
+                            <input type="hidden" asp-for="tenderUpload.CreatedDate" />
+                            <input type="hidden" asp-for="tenderUpload.CreatedBy" />
+
+                            <input type="hidden" asp-for="tenderUpload.TenderCorrigendums.Id" />
+                            <input type="hidden" asp-for="tenderUpload.TenderCorrigendums.CorrigendumDoc" />
+                            <input type="hidden" asp-for="tenderUpload.TenderCorrigendums.CreatedDate" />
+                            <input type="hidden" asp-for="tenderUpload.TenderCorrigendums.CreatedBy" />
+
+
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.ProjectIds" class="col-form-label">Project<span class="required">*</span></label>
+                                <select asp-for="tenderUpload.ProjectIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Projects" multiple="multiple">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="tenderUpload.ProjectIds" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.YardIds" class="col-form-label">Yard<span class="required">*</span></label>
+                                <select asp-for="tenderUpload.YardIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Yards" multiple="multiple">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="tenderUpload.YardIds" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderNo" class="col-form-label">Tender No<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderNo" class="form-control" placeholder="Tender No..">
+                                <span asp-validation-for="tenderUpload.TenderNo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderDescription" class="col-form-label">Tender Description<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderDescription" class="form-control" placeholder="Tender No..">
+                                <span asp-validation-for="tenderUpload.TenderDescription" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.ForeignBidderIds" class="col-form-label">Foreign Bidder<span class="required">*</span></label>
+                                <select asp-for="tenderUpload.ForeignBidderIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.ForeignBidder" multiple="multiple">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="tenderUpload.ForeignBidderIds" class="text-danger"></span>
+                            </div>
+                          @*   <div class="form-group">
+                                <label asp-for="tenderUpload.ForeignBidderId" class="col-form-label">Foreign Bidder<span class="required">*</span></label>
+                                <select asp-for="tenderUpload.ForeignBidderId" class="form-control" asp-items="ViewBag.Projects">
+                                    <option>-select-</option>
+                                </select>
+                                <span asp-validation-for="tenderUpload.ForeignBidderId" class="text-danger"></span>
+                            </div> *@
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderOpeningDate" class="col-form-label">Tender Open Date<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderOpeningDate" class="form-control" onchange="validateDates()" placeholder="Tender Open Date" />
+                                <span asp-validation-for="tenderUpload.TenderOpeningDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderClosingDate" class="col-form-label">Tender Closing Date<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderClosingDate" class="form-control" onchange="validateDates()" placeholder="Tender Closing Date" />
+                                <span asp-validation-for="tenderUpload.TenderClosingDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.IFFTenderDoc" class="col-form-label">Tender Documents (Maximum file size allowed 2 MB)<span class="required">*</span></label>
+                                <input class="form-control Attachment" asp-for="tenderUpload.IFFTenderDoc" />
+                                <span asp-validation-for="tenderUpload.IFFTenderDoc" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group" id="corrigendumOptionContainer" style="margin-top: 10px;display: none;">
+                                <label><strong>Add Corrigendum?</strong></label><br>
+                                <label><input type="radio" name="addCorrigendum" value="yes"> Yes</label>
+                                <label><input type="radio" name="addCorrigendum" value="no" checked> No</label>
+                            </div>
+
+                            <div id="corrigendumFields" style="display: none;margin-top: 10px;">
+                                <div class="form-group">
+                                    <label asp-for="tenderUpload.TenderCorrigendums.ExtendedDate" class="col-form-label">Extended Date<span class="required">*</span></label>
+                                    <input asp-for="tenderUpload.TenderCorrigendums.ExtendedDate" onchange="validateDates()" class="form-control" placeholder="Tender Closing Date" />
+                                    <span asp-validation-for="tenderUpload.TenderCorrigendums.ExtendedDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="col-form-label">Corrigendum Description<span class="required">*</span></label>
+                                    <input asp-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="form-control" placeholder="Corrigendum Description">
+                                    <span asp-validation-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="col-form-label">Corrigendum Documents(Maximum file size allowed 2 MB)<span class="required">*</span></label>
+                                    <input class="form-control Attachment" asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" />
+                                    <span asp-validation-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="corrigendumTable">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</section>
+@section Scripts {
+    <script src="~/js/custom/BidderTenderUpload.js" asp-append-version="true"></script>
+    <script src="~/js/custom/Custom.js" asp-append-version="true"></script> 
+}

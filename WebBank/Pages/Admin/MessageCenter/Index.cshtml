@@ -1,0 +1,118 @@
+﻿@page
+@model WebBank.Pages.Admin.MessageCenter.IndexModel
+@{
+    ViewData["Title"] = "Send Sms Notifications";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Send SMS Notification</h3>
+            <form asp-page-handler="Import" method="post" enctype="multipart/form-data" class="float-right">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <a asp-page-handler="SampleFile" class="btn btn-sm btn-primary float-right" data-toggle="tooltip" data-placement="top" title="Download Sample File"><i class="fa fa-download"></i></a>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="UploadedFile" name="UploadedFile">
+                        <label class="custom-file-label" for="UploadedFile">Choose file</label>
+                    </div>
+                    <div class="input-group-append">
+                        <button type="submit" id="btnUpload" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Upload File"><i class="fa fa-upload"></i></button>
+                    </div>
+                </div>
+            </form>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.SmsVm?.MobileNos?.Count > 0)
+            {
+                <form asp-page-handler="Save" method="post">
+                    <p>Ready to sent sms to the following numbers. Please enter a massage and click 'Send'</p>
+                    <div class="form-group">
+                        <label asp-for="SmsVm.MessageText" class="col-form-label">Message Text<span class="required">*</span></label>
+                        <input asp-for="SmsVm.MessageText" class="form-control" placeholder="Message Text" autocomplete="on" />
+                        <span asp-validation-for="SmsVm.MessageText" class="text-danger"></span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Mobile Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var i = 0; i < Model.SmsVm.MobileNos.Count; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input asp-for="SmsVm.MobileNos[i]" class="form-control" placeholder="Mobile Number" autocomplete="on" />
+                                            <span asp-validation-for="SmsVm.MobileNos[i]" class="text-danger"></span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-3 offset-md-3">
+                            <button type="submit" class="btn btn-block btn-primary">Send</button>
+                        </div>
+                        <div class="col-md-3">
+                            <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>Import an excel file containing 10 digit mobile numbers</p>
+            }
+
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('.custom-file-input').on('change', function () {
+            if ($(this)[0].files.length > 0) {
+                var fileExtension = ['xls', 'xlsx'];
+                //Use if single file
+                var filename = $(this)[0].files[0].name;
+                var extension = filename.replace(/^.*\./, '');
+                //Use if multiple files
+                //var files = $(this)[0].files;
+                //var filename = '';
+                //for (var i = 0; i < files.length; i++) {
+                //    filename += files[i].name + (i != files.length - 1 ? ", " : "");
+                //}
+                if (filename.length == 0 || $.inArray(extension, fileExtension) == -1) {
+                    $(this).val('');
+                    $(this).next(".custom-file-label").text('Choose file');
+                    $("#divClientAlert").addClass("alert-danger");
+                    $("#divClientAlert > p.m-0").text("Please select excel file");
+                    $("#divClientAlert").show();
+                    SetTimeOut($("#divClientAlert"));
+                } else {
+                    $(this).next(".custom-file-label").text(filename);
+                }
+            } else {
+                $(this).val('');
+                $(this).next(".custom-file-label").text('Choose file');
+            }
+        });
+        $('#btnUpload').on('click', function () {
+            var fileExtension = ['xls', 'xlsx'];
+            var filename = $('#UploadedFile').val();
+            var extension = filename.replace(/^.*\./, '');
+            if (filename.length == 0 || $.inArray(extension, fileExtension) == -1) {
+                $("#divClientAlert").addClass("alert-danger");
+                $("#divClientAlert > p.m-0").text("Please select excel file");
+                $("#divClientAlert").show();
+                SetTimeOut($("#divClientAlert"));
+                return false;
+            } else {
+                return true;
+            }
+        });
+    </script>
+}

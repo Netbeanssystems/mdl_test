@@ -1,0 +1,209 @@
+@charset "utf-8";
+/*=====================Dark tehem========================*/
+/* Dark Theme 1  */
+body.dark-color {
+    --blackBG: #272727;
+    --grayBG: #434343;
+    --grayLight: #212121;
+    --Act: #212121;
+    --yellow: #ffff00;
+    --Grident: linear-gradient(rgb(89 89 89) 0%, rgb(23 23 23) 100%);
+    --Grident2: linear-gradient(45deg, rgb(67 67 67) 0%, #484848 100%);
+    --lggry: #575757;
+    --primary-color: var(--blackBG);
+    --mywhite: #fff;
+    --intBanner: #272727;
+}
+/* Dark Theme 2 */
+body.darkgray-color {
+    --blackBG: #383838;
+    --grayBG: #9d9d9d;
+    --grayLight: #413f3f;
+    --Act: #232323;
+    --yellow: #ffff00;
+    --Grident: linear-gradient(rgb(121, 120, 120) 0%, rgb(23 23 23) 100%);
+    --Grident2: linear-gradient(45deg, rgb(114, 114, 114) 0%, #484848 100%);
+    --lggry: #575757;
+    --primary-color: var(--blackBG);
+    --mywhite: #fff;
+    --intBanner: #272727;
+}
+/* Dark Theme 3 */
+body.lightgray-color {
+    --blackBG: #1b1b1b;
+    --grayBG: #676767;
+    --grayLight: #2a2a2a;
+    --Act: #212121;
+    --yellow: #ff0;
+    --Grident: linear-gradient(rgb(110, 110, 110) 0%, rgb(136, 131, 131) 100%);
+    --Grident2: linear-gradient(45deg, rgb(67 67 67) 0%, #484848 100%);
+    --lggry: #575757;
+    --primary-color: var(--blackBG);
+    --mywhite: #fff;
+    --intBanner: #272727;
+}
+/* ========================================================================================================= */
+.destoryer .container .row .mid-box .main-particular .detail, .destoryer .container .row .contact-sec, .cons, .card, .desWrapper, .tab__btn--active::before, .owl-nav button span, .who .container .row .slidersec .item h4 b, .vimisison .container .row .vision .req, .whoAreWe .item h4, body:has(.mid-content) .site-header, body, a.scrollup, .media, .announce::before, .site-nav > ul > li > ul > li:hover > a, .open-button, .tab__btns .tab__btn, table th, ol.organizational-chart li > div, .service-single-txt, .hero .strip, body .box, .table-striped > tbody > tr:nth-of-type(odd) > *, table.dataTable tbody tr, .form-control {
+    background-color: var(--lggry) !important;
+    color: var(--yellow) !important;
+}
+
+    .form-control input::placeholder {
+        color: var(--yellow) !important;
+        opacity: 1;
+    }
+
+
+nav.customNav, .btns button, .salient ul li, .hero .strip, .modern .container .row .box, .facili h6, .site-nav > ul > li > ul > li:hover > a, .site-nav > ul > li > ul > li > ul > li ul li:hover a, .site-nav > ul > li > ul > li > ul > li:hover > a {
+    background: var(--lggry) !important;
+    z-index: 1;
+}
+
+.newsList li::after {
+    background-color: var(--yellow) !important
+}
+
+tr th, .tree li a, .facili .img:hover .middle, .vessel-single, .mnt, .announce::after, .nav-holder.fixed, .site-nav > ul > li ul, .gallery-carousal .item p, .site-footer, .logo-sec, .box, .who .container .row .slidersec .item h4 {
+    background-color: var(--blackBG) !important;
+}
+
+.owlCtrl span.active i, a.scrollup strong {
+    color: var(--blackBG) !important;
+}
+
+.footer-update , .breadcrumb-item + .breadcrumb-item::before, .breadcrumb-item.active, #list, .custom-select, #tbl-career_paginate *, .salient ul li, .card *:not(p, a, span ), body .investor .container .row .listing .list-icon h6, .tree *, b, strong, .vessel-single:hover .span, .btn-primary, .service-single h4, .vessel-single:hover .vsIcon:before, .fa, table *, h1, h2, h3, h4, h5, h6, .contact-us b u, .vessels-txt h2, a, p, .media-left h5, .announce.blue, .announce.yellow, .date h6, .mnt h6, .subDropAlt::before, .service-single-txt, .service-single h4, .gallery h2, .footer-single h5, .inner-heading, .heading, .hero .strip, .main-head, .btns button {
+    color: var(--yellow) !important
+}
+
+.media-carousal .owl-dot, .btn-primary, .mid-content > .container, .contact-us, .contact-sec, .who .container, .leadership .container .row .tab__items .profile .rgt .vice , body{
+    background-color: var(--blackBG) !important;
+}
+
+.hero .strip:after {
+    border-color: var(--blackBG) !important
+}
+
+.hero .strip:before {
+    border-color: var(--blackBG) !important
+}
+
+.yr, .btn-primary, .inner-heading, .shore, .tab__btn--active::before, .facili h6, .btns button {
+    border-color: var(--grayBG) !important;
+}
+
+.tab__btns .tab__btn span, button.open-button a, .item .light, div#tbl_partial > span {
+    background: transparent !important;
+    color: var(--yellow) !important;
+}
+
+.contact-us p {
+    filter: contrast(0.9);
+}
+
+.media-carousal .owl-dot.active, .heritage .container .row .slidersec .item h4:nth-child(2):after, .heritage .container .row .slidersec .item h4:first-child:after,
+.list-line, .grad, .set-border {
+    background: var(--yellow) !important
+}
+/* ===================== opacity level low =================== */
+.op {
+    opacity: .8;
+}
+
+.dataTables_wrapper .dataTables_length select, .dataTables_wrapper .dataTables_paginate .paginate_button.current, .tab-accordian, .shore, .btn-primary, table *, .destoryer .container .row .mid-box .main-particular .detail, .destoryer .container .row .mid-box .main-particular .detail .detail-heading, table.dataTable.no-footer, .modern .container .row .box, .digital .container .row .bottom-content .shore,
+body .box, .collapse-icon .acc-close, .collapse-icon .acc-open, .form-control, .custom-select {
+    border-color: var(--yellow) !important;
+}
+
+.heritage .container .row .slidersec .item h4:first-child:before {
+    border-top-color: var(--yellow) !important;
+}
+
+.heritage .container .row .slidersec .item h4:nth-child(2):before {
+    border-bottom-color: var(--yellow) !important;
+}
+
+.digital .container .row .bottom-content .shore .img-con img, .owl-carousel .owl-nav button.owl-next, .owl-carousel .owl-nav button.owl-next, .logo-carousal .owl-nav button.owl-prev, .heritage .owl-carousel .owl-stage:before, .image img {
+    filter: grayscale(1);
+}
+
+.hero .item::before {
+    position: absolute;
+    content: '';
+    height: 100%;
+    background: var(--blackBG) !important;
+    width: 100%;
+}
+
+.hero .item {
+    position: relative;
+    z-index: 1;
+    max-height: 200px;
+    min-height: 100px;
+}
+
+.destoryer .container .row .contact-sec, .destoryer .container .row .mid-box .main-particular .detail, .destoryer .container .row .mid-box, .leadership .container .row .tab__items .profile .rgt .vice, .infrastructure .container .row .infra .box, body .infrastructure .container .row .contact-sec, .mid-content .inves-img {
+    background-image: none !important;
+}
+
+.hero > .item > img, img.image1 {
+    display: none;
+}
+
+.digital .container .row .bottom-content .shore .img-con img, .img-content img, .cons img, .contracts .container .row .main-menu .icon {
+    filter: invert(1) brightness(100);
+}
+
+.tree li a {
+    box-shadow: 8px 8px #ffff00;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--lggry) !important;
+}
+
+.btns button, .btns button, nav.customNav {
+    box-shadow: 0px 8px var(--yellow) !important;
+}
+
+body:has(.destroyer-sec) .hero .strip {
+    width: 100% !important;
+}
+
+body .hero .strip {
+    float: none !important;
+    line-height: 1 !important;
+    margin-left: 0 !important;
+    top: 0px !important;
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+}
+
+.hero .strip:after, .hero .strip:before {
+    display: none;
+}
+
+body table tr:nth-child(odd) {
+    background-color: var(--lggry) !important;
+}
+
+body table tr:nth-child(even), .custom-select, summary {
+    background-color: var(--blackBG) !important;
+}
+
+@media (max-width: 1023px) {
+    .header-top-right, .site-nav {
+        background-color: var(--blackBG) !important;
+    }
+
+    body .header-rti {
+        background-color: var(--blackBG) !important;
+    }
+}
+
+.hero-sec::after, .vessels-bg, .hero-sec::before {
+    filter: grayscale(1);
+}
+
+.site-header {
+    background-color: var(--blackBG) !important;
+}
