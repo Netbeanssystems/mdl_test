@@ -29,7 +29,7 @@ namespace WebSite.Components
 
             if (pageValue == "/" || pageValue == "/index")
             {
-                if (Counter != null)
+                if ( Counter != null)
                 {
                     Counter.NoofCount += 1;
                     m.NoofCount = Counter.NoofCount;
@@ -42,7 +42,7 @@ namespace WebSite.Components
                 //HttpContext.Session.SetString("LastDate", Menus[0].UpdatedOn.ToString());
                 var response = await _httpClient.PutAsync("WebsiteCounter/Edit", false, m.Id, m).ConfigureAwait(false);
             }
-            return View(Counter);
+            return View(Counter ?? new WebsiteCounterDTO());
         }
     }
 }
