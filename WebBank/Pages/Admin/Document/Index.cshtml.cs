@@ -43,10 +43,30 @@ namespace WebBank.Pages.Admin.Document
                 return Page();
             }
 
+            //foreach (var item in ModelVms)
+            //{
+            //    item.DocumentNameDecrypted = EnDeCryptor.DecryptStringAES(item.DocumentName.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/"));
+            //}
+
             foreach (var item in ModelVms)
             {
-                item.DocumentNameDecrypted = EnDeCryptor.DecryptStringAES(item.DocumentName.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/"));
+                try
+                {
+                    // Try decrypting (for old records)
+                    item.DocumentNameDecrypted =
+                        EnDeCryptor.DecryptStringAES(
+                            item.DocumentName.Split(".")[0]
+                                .Replace("B_S", "\"")
+                                .Replace("F_S", "/")
+                        );
+                }
+                catch
+                {
+                    // If not encrypted (new records), show directly
+                    item.DocumentNameDecrypted = item.DocumentName;
+                }
             }
+
             return Page();
         }
     }

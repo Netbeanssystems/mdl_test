@@ -167,7 +167,7 @@ namespace WebForeignBidder
                 // this is necessary for the captcha's image provider
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)hostingEnvironment);
+      //      RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)hostingEnvironment);
         }
     }
 }

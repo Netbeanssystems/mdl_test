@@ -13,8 +13,6 @@ using Newtonsoft.Json;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using WebAPI.IoC;
 using WebAPI.Middlewares;
 

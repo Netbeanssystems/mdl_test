@@ -73,23 +73,52 @@ namespace Application.Helpers
         /// <param name="relativepath">Physical path of the containing folder</param>
         /// <param name="SourceName">Name of the source template word (.docx) file name</param>
         /// <param name="DestinationName">Name of the destination word (.docx) file</param>
-        public static void ReplaceTextAndImages(Dictionary<string, string> TextDictionary, string relativepath, string SourceName, string DestinationName)
+        /// 
+        // datnet 6 --> dotnet 8 migration issue with using statement
+        //public static void ReplaceTextAndImages(Dictionary<string, string> TextDictionary, string relativepath, string SourceName, string DestinationName)
+        //{
+        //    var sourceFullPath = System.IO.Path.Combine(relativepath, SourceName);
+        //    var destinationFullPath = System.IO.Path.Combine(relativepath, $"{DestinationName}.docx");
+
+        //    // Create a copy of the template file and open the copy
+        //    File.Copy(sourceFullPath, destinationFullPath, true);
+
+        //    using WordprocessingDocument doc = WordprocessingDocument.Open(destinationFullPath, true);
+
+        //    //Replace text elements
+        //    ReplaceTextElement(doc, TextDictionary);
+        //    //Replace image placeholder with QR Code
+        //    if (TextDictionary.ContainsKey("RWQRCode"))
+        //        ReplaceInternalImage(doc, "RWQRCode.jpg", Convert.FromBase64String(TextDictionary["RWQRCode"]));
+        //    doc.Close();
+        //}
+
+        public static void ReplaceTextAndImages(
+    Dictionary<string, string> TextDictionary,
+    string relativepath,
+    string SourceName,
+    string DestinationName)
         {
             var sourceFullPath = System.IO.Path.Combine(relativepath, SourceName);
             var destinationFullPath = System.IO.Path.Combine(relativepath, $"{DestinationName}.docx");
 
-            // Create a copy of the template file and open the copy
             File.Copy(sourceFullPath, destinationFullPath, true);
 
-            using WordprocessingDocument doc = WordprocessingDocument.Open(destinationFullPath, true);
+            using (WordprocessingDocument doc = WordprocessingDocument.Open(destinationFullPath, true))
+            {
+                ReplaceTextElement(doc, TextDictionary);
 
-            //Replace text elements
-            ReplaceTextElement(doc, TextDictionary);
-            //Replace image placeholder with QR Code
-            if (TextDictionary.ContainsKey("RWQRCode"))
-                ReplaceInternalImage(doc, "RWQRCode.jpg", Convert.FromBase64String(TextDictionary["RWQRCode"]));
-            doc.Close();
+                if (TextDictionary.ContainsKey("RWQRCode"))
+                {
+                    ReplaceInternalImage(
+                        doc,
+                        "RWQRCode.jpg",
+                        Convert.FromBase64String(TextDictionary["RWQRCode"])
+                    );
+                }
+            } // ✅ Automatically closed here
         }
+
 
         /// <summary>
         /// Replaces text elements in OpenXML word documnet

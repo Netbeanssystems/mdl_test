@@ -26,9 +26,13 @@ using System.Threading.Tasks;
 
 namespace WebBank.Pages.Account
 {
+   
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
+        private const int OTP_MAX_REQUEST = 3;     // max OTP requests allowed
+        private const int OTP_BLOCK_MINUTES = 10;  // block duration
+
         private readonly IHttpClientService _httpClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _config;
@@ -102,9 +106,61 @@ namespace WebBank.Pages.Account
             HttpContext.Session.SetString("TempToken", result); // Temporarily save token
             HttpContext.Session.SetString("OtpUsername", Input.EncUsername);
 
+
+            //----------------------------------------------------------------
+
+            // ===== OTP RATE LIMIT CHECK =====
+
+            // Check if user is blocked
+            var blockUntilStr = HttpContext.Session.GetString("OtpBlockUntil");
+
+            if (!string.IsNullOrEmpty(blockUntilStr))
+            {
+                var blockUntil = DateTime.Parse(blockUntilStr);
+
+                if (DateTime.UtcNow < blockUntil)
+                {
+                    return new JsonResult(new
+                    {
+                        success = false,
+                        message = $"Too many OTP requests. Try again after {blockUntil.ToLocalTime():hh:mm tt}"
+                    });
+                }
+            }
+
+            // Check request count
+            int requestCount = HttpContext.Session.GetInt32("OtpRequestCount") ?? 0;
+
+            if (requestCount >= OTP_MAX_REQUEST)
+            {
+                var blockUntil = DateTime.UtcNow.AddMinutes(OTP_BLOCK_MINUTES);
+
+                HttpContext.Session.SetString("OtpBlockUntil", blockUntil.ToString());
+
+                return new JsonResult(new
+                {
+                    success = false,
+                    message = $"Too many OTP requests. You are blocked for {OTP_BLOCK_MINUTES} minutes."
+                });
+            }
+
+
+            //----------------------------------------------------------------
+
+
+
+
             // Generate OTP and send to user
             var otp = new Random().Next(100000, 999999).ToString();
             HttpContext.Session.SetString("OTP", otp);
+
+
+            // ===== Increase OTP request count =====
+            int newCount = (HttpContext.Session.GetInt32("OtpRequestCount") ?? 0) + 1;
+            HttpContext.Session.SetInt32("OtpRequestCount", newCount);
+
+
+
 
             // Send OTP via email/SMS
             var userEmail = payload.Claims.FirstOrDefault(c => c.Type == "eml")?.Value;
@@ -177,6 +233,10 @@ namespace WebBank.Pages.Account
             // Clear temp data
             HttpContext.Session.Remove("OTP");
             HttpContext.Session.Remove("TempToken");
+            // Clear OTP rate limit data
+            HttpContext.Session.Remove("OtpRequestCount");
+            HttpContext.Session.Remove("OtpBlockUntil");
+
 
             return LocalRedirect(ReturnUrl ?? "~/");
         }

@@ -153,7 +153,7 @@ namespace WebSite
                 //    return Task.CompletedTask;
                 //});
             });
-            RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)hostingEnvironment);
+         //   RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)hostingEnvironment);
         }
     }
 }

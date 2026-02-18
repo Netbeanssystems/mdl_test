@@ -60,7 +60,7 @@ namespace WebBank.Pages.Admin.MessageCenter
             var columnNumber = firstCellColumn;
             sheet1.Column(columnNumber).Width = 15.0;
             var MobileNoRange = sheet1.Range(firstCellRow, columnNumber, lastCellRow, columnNumber);
-            MobileNoRange.DataType = XLDataType.Number;
+          //  MobileNoRange.DataType = XLDataType.Number;
             MobileNoRange.Style.NumberFormat.Format = "0000000000";
             var MobileNoDV = MobileNoRange.CreateDataValidation();
             MobileNoDV.TextLength.EqualTo(10);
