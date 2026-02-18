@@ -139,14 +139,41 @@ namespace WebBank
                 app.UseStatusCodePagesWithReExecute("/Errors/Exception/{0}");
             }
             app.UseHttpsRedirection();
+               //app.UseStaticFiles(new StaticFileOptions
+                //{
+                //    OnPrepareResponse = ctx =>
+                //    {
+                //        const int durationInSeconds = 60 * 60 * 24 * 365;
+                //        ctx.Context.Response.Headers[HeaderNames.CacheControl] = "private,max-age=" + durationInSeconds;
+                //    }
+                //});
+
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = ctx =>
                 {
+                    var path = ctx.Context.Request.Path.Value.ToLower();
+
+                    //  BLOCK direct access to protected documents folder
+                    if (path.StartsWith("/bank/img/uploadfile/documents"))
+                    {
+                        ctx.Context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        ctx.Context.Response.ContentLength = 0;
+                      //  ctx.Context.Response.Body = Stream.Null;
+                        return;
+                    }
+
+                    //  Keep your caching header for all other static files
                     const int durationInSeconds = 60 * 60 * 24 * 365;
-                    ctx.Context.Response.Headers[HeaderNames.CacheControl] = "private,max-age=" + durationInSeconds;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+                        "private,max-age=" + durationInSeconds;
                 }
             });
+
+
+
+
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("OPTIONS", "false");
