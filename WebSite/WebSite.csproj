@@ -16,6 +16,10 @@
 	  <NoWarn>1701;1702;CA1416;</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<SatelliteResourceLanguages>en;hi</SatelliteResourceLanguages>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<Compile Remove="wwwroot\js\customs\**" />
 		<Content Remove="wwwroot\js\customs\**" />

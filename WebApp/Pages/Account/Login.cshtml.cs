@@ -13,8 +13,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -165,12 +167,39 @@ namespace WebApp.Pages.Account
             //  Send OTP
             var body = $"Your Admin Login OTP is <b>{otp}</b>";
 
-            await _emailService.SendEmailAsync(new EmailVM
+            if (_config["Environment"].ToString() == "Live")
             {
-                ToAddresses = new() { email },
-                Subject = "Admin Login OTP",
-                Body = body
-            });
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(_config["SMTPFrom"]);
+                    mail.To.Add(new MailAddress(email));
+                    var bccAddresses = _config["SMTPBcc"].Split(';');
+                    foreach (var bcc in bccAddresses)
+                    {
+                        mail.Bcc.Add(new MailAddress(bcc));
+                    }
+                    mail.IsBodyHtml = true;
+                    mail.Subject = "Login OTP for Admin";
+                    mail.Body = body;
+
+                    using (SmtpClient smtp = new SmtpClient())
+                    {
+                        smtp.Host = _config["SMTPHost"];
+                        smtp.Send(mail);
+                    }
+                }
+            }
+            else
+            {
+                var EmailVm = new EmailVM
+                {
+                    ToAddresses = new List<string> { email },
+                    BccAddresses = _config["SMTPBcc"].Split(';').ToList(),
+                    Subject = "Login OTP for Admin",
+                    Body = body
+                };
+                await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+            }
 
             return new JsonResult(new { success = true });
         }
