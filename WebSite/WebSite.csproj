@@ -29,17 +29,11 @@
 
 	<ItemGroup>
 	  <Compile Remove="Controllers\CommonController.cs" />
-	  <Compile Remove="Pages\Contracts\SB-RR-Contracts.cshtml.cs" />
-	  <Compile Remove="Pages\Stacs\SB-RR-GCC.cshtml.cs" />
-	  <Compile Remove="Pages\Tenders\SB-RR-Notification.cshtml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <!--<Content Remove="Pages\Forms\Enquiry.cshtml" />-->
-	  <Content Remove="Pages\Contracts\SB-RR-Contracts.cshtml" />
 	  <Content Remove="Pages\Forms\EnquiryForm.cshtml" />
-	  <Content Remove="Pages\Stacs\SB-RR-GCC.cshtml" />
-	  <Content Remove="Pages\Tenders\SB-RR-Notification.cshtml" />
 	  <Content Remove="wwwroot\js\Validation.js" />
 	</ItemGroup>
 

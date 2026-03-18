@@ -907,12 +907,15 @@ $(document).ready(function () {
     });
 
 });
+
+
 $("button").removeAttr("role");
 const popup = document.getElementById("popup");
 const img = popup.querySelector("img");
 const images = [
-    "assets/images/HarGharTirangaLogo.jpg",
-    "assets/images/Online Supplier Meet 17.10.25.jpg"
+    "assets/images/NDIC-2.jpg"
+   /* "assets/images/HarGharTirangaLogo.jpg",
+    "assets/images/Online Supplier Meet 17.10.25.jpg"*/
 ];
 let index = 0;
 setInterval(() => {

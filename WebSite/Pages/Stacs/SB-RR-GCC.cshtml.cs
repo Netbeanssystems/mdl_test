@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace WebSite.Pages.Stacs
 {
-    public class MDC_StacsModel : PageModel
+    //    public class MDC_StacsModel : PageModel
+    public class SB_RR_StacsModel : PageModel
+
     {
         private readonly IHttpClientService _httpClient;
-        public MDC_StacsModel(IHttpClientService httpClient)
+        public SB_RR_StacsModel(IHttpClientService httpClient)
         {
             _httpClient = httpClient;
         }

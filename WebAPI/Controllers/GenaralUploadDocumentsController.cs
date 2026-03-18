@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             if (modelVms == null || modelVms.Count <= 0) return NotFound("Countries not found");
             return Ok(modelVms);
         }
-
+        [HttpGet("download")]
         public IActionResult DownloadFile(string id)
         {
             var fileRecord = id;
