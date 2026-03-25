@@ -62,7 +62,7 @@ else
                             <button id="btnSave" onclick="GetArchievedHindi();" type="button" class="btn btn-primary">पुरालेख के लिए यहां क्लिक करें</button>
                         }
                     </div>
-                   @*  @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") //AkashS
+                     @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") //AkashS
                     {
                         <div id="tbl_partial">
                             <partial name="_TenderNotificationWithFeePartial" model="@Model.notif" />
@@ -73,10 +73,8 @@ else
                         <div id="tbl_partial">
                             <partial name="_TenderNotificationWithFeePartialHindi" model="@Model.notif" />
                         </div>
-                    } *@
-                   @* <div id="tbl_partial">
-                        <partial name="_TenderNotificationWithFeePartial" model="@Model.notif" />
-                    </div>*@
+                    } 
+                  
                 </div>
 
             </div>
@@ -184,3 +182,4 @@ else
            // }
        });
     </script>
+    }
