@@ -2,17 +2,23 @@
 using Application.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 namespace Application.ServiceInterfaces
 {
     public interface IDocumentsService
     {
-        //Common Methods  
+        //Common Methods
         Task<List<DocumentsVM>> Get();
         Task<DocumentsDTO> Get(int id);
         Task<List<DocumentsVM>> Getbycreatedby(string createdby);
+        Task<List<DocumentsVM>> GetByYearAndDescription(int? year, int? urlsTimingId);
+        Task<List<DocumentsVM>> GetGroupedByURLsTiming();
         Task<DocumentsDTO> Create(DocumentsDTO entity);
         Task<URLsTimingDTO> CreateURLsTiming(URLsTimingDTO entity);
         Task<List<URLsTimingVM>> GetURLsTiming();
+        Task<List<URLsTimingVM>> GetActiveURLsTiming();
+        Task<URLsTimingVM> GetCurrentActiveURLsTiming(string url);
+        Task<List<int>> GetDocumentsYears();
         Task<DocumentsDTO> Update(DocumentsDTO entity);
         Task<int> Delete(int id);
         Task<List<DocumentsDTO>> CreateRange(List<DocumentsDTO> entities);
@@ -20,6 +26,5 @@ namespace Application.ServiceInterfaces
         Task<int> DeleteRange(List<DocumentsDTO> entities);
         //Custom Methods
         Task<List<DropdownVM>> GetDropdown();
-
     }
 }
