@@ -921,6 +921,10 @@ let index = 0;
 setInterval(() => {
     //index = (index + 1) % images.length;
     img.src = images[index];
+
+    //index = (index + 1) % images.length;
+   // img.src = images[index];
+
 }, 7000);
 
 

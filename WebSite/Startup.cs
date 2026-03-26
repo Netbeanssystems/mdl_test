@@ -138,6 +138,7 @@ namespace WebSite
             app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseSession();
             //app.UseCookiePolicy();
 
@@ -157,3 +158,6 @@ namespace WebSite
         }
     }
 }
+
+
+
