@@ -82,7 +82,8 @@ namespace WebApp
                 o.Cookie.Path = _config["CookiePath"];
                 o.Cookie.HttpOnly = true;
                 o.Cookie.IsEssential = true;
-                o.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                // o.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                o.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
                 o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
             //services.AddProgressiveWebApp();
@@ -104,7 +105,8 @@ namespace WebApp
                     options.SlidingExpiration = true;
                     options.Cookie.HttpOnly = true;
                     options.Cookie.IsEssential = true;
-                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                    // options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.SessionStore = new CustomTicketStore(services, _config);
                 });
@@ -117,7 +119,8 @@ namespace WebApp
                 options.IdleTimeout = TimeSpan.FromMinutes(Convert.ToInt32(_config["CookieExpiry"]));
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                //options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
@@ -156,11 +159,11 @@ namespace WebApp
             });
             app.UseSerilogRequestLogging();
             app.UseRouting();
+            app.UseSession();
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseResponseCaching();
-            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

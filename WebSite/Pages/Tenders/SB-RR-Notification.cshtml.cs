@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace WebSite.Pages.Tenders
 {
-    public class MDC_NotificationModel : PageModel
+    // public class MDC_NotificationModel : PageModel
+    public class SB_RR_NotificationModel : PageModel
     {
         private readonly IHttpClientService _httpClient;
-        public MDC_NotificationModel(IHttpClientService httpClient)
+        public SB_RR_NotificationModel(IHttpClientService httpClient)
         {
             _httpClient = httpClient;
         }

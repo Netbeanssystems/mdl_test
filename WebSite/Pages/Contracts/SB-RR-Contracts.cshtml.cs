@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace WebSite.Pages.Contracts
 {
-    public class MDC_ContractsModel : PageModel
+    //public class MDC_ContractsModel : PageModel
+    public class SB_RR_ContractsModel : PageModel
     {
         private readonly IHttpClientService _httpClient;
-        public MDC_ContractsModel(IHttpClientService httpClient)
+        public SB_RR_ContractsModel(IHttpClientService httpClient)
         {
             _httpClient = httpClient;
         }
