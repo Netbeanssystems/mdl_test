@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
         strip.remove();
         hero.insertAdjacentElement('afterend', nav);
     }
-    setTabIndexAsync()
+    
 });
 document.addEventListener('DOMContentLoaded', function () {
     $('.has-sub').each(function () {
@@ -909,23 +909,22 @@ $(document).ready(function () {
 });
 
 
-$("button").removeAttr("role");
-const popup = document.getElementById("popup");
-const img = popup.querySelector("img");
-const images = [
-    "assets/images/NDIC-2.jpg"
+//$("button").removeAttr("role");
+//const popup = document.getElementById("popup");
+//const img = popup.querySelector("img");
+//const images// = [
+ //   "assets/images/NDIC-2.jpg"
    /* "assets/images/HarGharTirangaLogo.jpg",
     "assets/images/Online Supplier Meet 17.10.25.jpg"*/
-];
+//];
 let index = 0;
 setInterval(() => {
-<<<<<<< Updated upstream
-    index = (index + 1) % images.length;
+    //index = (index + 1) % images.length;
     img.src = images[index];
-=======
+
     //index = (index + 1) % images.length;
    // img.src = images[index];
->>>>>>> Stashed changes
+
 }, 7000);
 
 

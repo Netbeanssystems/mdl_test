@@ -9,8 +9,16 @@ namespace Application.Dtos
         [Required(ErrorMessage = "{0} is required")]
         public string Url { get; set; }
         [Required(ErrorMessage = "{0} is required")]
-        public DateTime FromTime { get; set; }
+        public string FromTimeStr { get; set; }
         [Required(ErrorMessage = "{0} is required")]
+        public string ToTimeStr { get; set; }
+        
+        // For service layer usage
+        public DateTime FromTime { get; set; }
         public DateTime ToTime { get; set; }
+        
+        [Required(ErrorMessage = "{0} is required")]
+        [StringLength(256, ErrorMessage = "{1} characters max")]
+        public string Description { get; set; }
     }
 }

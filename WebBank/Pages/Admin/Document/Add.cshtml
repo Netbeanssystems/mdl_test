@@ -18,12 +18,37 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="card-body">
-                        @if(Model.IsInTime)
+                        @if (Model.IsInTime && Model.AvailableUploadWindows != null && Model.AvailableUploadWindows.Any())
                         {
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> Upload window(s) are OPEN. Please select the upload window and submit your document.
+                            </div>
+                            
                             <form method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Upload Window<span class="required">*</span></label>
+                                    <select asp-for="DocumentsDTO.URLsTimingId" class="form-control" id="uploadWindowSelect" required>
+                                        <option value="">-- Select Upload Window --</option>
+                                        @foreach (var window in Model.AvailableUploadWindows)
+                                        {
+                                            <option value="@window.Id" data-description="@window.Description">@window.Description</option>
+                                        }
+                                    </select>
+                                    <small class="text-muted">Select the appropriate upload window for your document submission.</small>
+                                </div>
+                                
+                                <input type="hidden" asp-for="DocumentsDTO.Description" id="selectedDescription" />
+                                
                                 <div class="row flex-column">
-                                    <div class="col-md-4"><label for="DocumentsDTO_DocumentFile" class="FD">Upload File</label><input class="form-control Attachment" accept=".pdf" asp-for="DocumentsDTO.DocumentFile" aria-describedby="fileInstructions" /></div>
-                                    <small id="fileInstructions" class="text-danger">Only PDF file is allowed to upload. File must be password protected and less than 2 MB.</small>
+                                    <div class="col-md-4">
+                                        <label for="DocumentsDTO_DocumentFile" class="FD">Upload File<span class="required">*</span></label>
+                                        <input class="form-control Attachment" accept=".pdf" asp-for="DocumentsDTO.DocumentFile" aria-describedby="fileInstructions" required />
+                                    </div>
+                                    <small id="fileInstructions" class="text-danger">
+                                        <i class="fas fa-lock"></i> Only password-protected PDF files are allowed. File must be less than 2 MB.
+                                        <br />
+                                        <i class="fas fa-info-circle"></i> Make sure your PDF is encrypted with a password before uploading.
+                                    </small>
                                 </div>
 
                                 <div class="form-group offset-md-3 offset-lg-4" style="margin-top: 15px;">
@@ -35,8 +60,13 @@
 
                             </form>
                         }
-                        else { 
-                         <p class="text-center">File upload functionality is currently disabled.</p>   
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> No upload window is currently active.
+                                <br />
+                                <small>Document upload is only allowed during the active upload window period. Please check back later or contact the administrator for more information.</small>
+                            </div>
                         }
                     </div>
                 </div>
@@ -48,12 +78,24 @@
 @section Scripts
 {
     <script type="text/javascript" asp-append-version="true">
+        // Update Description hidden field when upload window selection changes
+        $('#uploadWindowSelect').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var description = selectedOption.data('description');
+            $('#selectedDescription').val(description);
+        });
+
+        // Trigger change on page load to set initial value
+        $(document).ready(function() {
+            $('#uploadWindowSelect').trigger('change');
+        });
 
         $('form').keypress((e) => {
             if (e.which === 13) {
                 SubmitForm(e);
                 return true;
             }
+        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

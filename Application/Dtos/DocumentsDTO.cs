@@ -11,6 +11,8 @@ namespace Application.Dtos
         public string BankName { get; set; }
         public string BranchName { get; set; }
         public string DocumentName { get; set; }
+        public string Description { get; set; }
+        public int? URLsTimingId { get; set; }
 
         public IFormFile DocumentFile { get; set; }
     }

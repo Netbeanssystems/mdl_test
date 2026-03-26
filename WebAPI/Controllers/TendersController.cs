@@ -114,7 +114,21 @@ namespace WebAPI.Controllers
                         notif.TenderClosingTimeHindi = dr["TenderClosingTime"].ToString();
                         notif.UpdatedTenderClosingDate = dr["UpdatedTenderClosingDate"].ToString();
                         notif.Tender_Id = Convert.ToInt32(dr["Tender_id"].ToString());
-                        notif.Added_on = Convert.ToDateTime(dr["Added_on"]); //Afroz
+                        
+                        // Get Added_on from database (handle null/empty values)
+                        if (dr.Table.Columns.Contains("Added_on") && dr["Added_on"] != DBNull.Value)
+                        {
+                            notif.Added_on = Convert.ToDateTime(dr["Added_on"]);
+                        }
+                        else if (dr.Table.Columns.Contains("CreatedDate") && dr["CreatedDate"] != DBNull.Value)
+                        {
+                            notif.Added_on = Convert.ToDateTime(dr["CreatedDate"]);
+                        }
+                        else
+                        {
+                            notif.Added_on = DateTime.Now; // Fallback to current date
+                        }
+                        
                         list.Add(notif);
                     }
                 }
@@ -533,6 +547,21 @@ namespace WebAPI.Controllers
                         notif.EMDHindi = dr["EmdHindi"].ToString();
                         notif.TenderClosingTimeHindi = dr["TenderClosingTimeHindi"].ToString();
                         notif.TenderNoHindi = dr["Tender_No_Hindi"].ToString();
+                        
+                        // Get Added_on from database (handle null/empty values)
+                        if (dr.Table.Columns.Contains("Added_on") && dr["Added_on"] != DBNull.Value)
+                        {
+                            notif.Added_on = Convert.ToDateTime(dr["Added_on"]);
+                        }
+                        else if (dr.Table.Columns.Contains("CreatedDate") && dr["CreatedDate"] != DBNull.Value)
+                        {
+                            notif.Added_on = Convert.ToDateTime(dr["CreatedDate"]);
+                        }
+                        else
+                        {
+                            notif.Added_on = DateTime.Now; // Fallback to current date
+                        }
+                        
                         list.Add(notif);
                     }
                 }

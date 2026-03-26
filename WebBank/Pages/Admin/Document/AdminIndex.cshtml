@@ -7,26 +7,125 @@
     <div class="card">
         <div class="card-header">
             <h1 class="card-title float-left font-weight-bold">List of Documents</h1>
-            @* <a data-toggle="modal" data-target="#ManageModal" class="float-right">
-                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
-            </a> *@
             <div class="clearfix"></div>
         </div>
         <div class="card-body">
-            @if (Model.ModelVms?.Count > 0)
+            @* Section 1: OPEN Windows - Show COUNT only *@
+            @if (Model.IsAnyWindowOpen)
+            {
+                var openDocs = ViewData["OpenWindowDocs"] as List<Application.ViewModels.DocumentsVM>;
+                var openWindows = ViewData["OpenURLsTimingList"] as List<Application.ViewModels.URLsTimingVM>;
+                
+                @if (openWindows != null && openWindows.Any())
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Upload window(s) are currently OPEN. Showing document count for open windows.
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-lock-open"></i> Currently Open Upload Windows</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Sr. No</th>
+                                            <th class="search">Upload Window Description</th>
+                                            <th class="text-center">From Date</th>
+                                            <th class="text-center">To Date</th>
+                                            <th class="text-center">Document Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var openIndex = 0;
+                                        }
+                                        @foreach (var window in openWindows)
+                                        {
+                                            openIndex++;
+                                            var docCount = openDocs?.Where(x => x.URLsTimingId == window.Id).Count() ?? 0;
+                                            <tr>
+                                                <td class="text-center">@openIndex</td>
+                                                <td>@window.Description</td>
+                                                <td class="text-center">@window.FromTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="text-center">@window.ToTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="text-center"><span class="badge badge-success">@docCount</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @* Section 2: CLOSED Windows - Show FULL details with filters *@
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Closed Upload Windows Documents
+            </div>
+            
+            <!-- Filters -->
+            <form method="get" class="mb-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter by Year</label>
+                            <select name="year" class="form-control" asp-for="SelectedYear">
+                                <option value="">-- All Years --</option>
+                                @if (Model.YearsList != null)
+                                {
+                                    @foreach (var year in Model.YearsList)
+                                    {
+                                        <option value="@year" selected="@(Model.SelectedYear == year ? "selected" : null)">@year</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Filter by Upload Window (Description)</label>
+                            <select name="urlsTimingId" class="form-control" asp-for="SelectedURLsTimingId">
+                                <option value="">-- All Closed Windows --</option>
+                                @if (Model.URLsTimingList != null)
+                                {
+                                    @foreach (var item in Model.URLsTimingList)
+                                    {
+                                        // Only show closed windows in dropdown (exclude currently open)
+                                        var isOpen = item.FromTime <= DateTime.Now && item.ToTime >= DateTime.Now;
+                                        if (!isOpen && !string.IsNullOrEmpty(item.Description))
+                                        {
+                                            <option value="@item.Id" selected="@(Model.SelectedURLsTimingId == item.Id ? "selected" : null)">@item.Description</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-primary form-control"><i class="fa fa-filter"></i> Apply Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            @if (Model.ModelVms != null && Model.ModelVms.Count > 0)
             {
                 <div class="table-responsive">
                     <table id="tblDataTable" class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th class="search">Id</th>
-                                @* <th class="search">Document Name</th> *@
                                 <th class="search">Bank Name</th>
                                 <th class="search">Branch Name</th>
+                                <th class="search">Upload Window</th>
                                 <th>Document</th>
                                 <th class="search">Uploaded By</th>
-                                <th class="search">Uploaded Date  and Time</th>
-                                @* <th class="text-center noExport noSort">Action</th> *@
+                                <th class="search">Uploaded Date and Time</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,20 +133,12 @@
                             {
                                 <tr>
                                     <td>@item.Id</td>
-                                    @* <td>@item.DocumentName</td> *@
                                     <td>@item.BankName</td>
                                     <td>@item.BranchName</td>
-                                    @* <td><a target="_blank" href="/bank/img/UploadedFiles/Documents/@item.DocumentName">@item.DocumentNameDecrypted</a> </td> *@
-
+                                    <td>@(item.URLsTiming?.Description ?? "N/A")</td>
                                     <td><a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)">@Html.Encode(item.DocumentNameDecrypted)</a></td>
                                     <td>@item.CreatedBy</td>
-                                    <td>@item.CreatedDate</td>
-                                    @* <td class="text-center">
-                                        <a data-id="@item.Id" data-toggle="modal" data-target="#ManageModal" class="ml-2 mr-2">
-                                            <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
-                                        </a>
-                                        <a onclick='Delete(@item.Id);'><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
-                                    </td> *@
+                                    <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 </tr>
                             }
                         </tbody>
@@ -56,7 +147,9 @@
             }
             else
             {
-                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Showing all documents from closed upload windows. Use filters above to narrow down your search.
+                </div>
             }
         </div>
     </div>
@@ -66,18 +159,17 @@
     <script type="text/javascript" asp-append-version="true">
         $('#tblDataTable').DataTable();
 
-
         $(document).ready(function () {
             // Add Validations here
         });
     </script>
-  <script type="text/javascript" asp-append-version="true">
-
+    <script type="text/javascript" asp-append-version="true">
         $('form').keypress((e) => {
             if (e.which === 13) {
                 SubmitForm(e);
                 return true;
             }
+        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -5,8 +5,11 @@ using AutoMapper;
 using Domain.Models;
 using Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+
 namespace Application.Services
 {
     public class DocumentsService : IDocumentsService
@@ -37,13 +40,40 @@ namespace Application.Services
 
         public async Task<List<DocumentsVM>> Getbycreatedby(string createdby)
         {
-
             var models = await _unitOfWork.DocumentsRepo.Getbycreatedby(createdby).ConfigureAwait(false);
             if (models == null) return null;
             var modelVms = _mapper.Map<List<DocumentsVM>>(models);
             if (modelVms == null || modelVms.Count <= 0) return null;
             return modelVms;
         }
+
+        public async Task<List<DocumentsVM>> GetByYearAndDescription(int? year, int? urlsTimingId)
+        {
+            var models = await _unitOfWork.DocumentsRepo.GetByYearAndDescription(year, urlsTimingId).ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            var modelVms = _mapper.Map<List<DocumentsVM>>(models);
+            if (modelVms == null || modelVms.Count <= 0) return null;
+            return modelVms;
+        }
+
+        public async Task<List<DocumentsVM>> GetGroupedByURLsTiming()
+        {
+            var models = await _unitOfWork.DocumentsRepo.GetGroupedByURLsTiming().ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            var modelVms = _mapper.Map<List<DocumentsVM>>(models);
+            if (modelVms == null || modelVms.Count <= 0) return null;
+
+            // Group by URLsTimingId and add count
+            var grouped = modelVms.GroupBy(x => x.URLsTimingId)
+                .SelectMany(g => g.Select(item =>
+                {
+                    item.DocumentCount = g.Count();
+                    return item;
+                })).ToList();
+
+            return grouped;
+        }
+
         public async Task<DocumentsDTO> Create(DocumentsDTO modelDto)
         {
             if (modelDto == null) return null;
@@ -66,17 +96,6 @@ namespace Application.Services
             if (model == null) return -1;
             _unitOfWork.DocumentsRepo.Delete(model);
             return await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            //var rowsChanged = -1;
-            //try
-            //{
-            //    rowsChanged = await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (ex.GetType() == typeof(DbUpdateException) || ex.GetType() == typeof(DbUpdateConcurrencyException))
-            //        rowsChanged = -2;
-            //}
-            //return rowsChanged;
         }
         public async Task<List<DocumentsDTO>> CreateRange(List<DocumentsDTO> modelDtos)
         {
@@ -122,11 +141,6 @@ namespace Application.Services
             if (models == null || models.Count <= 0) return null;
             var modelVms = _mapper.Map<List<DropdownVM>>(models);
             if (modelVms == null || modelVms.Count <= 0) return null;
-            ////Move India to first position
-            //var index = modelVms.FindIndex(x => x.Text == "India");
-            //var item = modelVms[index];
-            //modelVms[index] = modelVms[0];
-            //modelVms[0] = item;
             return modelVms;
         }
 
@@ -144,10 +158,54 @@ namespace Application.Services
         {
             var models = await _unitOfWork.URLsTimingRepo.Get().ConfigureAwait(false);
             if (models == null || models.Count <= 0) return null;
-            //var model = models.Where(x => x.Url == URL).OrderByDescending(x => x.Id).Take(1).FirstOrDefault();
             var modelVm = _mapper.Map<List<URLsTimingVM>>(models);
             if (modelVm == null) return null;
             return modelVm;
+        }
+
+        public async Task<List<URLsTimingVM>> GetActiveURLsTiming()
+        {
+            var models = await _unitOfWork.URLsTimingRepo.GetActive().ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            var modelVm = _mapper.Map<List<URLsTimingVM>>(models);
+            if (modelVm == null) return null;
+            return modelVm;
+        }
+
+        public async Task<URLsTimingVM> GetCurrentActiveURLsTiming(string url)
+        {
+            var models = await _unitOfWork.URLsTimingRepo.GetActive().ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            
+            var model = models.Where(x => x.Url == url)
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+            
+            if (model == null) return null;
+            
+            var modelVm = _mapper.Map<URLsTimingVM>(model);
+            
+            // Check if current time is within the window
+            var now = DateTime.Now;
+            if (now >= model.FromTime && now <= model.ToTime)
+            {
+                return modelVm;
+            }
+            
+            return null;
+        }
+
+        public async Task<List<int>> GetDocumentsYears()
+        {
+            var models = await _unitOfWork.DocumentsRepo.Get().ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            
+            var years = models.Select(x => x.CreatedDate.Year)
+                .Distinct()
+                .OrderByDescending(x => x)
+                .ToList();
+            
+            return years;
         }
     }
 }

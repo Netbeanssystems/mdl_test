@@ -2,6 +2,7 @@ using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.Services;
+using Application.ViewModels;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,8 @@ namespace WebBank.Pages.Admin.Document
         }
 
         [BindProperty] public DocumentsDTO DocumentsDTO { get; set; }
-        public URLsTimingDTO URLsTimingDTO { get; set; }
+        public List<URLsTimingVM> AvailableUploadWindows { get; set; }
+        public URLsTimingVM SelectedUploadWindow { get; set; }
 
         public string BranchName => User.Claims.FirstOrDefault(x => x.Type == "bnam")?.Value;
         public string BankName => User.Claims.FirstOrDefault(x => x.Type == "nam")?.Value;
@@ -51,23 +53,49 @@ namespace WebBank.Pages.Admin.Document
             var request = HttpContext.Request;
             var URL = $"{request.Scheme}://{request.Host}/bank/Admin/Document/Add";
 
-            var result = await _httpClient.GetAsync("Documents/GetURLsTiming", true);
-            var model = !string.IsNullOrEmpty(result)
-                ? JsonConvert.DeserializeObject<List<URLsTimingDTO>>(result)
+            // Initialize DocumentsDTO if null
+            if (DocumentsDTO == null)
+            {
+                DocumentsDTO = new DocumentsDTO();
+            }
+
+            // Get all active upload windows
+            var result = await _httpClient.GetAsync("Documents/GetActiveURLsTiming", true);
+            var allWindows = !string.IsNullOrEmpty(result)
+                ? JsonConvert.DeserializeObject<List<URLsTimingVM>>(result)
                 : null;
 
-            URLsTimingDTO = model?.Where(x => x.Url == URL)
-                .OrderByDescending(x => x.Id)
-                .FirstOrDefault();
+            // Filter windows for this specific URL
+            var urlWindows = allWindows?.Where(x => x.Url == URL).ToList();
 
-            if (URLsTimingDTO == null)
+            if (urlWindows == null || !urlWindows.Any())
             {
                 IsInTime = false;
+                AvailableUploadWindows = new List<URLsTimingVM>();
                 return;
             }
 
+            // Find currently active windows (BankUser can see ALL OPEN windows in dropdown)
             var now = DateTime.Now;
-            IsInTime = now >= URLsTimingDTO.FromTime && now <= URLsTimingDTO.ToTime;
+            AvailableUploadWindows = urlWindows
+                .Where(x => x.FromTime <= now && x.ToTime >= now)
+                .ToList();
+
+            if (AvailableUploadWindows == null || !AvailableUploadWindows.Any())
+            {
+                IsInTime = false;
+                AvailableUploadWindows = new List<URLsTimingVM>();
+                return;
+            }
+
+            IsInTime = true;
+            
+            // Set the first open window as selected by default
+            SelectedUploadWindow = AvailableUploadWindows.FirstOrDefault();
+            
+            // Set the selected upload window ID for the document
+            DocumentsDTO.URLsTimingId = SelectedUploadWindow.Id;
+            DocumentsDTO.Description = SelectedUploadWindow.Description;
         }
 
         #endregion
@@ -80,6 +108,13 @@ namespace WebBank.Pages.Admin.Document
 
             try
             {
+                // Validate upload window is still active
+                if (!IsInTime || SelectedUploadWindow == null)
+                {
+                    _notyf.Error("Upload window is currently closed. You cannot upload documents at this time.");
+                    return Page();
+                }
+
                 if (DocumentsDTO.DocumentFile != null)
                 {
                     // STEP 1 — Validate securely (does NOT save file)
@@ -94,6 +129,9 @@ namespace WebBank.Pages.Admin.Document
                     DocumentsDTO.DocumentFile = null;
                 }
 
+                // Set upload window reference
+                DocumentsDTO.URLsTimingId = SelectedUploadWindow.Id;
+                DocumentsDTO.Description = SelectedUploadWindow.Description;
 
                 DocumentsDTO.BranchName = BranchName;
                 DocumentsDTO.BankName = BankName;
@@ -177,11 +215,27 @@ namespace WebBank.Pages.Admin.Document
 
             string[] dangerous =
             {
-        "/JavaScript", "/JS", "/OpenAction", "/AA", "/Launch", "/SubmitForm"
-    };
+                "/JavaScript", "/JS", "/OpenAction", "/AA", "/Launch", "/SubmitForm"
+            };
 
             if (dangerous.Any(k => content.Contains(k, StringComparison.OrdinalIgnoreCase)))
                 throw new Exception("Malicious PDF detected");
+
+            // ⭐ PASSWORD PROTECTION CHECK
+            // Check if PDF is password protected by looking for encryption markers
+            stream.Position = 0;
+            using var pdfReader = new StreamReader(stream, System.Text.Encoding.ASCII, true, 8192, true);
+            string fullContent = await pdfReader.ReadToEndAsync();
+
+            // Check for PDF encryption dictionary
+            bool isPasswordProtected = fullContent.Contains("/Encrypt") || 
+                                       fullContent.Contains("/Standard") || 
+                                       fullContent.Contains("/CFM");
+
+            if (!isPasswordProtected)
+            {
+                throw new Exception("PDF file must be password protected. Please encrypt your PDF with a password before uploading.");
+            }
         }
 
 

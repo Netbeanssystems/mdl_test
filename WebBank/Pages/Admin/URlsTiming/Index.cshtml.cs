@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace WebBank.Pages.Admin.URlsTiming
@@ -45,11 +47,32 @@ namespace WebBank.Pages.Admin.URlsTiming
         }
         public async Task<IActionResult> OnPost()
         {
-            //URLsTimingDTO.FromTime = DateTime.ParseExact(URLsTimingDTO.FromTime.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-            //URLsTimingDTO.ToTime = DateTime.ParseExact(URLsTimingDTO.ToTime.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             var request = HttpContext.Request;
             URLsTimingDTO.Url = $"{request.Scheme}://{request.Host}/bank/Admin/Document/Add";
             URLsTimingDTO.IsActive = true;
+            
+            // Parse date strings from form (MM/dd/yyyy HH:mm format)
+            if (!DateTime.TryParseExact(URLsTimingDTO.FromTimeStr, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var fromTime))
+            {
+                _notyf.Error("Invalid From Date format. Please use MM/dd/yyyy HH:mm");
+                return Page();
+            }
+            if (!DateTime.TryParseExact(URLsTimingDTO.ToTimeStr, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var toTime))
+            {
+                _notyf.Error("Invalid To Date format. Please use MM/dd/yyyy HH:mm");
+                return Page();
+            }
+            
+            URLsTimingDTO.FromTime = fromTime;
+            URLsTimingDTO.ToTime = toTime;
+            
+            // Validate ToTime is after FromTime
+            if (toTime <= fromTime)
+            {
+                _notyf.Error("To Date must be after From Date");
+                return Page();
+            }
+            
             URLsTimingDTO = ModelAuditor<URLsTimingDTO>.SetAudit(User.Identity.Name, URLsTimingDTO.Id == 0 ? "Create" : "Edit", HttpContext.Connection.RemoteIpAddress.ToString(), URLsTimingDTO);
             var Result = await _httpClient.PostAsync("Documents/CreateURLsTiming", true, URLsTimingDTO);
             if (Result == "unauthorized")

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Domain.Models
 {
@@ -8,5 +9,7 @@ namespace Domain.Models
         public string Url { get; set; }
         public DateTime FromTime { get; set; }
         public DateTime ToTime { get; set; }
+        public string Description { get; set; }
+        public virtual ICollection<Documents> Documents { get; set; }
     }
 }

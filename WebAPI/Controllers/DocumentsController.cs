@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 namespace WebAPI.Controllers
 {
     [Authorize]
@@ -49,6 +50,38 @@ namespace WebAPI.Controllers
             var modelDto = await _dataService.Documents.GetURLsTiming().ConfigureAwait(false);
             if (modelDto == null) return NotFound("Country not found");
             return Ok(modelDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetActiveURLsTiming()
+        {
+            var modelDto = await _dataService.Documents.GetActiveURLsTiming().ConfigureAwait(false);
+            if (modelDto == null) return NotFound("No active upload windows found");
+            return Ok(modelDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetGroupedByURLsTiming()
+        {
+            var modelVms = await _dataService.Documents.GetGroupedByURLsTiming().ConfigureAwait(false);
+            if (modelVms == null || modelVms.Count <= 0) return NotFound("Documents not found");
+            return Ok(modelVms);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByYearAndDescription(int? year, int? urlsTimingId)
+        {
+            var modelVms = await _dataService.Documents.GetByYearAndDescription(year, urlsTimingId).ConfigureAwait(false);
+            if (modelVms == null || modelVms.Count <= 0) return NotFound("Documents not found");
+            return Ok(modelVms);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentsYears()
+        {
+            var years = await _dataService.Documents.GetDocumentsYears().ConfigureAwait(false);
+            if (years == null || years.Count <= 0) return NotFound("No years found");
+            return Ok(years);
         }
 
         // POST: Countries/Create
@@ -127,14 +160,5 @@ namespace WebAPI.Controllers
             if (modelDto != null) return Ok(modelDto);
             return BadRequest("Create failed");
         }
-        //[HttpPost]
-        //public async Task<IActionResult> CreateGeneralURL([FromBody] URLsTimingDTO inputModel)
-        //{
-        //    if (inputModel == null) return BadRequest("Input not valid or null");
-        //    if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
-        //    var modelDto = await _dataService.Documents.CreateGeneralURL(inputModel).ConfigureAwait(false);
-        //    if (modelDto != null) return Ok(modelDto);
-        //    return BadRequest("Create failed");
-        //}
     }
 }
