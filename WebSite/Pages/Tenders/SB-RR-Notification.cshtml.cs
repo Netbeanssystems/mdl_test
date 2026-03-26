@@ -23,7 +23,7 @@ namespace WebSite.Pages.Tenders
         [BindProperty] public NotificationDTO notif { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            var modelResponse = await _httpClient.GetAsync("Tenders/GetRRNotifications", false, 7, "current").ConfigureAwait(false);
+            var modelResponse = await _httpClient.GetAsync("Tenders/GetMDCNotifications", false, 7, "current").ConfigureAwait(false);
             var ModelDto = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<SBMPNotificationDTO>>(modelResponse) : null;
 
             var modeld = await _httpClient.GetAsync("Tenders/GetDocuments", false, 7, "current").ConfigureAwait(false);
@@ -44,7 +44,7 @@ namespace WebSite.Pages.Tenders
 
         public async Task<IActionResult> OnGetBindSelectdata(string status)
         {
-            var modelResponse = await _httpClient.GetAsync("Tenders/GetRRNotifications", false, 7, status).ConfigureAwait(false);
+            var modelResponse = await _httpClient.GetAsync("Tenders/GetMDCNotifications", false, 7, status).ConfigureAwait(false);
             var ModelDto = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<SBMPNotificationDTO>>(modelResponse) : null;
 
             var modeld = await _httpClient.GetAsync("Tenders/GetDocuments", false, 7, status).ConfigureAwait(false);

@@ -919,8 +919,13 @@ const images = [
 ];
 let index = 0;
 setInterval(() => {
+<<<<<<< Updated upstream
     index = (index + 1) % images.length;
     img.src = images[index];
+=======
+    //index = (index + 1) % images.length;
+   // img.src = images[index];
+>>>>>>> Stashed changes
 }, 7000);
 
 
