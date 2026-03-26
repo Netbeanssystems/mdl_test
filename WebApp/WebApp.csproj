@@ -13,17 +13,10 @@
 	<SatelliteResourceLanguages>en;hi</SatelliteResourceLanguages>
  </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
-=======
     <Compile Remove="wwwroot\plugins\**" />
     <Content Remove="wwwroot\plugins\**" />
     <EmbeddedResource Remove="wwwroot\plugins\**" />
     <None Remove="wwwroot\plugins\**" />
->>>>>>> e3dcd6bc8d838636b046b4771dc1e1526b116b6b
   </ItemGroup>
   <ItemGroup>
     <!--commented for serilog functionality-->
