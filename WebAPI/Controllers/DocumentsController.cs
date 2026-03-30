@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -72,6 +73,23 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetByYearAndDescription(int? year, int? urlsTimingId)
         {
             var modelVms = await _dataService.Documents.GetByYearAndDescription(year, urlsTimingId).ConfigureAwait(false);
+            if (modelVms == null || modelVms.Count <= 0) return NotFound("Documents not found");
+            return Ok(modelVms);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByURLsTimingAndDateRange(int? urlsTimingId, string fromDate, string toDate)
+        {
+            DateTime? fromDateParsed = null;
+            DateTime? toDateParsed = null;
+            
+            if (!string.IsNullOrEmpty(fromDate) && DateTime.TryParse(fromDate, out var fromDt))
+                fromDateParsed = fromDt;
+            
+            if (!string.IsNullOrEmpty(toDate) && DateTime.TryParse(toDate, out var toDt))
+                toDateParsed = toDt;
+
+            var modelVms = await _dataService.Documents.GetByURLsTimingAndDateRange(urlsTimingId, fromDateParsed, toDateParsed).ConfigureAwait(false);
             if (modelVms == null || modelVms.Count <= 0) return NotFound("Documents not found");
             return Ok(modelVms);
         }

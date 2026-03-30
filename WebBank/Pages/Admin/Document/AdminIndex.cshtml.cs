@@ -32,15 +32,18 @@ namespace WebBank.Pages.Admin.Document
 
         public List<URLsTimingVM> URLsTimingList { get; set; }
         public List<URLsTimingVM> OpenURLsTimingList { get; set; }
-        public List<int> YearsList { get; set; }
-        public int? SelectedYear { get; set; }
         public int? SelectedURLsTimingId { get; set; }
+        public DateTime? SelectedFromDate { get; set; }
+        public DateTime? SelectedToDate { get; set; }
         public bool IsAnyWindowOpen { get; set; }
+        public bool HasAppliedFilter { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? year, int? urlsTimingId)
+        public async Task<IActionResult> OnGetAsync(int? urlsTimingId, DateTime? fromDate, DateTime? toDate)
         {
-            SelectedYear = year;
             SelectedURLsTimingId = urlsTimingId;
+            SelectedFromDate = fromDate;
+            SelectedToDate = toDate;
+            HasAppliedFilter = SelectedURLsTimingId.HasValue || (SelectedFromDate.HasValue && SelectedToDate.HasValue);
 
             // Get ALL URLs Timing list for filter dropdown (open + closed)
             var urlsTimingResponse = await _httpClient.GetAsync("Documents/GetURLsTiming", true).ConfigureAwait(false);
@@ -51,21 +54,17 @@ namespace WebBank.Pages.Admin.Document
             OpenURLsTimingList = URLsTimingList?.Where(x => x.FromTime <= now && x.ToTime >= now).ToList();
             IsAnyWindowOpen = OpenURLsTimingList?.Any() ?? false;
 
-            // Get Years list for filter dropdown
-            var yearsResponse = await _httpClient.GetAsync("Documents/GetDocumentsYears", true).ConfigureAwait(false);
-            YearsList = !string.IsNullOrEmpty(yearsResponse) ? JsonConvert.DeserializeObject<List<int>>(yearsResponse) : null;
-
             // Get OPEN windows IDs (to exclude from closed windows section)
             var openWindowIds = OpenURLsTimingList?.Select(x => x.Id).ToList() ?? new List<int>();
 
             if (IsAnyWindowOpen)
             {
-                // Some windows are OPEN: 
+                // Some windows are OPEN:
                 // - Show COUNT for OPEN windows
-                // - Show FULL details for CLOSED windows ONLY (with filters applied)
+                // - Show FULL details for CLOSED windows ONLY (when filters are applied)
                 var openWindowResponse = await _httpClient.GetAsync("Documents/GetGroupedByURLsTiming", true).ConfigureAwait(false);
-                var openWindowDocs = !string.IsNullOrEmpty(openWindowResponse) 
-                    ? JsonConvert.DeserializeObject<List<DocumentsVM>>(openWindowResponse) 
+                var openWindowDocs = !string.IsNullOrEmpty(openWindowResponse)
+                    ? JsonConvert.DeserializeObject<List<DocumentsVM>>(openWindowResponse)
                     : new List<DocumentsVM>();
 
                 // Filter to only OPEN windows
@@ -74,49 +73,48 @@ namespace WebBank.Pages.Admin.Document
                 // Store open window counts in ViewData for the view
                 ViewData["OpenWindowDocs"] = openDocs;
                 ViewData["OpenURLsTimingList"] = OpenURLsTimingList;
-                
-                // For CLOSED windows: Show if filters are applied OR if "All" is selected
-                // Get ALL closed window documents (excluding open windows)
-                var allDocsResponse = await _httpClient.GetAsync("Documents/Get", true).ConfigureAwait(false);
-                var allDocs = !string.IsNullOrEmpty(allDocsResponse) 
-                    ? JsonConvert.DeserializeObject<List<DocumentsVM>>(allDocsResponse) 
-                    : new List<DocumentsVM>();
-                
-                // Filter out OPEN windows
-                var closedDocs = allDocs.Where(x => !openWindowIds.Contains(x.URLsTimingId ?? 0)).ToList();
-                
-                // Apply filters if selected
-                if (SelectedYear.HasValue || SelectedURLsTimingId.HasValue)
+
+                // For CLOSED windows: Show ONLY when filters are applied
+                if (HasAppliedFilter)
                 {
-                    if (SelectedYear.HasValue)
+                    // Call API with filters
+                    string apiUrl = "Documents/GetByURLsTimingAndDateRange?urlsTimingId=" + (SelectedURLsTimingId?.ToString() ?? "")
+                        + "&fromDate=" + (SelectedFromDate?.ToString("yyyy-MM-dd") ?? "")
+                        + "&toDate=" + (SelectedToDate?.ToString("yyyy-MM-dd") ?? "");
+                    var modelResponse = await _httpClient.GetAsync(apiUrl, true).ConfigureAwait(false);
+                    if (modelResponse == "unauthorized")
                     {
-                        closedDocs = closedDocs.Where(x => x.CreatedDate.Year == SelectedYear.Value).ToList();
+                        _notyf.Information("Please login");
+                        return RedirectToPage("/Account/Login");
                     }
-                    if (SelectedURLsTimingId.HasValue)
-                    {
-                        closedDocs = closedDocs.Where(x => x.URLsTimingId == SelectedURLsTimingId.Value).ToList();
-                    }
+                    var allDocs = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<DocumentsVM>>(modelResponse) : new List<DocumentsVM>();
+
+                    // Filter out OPEN windows
+                    ModelVms = allDocs.Where(x => !openWindowIds.Contains(x.URLsTimingId ?? 0)).ToList();
                 }
-                
-                ModelVms = closedDocs;
             }
             else
             {
-                // All windows are CLOSED: Show full details with filters
-                string apiUrl = "Documents/GetByYearAndDescription?year=" + (SelectedYear?.ToString() ?? "") + "&urlsTimingId=" + (SelectedURLsTimingId?.ToString() ?? "");
-                var modelResponse = await _httpClient.GetAsync(apiUrl, true).ConfigureAwait(false);
-                if (modelResponse == "unauthorized")
+                // All windows are CLOSED: Show full details with filters (only when filters are applied)
+                if (HasAppliedFilter)
                 {
-                    _notyf.Information("Please login");
-                    return RedirectToPage("/Account/Login");
+                    string apiUrl = "Documents/GetByURLsTimingAndDateRange?urlsTimingId=" + (SelectedURLsTimingId?.ToString() ?? "") 
+                        + "&fromDate=" + (SelectedFromDate?.ToString("yyyy-MM-dd") ?? "") 
+                        + "&toDate=" + (SelectedToDate?.ToString("yyyy-MM-dd") ?? "");
+                    var modelResponse = await _httpClient.GetAsync(apiUrl, true).ConfigureAwait(false);
+                    if (modelResponse == "unauthorized")
+                    {
+                        _notyf.Information("Please login");
+                        return RedirectToPage("/Account/Login");
+                    }
+                    ModelVms = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<DocumentsVM>>(modelResponse) : null;
                 }
-                ModelVms = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<DocumentsVM>>(modelResponse) : null;
             }
 
             if (ModelVms == null || ModelVms.Count <= 0)
             {
                 // Only show warning if filters were applied but no results found
-                if (SelectedYear.HasValue || SelectedURLsTimingId.HasValue)
+                if (HasAppliedFilter)
                 {
                     _notyf.Warning("No documents found for the selected filters!");
                 }

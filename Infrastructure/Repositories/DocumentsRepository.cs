@@ -42,6 +42,25 @@ namespace Infrastructure.Repositories
             return await query.OrderByDescending(d => d.CreatedDate).ToListAsync();
         }
 
+        public async Task<List<Documents>> GetByURLsTimingAndDateRange(int? urlsTimingId, DateTime? fromDate, DateTime? toDate)
+        {
+            var query = DbContext.Documents
+                .Include(d => d.URLsTiming)
+                .AsQueryable();
+
+            if (urlsTimingId.HasValue)
+            {
+                query = query.Where(d => d.URLsTimingId == urlsTimingId.Value);
+            }
+
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                query = query.Where(d => d.URLsTiming != null && d.URLsTiming.FromTime >= fromDate.Value && d.URLsTiming.FromTime <= toDate.Value);
+            }
+
+            return await query.OrderByDescending(d => d.CreatedDate).ToListAsync();
+        }
+
         public async Task<List<Documents>> GetGroupedByURLsTiming()
         {
             return await DbContext.Documents

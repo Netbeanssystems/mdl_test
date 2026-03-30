@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace Application.ServiceInterfaces
         Task<DocumentsDTO> Get(int id);
         Task<List<DocumentsVM>> Getbycreatedby(string createdby);
         Task<List<DocumentsVM>> GetByYearAndDescription(int? year, int? urlsTimingId);
+        Task<List<DocumentsVM>> GetByURLsTimingAndDateRange(int? urlsTimingId, DateTime? fromDate, DateTime? toDate);
         Task<List<DocumentsVM>> GetGroupedByURLsTiming();
         Task<DocumentsDTO> Create(DocumentsDTO entity);
         Task<URLsTimingDTO> CreateURLsTiming(URLsTimingDTO entity);

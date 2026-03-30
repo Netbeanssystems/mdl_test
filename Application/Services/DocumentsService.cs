@@ -56,6 +56,15 @@ namespace Application.Services
             return modelVms;
         }
 
+        public async Task<List<DocumentsVM>> GetByURLsTimingAndDateRange(int? urlsTimingId, DateTime? fromDate, DateTime? toDate)
+        {
+            var models = await _unitOfWork.DocumentsRepo.GetByURLsTimingAndDateRange(urlsTimingId, fromDate, toDate).ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            var modelVms = _mapper.Map<List<DocumentsVM>>(models);
+            if (modelVms == null || modelVms.Count <= 0) return null;
+            return modelVms;
+        }
+
         public async Task<List<DocumentsVM>> GetGroupedByURLsTiming()
         {
             var models = await _unitOfWork.DocumentsRepo.GetGroupedByURLsTiming().ConfigureAwait(false);
