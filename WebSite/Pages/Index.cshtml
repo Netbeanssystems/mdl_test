@@ -648,21 +648,15 @@
             <span class="stop5"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
         </div>
     </div>
-   <div id="popup">
+    <div id="popup">
         <button id="closeButton">&times;</button>
-            <!--Changes-->
-       @*  <img src="assets/images/Outreach and Promotional Event_page-0002.jpg" alt="Popup Image"> *@
-        @* <img src="assets/images/DRISHTI_Challenge.jpg" alt="Popup Image"> *@
-
 
         <img src="assets/images/DRISHTI_Challenge.jpg"
-             alt="Webex Meeting"
              class="banner-img"
              data-link="https://idex.gov.in/disc-category/46"
              style="display: block;">
 
         <img src="assets/images/Outreach and Promotional Event_page-0002.jpg"
-             alt="iDEX Challenge"
              class="banner-img"
              data-link="https://mazagondock.webex.com/mazagondock/j.php?MTID=m971388b3a293487283b68cbfec82f858"
              style="display: none;">
@@ -818,58 +812,58 @@
     </script> *@
 
     <script>
-
-                function PopUp() {
-            $('#popup').fadeIn();
-        }
-
         $(document).ready(function () {
-            setTimeout(function () {
-                PopUp();
+
+            const images = $('#popup .banner-img');
+            let current = 0;
+            let switched = false; // to prevent double switching
+
+            // Hide all except first
+            images.hide();
+            $(images[0]).show();
+
+            // Show popup
+            setTimeout(() => {
+                $('#popup').fadeIn();
             }, 1000);
 
-            // --- Banner Rotation Logic ---
-            let currentImageIndex = 0;
-            const images = $('.banner-img');
-            const totalImages = images.length;
-
-            setInterval(function() {
-                // Fade transition for a smoother look
-                $(images[currentImageIndex]).fadeOut(400, function() {
-                    currentImageIndex = (currentImageIndex + 1) % totalImages;
-                    $(images[currentImageIndex]).fadeIn(400);
-                });
+            // --- AUTO SWITCH AFTER 10 SEC ---
+            setTimeout(() => {
+                if (!switched) {
+                    $(images[0]).fadeOut(300, function () {
+                        $(images[1]).fadeIn(300);
+                        current = 1;
+                        switched = true;
+                    });
+                }
             }, 10000);
 
-            // --- Click Logic ---
-            $('#popup img').on('click', function () {
-                // Get the link specific to the clicked image
-                const targetLink = $(this).attr('data-link');
-                if (targetLink) {
-                    window.open(targetLink, '_blank');
-                }
+            // --- Image click ---
+            images.on('click', function () {
+                const link = $(this).data('link');
+                if (link) window.open(link, '_blank');
             });
 
-            // Close logic
-            $(document).on('click', function (event) {
-                if (!$(event.target).closest('#popup').length || $(event.target).is('#closeButton')) {
+            // --- Close button logic ---
+            $('#closeButton').on('click', function () {
+
+                if (current === 0) {
+                    // Switch immediately to second image
+                    $(images[0]).fadeOut(300, function () {
+                        $(images[1]).fadeIn(300);
+                        current = 1;
+                        switched = true;
+                    });
+                } else {
+                    // Close popup
                     $('#popup').fadeOut();
                 }
             });
 
-            $('#popup').on('click', function (event) {
-                event.stopPropagation();
-            });
-
-            $('#closeButton').on('click', function () {
-                $('#popup').fadeOut();
-            });
         });
-
     </script>
     <script src="~/js/botscript.js"></script>
 }
-
 
 
 
