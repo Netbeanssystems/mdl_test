@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebBank.Pages.Admin.Document
@@ -31,13 +32,30 @@ namespace WebBank.Pages.Admin.Document
         public async Task<IActionResult> OnGetAsync()
         {
             var modelResponse = await _httpClient.GetAsync("Documents/Getdocuments", true, uid).ConfigureAwait(false);
+
             if (modelResponse == "unauthorized")
             {
                 _notyf.Information("Please login");
                 return RedirectToPage("/Account/Login");
             }
-            ModelVms = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<DocumentsVM>>(modelResponse) : null;
-            if (ModelVms == null || ModelVms.Count <= 0)
+
+            // 1. Deserialization
+            var rawList = !string.IsNullOrEmpty(modelResponse)
+                ? JsonConvert.DeserializeObject<List<DocumentsVM>>(modelResponse)
+                : new List<DocumentsVM>();
+
+            // 2. Sort by CreatedDate descending (Latest first)
+            if (rawList != null && rawList.Count > 0)
+            {
+                ModelVms = rawList.OrderByDescending(x => x.CreatedDate).ToList();
+            }
+            else
+            {
+                ModelVms = new List<DocumentsVM>();
+            }
+
+            // 3. Validation Check
+            if (ModelVms.Count <= 0)
             {
                 _notyf.Error("Document not found");
                 return Page();

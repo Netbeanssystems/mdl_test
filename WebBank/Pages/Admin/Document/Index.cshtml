@@ -20,7 +20,7 @@
                         <thead>
                             <tr>
                                 <th role="button" class="search">Id</th>
-                                @* <th class="search">Document Name</th> *@
+                                <th class="search">Description</th>
                                 <th>View Document</th>
                                 <th>Uploaded Date and Time</th>
                             </tr>
@@ -32,7 +32,8 @@
                                     <td>@(++serialNumber)</td>
                                     @* <td>@item.DocumentName</td> *@
                                    @*  <td><a target="_blank" href="/bank/img/UploadedFiles/Documents/@item.DocumentName">@item.DocumentNameDecrypted</a> </td> *@
-                                  <td>
+                                  <td>@item.Description</td>
+                                   <td>
                                       <a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)">
                                         @Html.Encode(item.DocumentNameDecrypted)
                                       </a>

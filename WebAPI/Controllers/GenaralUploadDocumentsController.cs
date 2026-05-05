@@ -12,7 +12,7 @@ using System.IO;
 
 namespace WebAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class GenaralUploadDocumentsController : Controller

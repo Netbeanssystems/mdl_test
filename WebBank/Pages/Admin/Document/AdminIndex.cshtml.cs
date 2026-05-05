@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace WebBank.Pages.Admin.Document
@@ -45,9 +46,15 @@ namespace WebBank.Pages.Admin.Document
             SelectedToDate = toDate;
             HasAppliedFilter = SelectedURLsTimingId.HasValue || (SelectedFromDate.HasValue && SelectedToDate.HasValue);
 
-            // Get ALL URLs Timing list for filter dropdown (open + closed)
+            // Update this line in your OnGetAsync
             var urlsTimingResponse = await _httpClient.GetAsync("Documents/GetURLsTiming", true).ConfigureAwait(false);
-            URLsTimingList = !string.IsNullOrEmpty(urlsTimingResponse) ? JsonConvert.DeserializeObject<List<URLsTimingVM>>(urlsTimingResponse) : null;
+            var rawList = !string.IsNullOrEmpty(urlsTimingResponse)
+                ? JsonConvert.DeserializeObject<List<URLsTimingVM>>(urlsTimingResponse)
+                : new List<URLsTimingVM>();
+
+            // Sort by Id Descending (or FromTime) to show latest first
+            URLsTimingList = rawList.OrderByDescending(x => x.Id).ToList();
+
 
             // Get currently OPEN windows
             var now = DateTime.Now;
@@ -98,9 +105,15 @@ namespace WebBank.Pages.Admin.Document
                 // All windows are CLOSED: Show full details with filters (only when filters are applied)
                 if (HasAppliedFilter)
                 {
-                    string apiUrl = "Documents/GetByURLsTimingAndDateRange?urlsTimingId=" + (SelectedURLsTimingId?.ToString() ?? "") 
-                        + "&fromDate=" + (SelectedFromDate?.ToString("yyyy-MM-dd") ?? "") 
-                        + "&toDate=" + (SelectedToDate?.ToString("yyyy-MM-dd") ?? "");
+                    // Ensure we include the full day for the 'To Date'
+                    string formattedToDate = SelectedToDate.HasValue
+                        ? SelectedToDate.Value.ToString("yyyy-MM-dd") + " 23:59:59"
+                        : "";
+
+                    string apiUrl = "Documents/GetByURLsTimingAndDateRange?urlsTimingId=" + (SelectedURLsTimingId?.ToString() ?? "")
+                        + "&fromDate=" + (SelectedFromDate?.ToString("yyyy-MM-dd") ?? "")
+                        + "&toDate=" + WebUtility.UrlEncode(formattedToDate); // Encode the space/colon
+
                     var modelResponse = await _httpClient.GetAsync(apiUrl, true).ConfigureAwait(false);
                     if (modelResponse == "unauthorized")
                     {

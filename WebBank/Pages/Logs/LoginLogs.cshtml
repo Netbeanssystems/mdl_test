@@ -1,0 +1,95 @@
+﻿@page
+@model LoginLogsModel
+@{
+    ViewData["Title"] = "Login Logs";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title font-weight-bold">Login Logs</h3>
+        </div>
+        <div class="card-body">
+            @if (Model?.AppLogs?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Time Stamp</th>
+                                <th class="search">User Name</th>
+                                <th class="search">Action</th>
+                                <th class="text-center noExport noSort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AppLogs)
+                            {
+                            <tr>
+                                <td>@($"{item.TimeStamp.AddHours(5.5):dd-MM-yyyy hh:mm tt}")</td>
+                                <td>@item.UserName</td>
+                                <td>@item.Action</td>
+                                <td class="text-center">
+                                    <a data-id="@item.Id" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="search">Time Stamp</th>
+                                <th class="search">User Name</th>
+                                <th class="search">Action</th>
+                                <th class="text-center noExport noSort">Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No error logs found. The application is healthy <i class="fa fa-thumbs-up"></i></p>
+            }
+        </div>
+    </div>
+    <form method="post" asp-page-handler="Delete">
+        <partial name="_DeleteModalPartial" model="@Model.DeleteDto" />
+    </form>
+</section>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        function DrawDataTable() {
+            $('#tblDataTable').DataTable({
+                initComplete: function () {
+                    var r = $('#tblDataTable tfoot tr');
+                    r.find('th').each(function () {
+                        if ($(this).hasClass('search')) {
+                            $(this).css('padding', 5);
+                            var title = $(this).text();
+                            $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                        } else {
+                            $(this).html('');
+                        }
+                    });
+                    $('#tblDataTable thead').prepend(r);
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                },
+                "ordering": false
+            });
+        }
+        $('#deleteModal').on('show.bs.modal',
+            function (event) {
+                $('#Id').val($(event.relatedTarget).data('id'));
+            });
+        DrawDataTable();
+    </script>
+}

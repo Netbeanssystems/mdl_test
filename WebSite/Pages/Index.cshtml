@@ -656,10 +656,10 @@
              data-link="https://idex.gov.in/disc-category/46"
              style="display: block;">
 
-        <img src="assets/images/Outreach and Promotional Event_page-0002.jpg"
+       @* <img src="assets/images/Outreach and Promotional Event_page-0002.jpg"
              class="banner-img"
              data-link="https://mazagondock.webex.com/mazagondock/j.php?MTID=ma83d4b9da587b6b1a370f0ae4b9deade"
-             style="display: none;">
+             style="display: none;">*@
     </div>
 </section>
 
@@ -769,14 +769,14 @@
 </div>
 
 @section Scripts {
-    @*<script>
+    <script>
         const plax1 = document.querySelector(".hero-sec");
         window.addEventListener("scroll", function () {
             let offset = window.pageYOffset;
             plax1.style.transform = "translateY(" + offset * 0.7 + "px)";
         });
-    </script>*@
-    @*   <script>
+    </script>
+      <script>
         function PopUp() {
             $('#popup').fadeIn();
         }
@@ -800,8 +800,8 @@
 
              //Open a link when clicking on the image
              $('#popup img').on('click', function () {
-                 // window.open('https://idex.gov.in/disc-category/46', '_blank');
-                 window.open('https://mazagondock.webex.com/mazagondock/j.php?MTID=m971388b3a293487283b68cbfec82f858', '_blank');
+                 window.open('https://idex.gov.in/disc-category/46', '_blank');
+                // window.open('https://mazagondock.webex.com/mazagondock/j.php?MTID=m971388b3a293487283b68cbfec82f858', '_blank');
              });
 
             // Close the popup when clicking the close button
@@ -809,9 +809,9 @@
                 $('#popup').fadeOut();
             });
         });
-    </script> *@
+    </script> }
 
-    <script>
+    @*<script>
         $(document).ready(function () {
 
             const images = $('#popup .banner-img');
@@ -863,14 +863,4 @@
         });
     </script>
     <script src="~/js/botscript.js"></script>
-}
-
-
-
-
-
-
-
-
-
-
+}*@

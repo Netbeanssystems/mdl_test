@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 using WebBank.Extensions;
 namespace WebAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : Controller

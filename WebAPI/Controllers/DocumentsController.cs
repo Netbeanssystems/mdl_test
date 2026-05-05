@@ -9,7 +9,7 @@ using System;
 
 namespace WebAPI.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class DocumentsController : Controller

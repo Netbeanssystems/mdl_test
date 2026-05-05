@@ -61,50 +61,51 @@
                 }
             }
 
-            @* Section 2: CLOSED Windows - Show FULL details with filters *@
             <div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle"></i> Closed Upload Windows Documents
             </div>
             
-            <!-- Filters -->
-            <form method="get" class="mb-3">
-                <div class="row">
+            <form method="get" class="mb-4">
+                <div class="row align-items-end">
                     <div class="col-md-3">
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                             <label>From Date</label>
-                            <input type="date" name="fromDate" class="form-control" asp-for="SelectedFromDate" />
+                            <input type="date" name="fromDate" id="fromDate" class="form-control"
+                                   asp-for="SelectedFromDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                             <label>To Date</label>
-                            <input type="date" name="toDate" class="form-control" asp-for="SelectedToDate" />
+                            <input type="date" name="toDate" id="toDate" class="form-control"
+                                   asp-for="SelectedToDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         </div>
                     </div>
+                    <div class="col-md-1 text-center">
+                        <button type="submit" class="btn btn-primary">Apply Date</></button>
+                    </div>
+
+                    <div class="col-md-1 text-center">
+                        <h5 class="font-weight-bold mb-2">OR</h5>
+                    </div>
+
                     <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Filter by Upload Window (Description)</label>
-                            <select name="urlsTimingId" class="form-control" asp-for="SelectedURLsTimingId">
+                        <div class="form-group mb-0">
+                            <label>Filter by Upload Window</label>
+                            <select name="urlsTimingId" class="form-control" asp-for="SelectedURLsTimingId" onchange="this.form.submit()">
                                 <option value="">-- All Closed Windows --</option>
                                 @if (Model.URLsTimingList != null)
                                 {
                                     @foreach (var item in Model.URLsTimingList)
                                     {
-                                        // Only show closed windows in dropdown (exclude currently open)
                                         var isOpen = item.FromTime <= DateTime.Now && item.ToTime >= DateTime.Now;
                                         if (!isOpen && !string.IsNullOrEmpty(item.Description))
                                         {
-                                            <option value="@item.Id" selected="@(Model.SelectedURLsTimingId == item.Id ? "selected" : null)">@item.Description</option>
+                                            <option value="@item.Id">@item.Description</option>
                                         }
                                     }
                                 }
                             </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>&nbsp;</label>
-                            <button type="submit" class="btn btn-primary form-control"><i class="fa fa-filter"></i> Apply Filter</button>
                         </div>
                     </div>
                 </div>
@@ -116,7 +117,7 @@
                     <table id="tblDataTable" class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th class="search">Id</th>
+                                <th class="text-center">Sr. No</th> @* Changed from ID *@
                                 <th class="search">Bank Name</th>
                                 <th class="search">Branch Name</th>
                                 <th class="search">Upload Window</th>
@@ -126,10 +127,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @{
+                                int srNo = 1;
+                            }
                             @foreach (var item in Model.ModelVms)
                             {
                                 <tr>
-                                    <td>@item.Id</td>
+                                    <td class="text-center">@srNo</td>
                                     <td>@item.BankName</td>
                                     <td>@item.BranchName</td>
                                     <td>@(item.URLsTiming?.Description ?? "N/A")</td>
@@ -137,6 +141,7 @@
                                     <td>@item.CreatedBy</td>
                                     <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 </tr>
+                                srNo++;
                             }
                         </tbody>
                     </table>
@@ -184,4 +189,15 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            // Prevent future date selection via JS as a backup to the 'max' attribute
+            const today = new Date().toISOString().split('T')[0];
+            $('#fromDate, #toDate').attr('max', today);
+
+            // Sync validation: Ensure ToDate is not before FromDate
+            $('#fromDate').change(function () {
+                $('#toDate').attr('min', $(this).val());
+            });
+        });</script>
 }
