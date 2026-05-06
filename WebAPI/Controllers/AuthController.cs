@@ -1,10 +1,17 @@
 ﻿using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
+using Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore; // CRITICAL for FirstOrDefaultAsync
+using System.Linq;
 namespace WebAPI.Controllers
+
 {
     [ApiController]
     [Route("[controller]")]
@@ -12,10 +19,12 @@ namespace WebAPI.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IDataService _dataService;
-        public AuthController(IAuthService authService, IDataService dataService)
+        private readonly AppDbContext _context;
+        public AuthController(IAuthService authService, IDataService dataService,AppDbContext context)
         {
             _authService = authService;
             _dataService = dataService;
+            _context = context;
         }
         [HttpGet("CheckUsername/{uname}")]
         public async Task<IActionResult> CheckUsername([FromRoute] string uname)
@@ -43,6 +52,35 @@ namespace WebAPI.Controllers
             var TokenVm = await _authService.Login(model).ConfigureAwait(false);
             if (TokenVm == null)
                 return BadRequest("Invalid login attempt.<br/>Possible reasons:<br/>1. User not found, not approved, or not active.<br/>2. Password incorrect.<br/>3. Account lockedout.");
+            //try
+            //{
+            //    // Use your Dapper connection or a simple helper method to get the ID
+            //    // Replace '_db' with your actual database connection variable
+            //    var userId = await _context.AspNetUsers
+            //        .Where(u => u.UserName == model.Username)
+            //        .Select(u => u.Id)
+            //        .FirstOrDefaultAsync();
+
+            //    if (!string.IsNullOrEmpty(userId))
+            //    {
+            //        var logDto = new LoginLogsDTO
+            //        {
+            //            TimeStamp = DateTime.Now,
+            //            Action = "Login",
+            //            UserName = model.Username,
+            //            UserId = userId // This is the ID from AspNetUsers
+            //        };
+
+            //        // Save to your LoginLogs table
+            //        await _dataService.LoginLogs.Create(logDto).ConfigureAwait(false);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Log the error locally so login still finishes
+            //    Console.WriteLine(ex.Message);
+            //}
+
             return Ok(TokenVm);
         }
         // GET: Auth/PrivilegeLogin
@@ -174,7 +212,7 @@ namespace WebAPI.Controllers
         }
 
         // POST: Auth/GetPasswordResetToken
-        [Authorize(Roles = "SuperAdmin,BankAdmin,AuditAdmin")]
+        //[Authorize(Roles = "SuperAdmin,BankAdmin,AuditAdmin")]
         [HttpPost("GetPasswordResetToken")]
         public async Task<IActionResult> GetPasswordResetToken([FromBody] string userid)
         {

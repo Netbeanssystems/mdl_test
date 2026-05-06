@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
-   // [Authorize(Roles = "BidderSuperAdmin,CommercialExecutive")]
+    [Authorize(Roles = "BidderSuperAdmin,CommercialExecutive")]
     [ApiController]
     [Route("[controller]")]
     public class ProjectsController : Controller

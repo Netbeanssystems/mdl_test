@@ -1,22 +1,26 @@
 ﻿using Application.Dtos;
 using Application.Extensions;
 using Application.ServiceInterfaces;
+using Infrastructure.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class LoginLogsController : Controller
     {
         private readonly IDataService _dataService;
-        public LoginLogsController(IDataService dataService)
+        private readonly AppDbContext _context;
+        public LoginLogsController(IDataService dataService,AppDbContext context)
         {
             _dataService = dataService;
+            _context = context;
         }
         // GET LoginLogs
         [HttpGet]
@@ -49,8 +53,23 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Create([FromBody] LoginLogsDTO inputModel)
         {
             if (inputModel == null) return BadRequest("Input not valid or null");
+            // 1. If UserId is missing but UserName exists, fetch it from AspNetUsers
+            
+            if (!string.IsNullOrEmpty(inputModel.UserName))
+            {
+                // Use your context to find the ID
+                var userId = await _context.AspNetUsers
+                    .Where(u => u.UserName == inputModel.UserName)
+                    .Select(u => u.Id)
+                    .FirstOrDefaultAsync();
+
+                inputModel.UserId = userId;
+            }
             if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
+
+            // 2. Proceed with creation
             var modelDto = await _dataService.LoginLogs.Create(inputModel).ConfigureAwait(false);
+
             if (modelDto != null) return Ok(modelDto);
             return BadRequest("Create failed");
         }

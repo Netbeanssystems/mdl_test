@@ -204,66 +204,171 @@ namespace WebBank.Pages.Account
 
             return new JsonResult(new { success = true });
         }
+        //public async Task<IActionResult> OnPostOtpVerificationAsync()
+        //{
+        //    var sessionOtp = HttpContext.Session.GetString("OTP");
+        //    var tokenData = HttpContext.Session.GetString("TempToken");
+
+        //    if (OtpCode != sessionOtp)
+        //    {
+        //        _notyf.Warning("Invalid OTP");
+        //        return Page(); // Or you can return JSON if it's an AJAX call
+        //    }
+
+        //    var tokenVm = JsonConvert.DeserializeObject<TokenVM>(tokenData);
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var payload = (JwtSecurityToken)tokenHandler.ReadToken(tokenVm.AccessToken);
+
+        //    // Final login
+        //    SetTokenCookies(tokenVm);
+        //    await UserSignInAsync(payload);
+
+        //    var profileImage = payload.Claims.FirstOrDefault(c => c.Type == "img")?.Value;
+        //    HttpContext.Session.SetString("ProfileImage", profileImage ?? _config["DefaultUserImage"]);
+
+        //    var chn = payload.Claims.FirstOrDefault(c => c.Type == "chn")?.Value;
+        //    if (chn == "Y")
+        //        HttpContext.Session.SetString("chn", "Y");
+
+        //    // Clear temp data
+        //    HttpContext.Session.Remove("OTP");
+        //    HttpContext.Session.Remove("TempToken");
+        //    // Clear OTP rate limit data
+        //    HttpContext.Session.Remove("OtpRequestCount");
+        //    HttpContext.Session.Remove("OtpBlockUntil");
+
+
+        //    return LocalRedirect(ReturnUrl ?? "~/");
+        //}
+
+        //private void SetTokenCookies(TokenVM tokenVm)
+        //{
+        //    var cookieOptions = new CookieOptions
+        //    {
+        //        Domain = _config["Domain"],
+        //        Path = _config["CookiePath"],
+        //        Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry"])),
+        //        HttpOnly = true,
+        //        Secure = true,
+        //        SameSite = SameSiteMode.Lax,
+        //        IsEssential = true
+        //    };
+        //    _httpContextAccessor.HttpContext?.Response.Cookies.Append(_config["AuthToken"], tokenVm.AccessToken, cookieOptions);
+        //    var cookieOptions2 = new CookieOptions
+        //    {
+        //        Domain = _config["Domain"],
+        //        Path = _config["CookiePath"],
+        //        Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry2"])),
+        //        HttpOnly = true,
+        //        Secure = true,
+        //        SameSite = SameSiteMode.Lax,
+        //        IsEssential = true
+        //    };
+        //    _httpContextAccessor.HttpContext?.Response.Cookies.Append(_config["RefreshToken"], tokenVm.RefreshToken, cookieOptions2);
+        //}
+
         public async Task<IActionResult> OnPostOtpVerificationAsync()
         {
             var sessionOtp = HttpContext.Session.GetString("OTP");
             var tokenData = HttpContext.Session.GetString("TempToken");
 
-            if (OtpCode != sessionOtp)
+            // 1. Basic Validation
+            if (string.IsNullOrEmpty(sessionOtp) || OtpCode != sessionOtp)
             {
-                _notyf.Warning("Invalid OTP");
-                return Page(); // Or you can return JSON if it's an AJAX call
+                _notyf.Warning("Invalid or expired OTP");
+                return Page();
             }
 
+            if (string.IsNullOrEmpty(tokenData))
+            {
+                _notyf.Error("Session expired. Please login again.");
+                return RedirectToPage("Login");
+            }
+
+            // 2. Decode the Token
             var tokenVm = JsonConvert.DeserializeObject<TokenVM>(tokenData);
             var tokenHandler = new JwtSecurityTokenHandler();
             var payload = (JwtSecurityToken)tokenHandler.ReadToken(tokenVm.AccessToken);
 
-            // Final login
+            // 3. Set Cookies & Sign In (Must happen before the API call)
             SetTokenCookies(tokenVm);
             await UserSignInAsync(payload);
 
+            // 4. Update Session Info
             var profileImage = payload.Claims.FirstOrDefault(c => c.Type == "img")?.Value;
             HttpContext.Session.SetString("ProfileImage", profileImage ?? _config["DefaultUserImage"]);
 
-            var chn = payload.Claims.FirstOrDefault(c => c.Type == "chn")?.Value;
-            if (chn == "Y")
+            if (payload.Claims.FirstOrDefault(c => c.Type == "chn")?.Value == "Y")
                 HttpContext.Session.SetString("chn", "Y");
 
-            // Clear temp data
+            // 5. Logging - Using the exact keys from your JWT
+            try
+            {
+                // Using the exact XML Schema URL and 'uid' found in your token
+                var userName = payload.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value;
+                var userId = payload.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
+
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    var logDto = new LoginLogsDTO
+                    {
+                        TimeStamp = DateTime.Now,
+                        Action = "Login",
+                        UserName = userName,
+                        UserId = userId ?? ""
+                    };
+
+                    // Use the full relative path. If this fails, the 'catch' will tell you why.
+                    await _httpClient.PostAsync("LoginLogs/Create", false, logDto).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                // This won't stop the login, but you will see the error in your debug console
+                Console.WriteLine($"Logging Failure: {ex.Message}");
+            }
+
+            // 6. Cleanup & Redirect
             HttpContext.Session.Remove("OTP");
             HttpContext.Session.Remove("TempToken");
-            // Clear OTP rate limit data
-            HttpContext.Session.Remove("OtpRequestCount");
-            HttpContext.Session.Remove("OtpBlockUntil");
-
 
             return LocalRedirect(ReturnUrl ?? "~/");
         }
         private void SetTokenCookies(TokenVM tokenVm)
         {
+            // Fix: Localhost does not like the 'Domain' property being set.
+            string domain = _config["Domain"];
+            if (string.IsNullOrWhiteSpace(domain) || domain.Contains("localhost"))
+            {
+                domain = null; // Browser will automatically use current host
+            }
+
+            // Use Secure=true only on HTTPS. If testing on HTTP, this must be false.
+            bool isSecure = _httpContextAccessor.HttpContext?.Request.IsHttps ?? false;
+
             var cookieOptions = new CookieOptions
             {
-                Domain = _config["Domain"],
-                Path = _config["CookiePath"],
-                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry"])),
+                Domain = domain,
+                Path = _config["CookiePath"] ?? "/",
+                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry"] ?? "60")),
                 HttpOnly = true,
-                Secure = true,
+                Secure = isSecure,
                 SameSite = SameSiteMode.Lax,
                 IsEssential = true
             };
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append(_config["AuthToken"], tokenVm.AccessToken, cookieOptions);
-            var cookieOptions2 = new CookieOptions
+
+            var context = _httpContextAccessor.HttpContext;
+            if (context != null)
             {
-                Domain = _config["Domain"],
-                Path = _config["CookiePath"],
-                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry2"])),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                IsEssential = true
-            };
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append(_config["RefreshToken"], tokenVm.RefreshToken, cookieOptions2);
+                // Append Auth Token
+                context.Response.Cookies.Append(_config["AuthToken"], tokenVm.AccessToken, cookieOptions);
+
+                // Append Refresh Token (Update expiry for the second cookie)
+                var refreshOptions = cookieOptions;
+                refreshOptions.Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry2"] ?? "120"));
+
+                context.Response.Cookies.Append(_config["RefreshToken"], tokenVm.RefreshToken, refreshOptions);
+            }
         }
         private async Task UserSignInAsync(JwtSecurityToken payload)
         {
