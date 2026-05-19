@@ -2,6 +2,7 @@
 using Domain.RepositoryInterfaces;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,28 @@ namespace Infrastructure.Repositories
                 .Include(u => u.Documents)
                 .OrderByDescending(u => u.CreatedDate)
                 .ToListAsync();
+        }
+
+        public async Task<List<URLsTiming>> GetClosed()
+        {
+            var currentTime = DateTime.Now;
+            return await DbContext.URLsTiming
+                .Where(t => t.IsActive && (t.ToTime < currentTime) && t.IsShow == false)
+                .ToListAsync();
+        }
+
+
+        public async Task<List<URLsTiming>> GetByMultipleIds(List<int> ids)
+        {
+            return await DbContext.URLsTiming
+                .Where(t => ids.Contains(t.Id))
+                .ToListAsync();
+        }
+
+        public async Task Update(URLsTiming entity)
+        {
+            DbContext.Entry(entity).State = EntityState.Modified;
+            await Task.CompletedTask;
         }
     }
 }

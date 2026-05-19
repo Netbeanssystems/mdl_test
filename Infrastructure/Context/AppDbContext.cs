@@ -17,6 +17,7 @@ namespace Infrastructure.Context
         public DbSet<Countries> Countries { get; set; }
         public DbSet<DashboardAlerts> DashboardAlerts { get; set; }
         public DbSet<Districts> Districts { get; set; }
+        public DbSet<DocumentDownloadLog> documentDownloadLogs { get; set; } 
         public DbSet<LoginLogs> LoginLogs { get; set; }
         public DbSet<Menus> Menus { get; set; }
         public DbSet<NotificationDetails> NotificationDetails { get; set; }

@@ -1,11 +1,14 @@
 ﻿using Application.Dtos;
 using Application.Extensions;
 using Application.ServiceInterfaces;
+using Application.ViewModels;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -82,10 +85,10 @@ namespace WebAPI.Controllers
         {
             DateTime? fromDateParsed = null;
             DateTime? toDateParsed = null;
-            
+
             if (!string.IsNullOrEmpty(fromDate) && DateTime.TryParse(fromDate, out var fromDt))
                 fromDateParsed = fromDt;
-            
+
             if (!string.IsNullOrEmpty(toDate) && DateTime.TryParse(toDate, out var toDt))
                 toDateParsed = toDt;
 
@@ -177,6 +180,86 @@ namespace WebAPI.Controllers
             var modelDto = await _dataService.Documents.CreateURLsTiming(inputModel).ConfigureAwait(false);
             if (modelDto != null) return Ok(modelDto);
             return BadRequest("Create failed");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetClosedWindows()
+        {
+            var result = await _dataService.Documents.GetClosedWindows();
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateMultipleVisibility([FromBody] List<ClosedWindowsDTO> dtos)
+        {
+            if (dtos == null || !dtos.Any())
+            {
+                return BadRequest("The update list cannot be empty.");
+            }
+
+            var result = await _dataService.Documents.UpdateMultipleWindowsVisibility(dtos);
+
+            if (!result)
+            {
+                return StatusCode(500, "An error occurred while updating the records.");
+            }
+
+            return NoContent(); // 204 No Content
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult<List<DocumentsVM>>> GetVisibleDocuments()
+        {
+            var result = await _dataService.Documents.GetDocumentsIsShow();
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentsList(int? urlsTimingId, string fromDate, string toDate)
+        {
+            DateTime? fromDateParsed = null;
+            DateTime? toDateParsed = null;
+
+            if (!string.IsNullOrEmpty(fromDate) && DateTime.TryParse(fromDate, out var fromDt))
+                fromDateParsed = fromDt;
+
+            if (!string.IsNullOrEmpty(toDate) && DateTime.TryParse(toDate, out var toDt))
+                toDateParsed = toDt;
+
+            var modelVms = await _dataService.Documents.GetDocumentsList(urlsTimingId, fromDateParsed, toDateParsed).ConfigureAwait(false);
+            if (modelVms == null || modelVms.Count <= 0) return NotFound("Documents not found");
+            return Ok(modelVms);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogDownload([FromBody] DocumentDownloadLogDTO dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.DocumentName))
+            {
+                return BadRequest("Invalid log metrics structure.");
+            }
+
+            // Maps DTO data values to your database entity model instance
+            var logEntity = new DocumentDownloadLog
+            {
+                DocumentName = dto.DocumentName,
+                DownloadedBy = dto.DownloadedBy,
+                DownloadedAt = dto.DownloadedAt,
+                IpAddress = dto.IpAddress
+            };
+
+            // Assuming you follow a unit-of-work/data service pipeline pattern:
+            var result = await _dataService.Documents.SaveDownloadLog(logEntity);
+
+            if (!result)
+            {
+                return StatusCode(500, "An error occurred while tracking server audit records.");
+            }
+
+            return Ok();
         }
     }
 }

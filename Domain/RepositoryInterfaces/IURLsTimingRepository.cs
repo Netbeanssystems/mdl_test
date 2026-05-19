@@ -8,5 +8,10 @@ namespace Domain.RepositoryInterfaces
     {
         new Task<List<URLsTiming>> GetActive();
         Task<List<URLsTiming>> GetWithDocuments();
+        Task<List<URLsTiming>> GetClosed();
+
+        Task<List<URLsTiming>> GetByMultipleIds(List<int> ids);
+
+        Task Update(URLsTiming entity);
     }
 }

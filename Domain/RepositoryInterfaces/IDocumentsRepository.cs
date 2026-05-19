@@ -12,5 +12,9 @@ namespace Domain.RepositoryInterfaces
         Task<List<Documents>> GetByURLsTimingAndDateRange(int? urlsTimingId, DateTime? fromDate, DateTime? toDate);
         Task<List<Documents>> GetGroupedByURLsTiming();
         new Task<List<Documents>> GetActive();
+
+        Task<List<URLsTiming>> GetDocumentsIsShow();
+        Task<List<Documents>> GetDocumentsList(int? urlsTimingId, DateTime? fromDate, DateTime? toDate);
+        Task<bool> SaveDownloadLog(DocumentDownloadLog logs);
     }
 }

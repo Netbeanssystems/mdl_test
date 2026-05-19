@@ -64,6 +64,8 @@ namespace Application.Helpers
             CreateMap<Districts, DropdownVM>()
                 .ForMember(dest => dest.Text, opt => { opt.MapFrom(src => src.DistrictName); });
 
+
+            CreateMap<DocumentDownloadLog, DocumentDownloadLogDTO>();
             //RoleMenus
             CreateMap<RoleMenusDTO, RoleMenus>();
             CreateMap<RoleMenus, RoleMenusDTO>();
@@ -253,6 +255,10 @@ namespace Application.Helpers
             CreateMap<URLsTiming, URLsTimingDTO>();
             CreateMap<URLsTimingDTO, URLsTiming>();
             CreateMap<URLsTiming, URLsTimingVM>();
+            CreateMap<URLsTiming, ClosedWindowsVM>();
+            CreateMap<ClosedWindowsDTO, URLsTiming>()
+             .ForMember(dest => dest.IsShow, opt => opt.MapFrom(src => src.IsShow))
+             .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             //Bidder Project 
             CreateMap<BidderProjects, BidderProjectsDTO>();

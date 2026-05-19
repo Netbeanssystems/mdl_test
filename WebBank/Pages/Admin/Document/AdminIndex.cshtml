@@ -3,6 +3,7 @@
 @model WebBank.Pages.Admin.Document.AdminIndexModel
 @{
 }
+
 <section class="content">
     <div class="card">
         <div class="card-header">
@@ -82,7 +83,7 @@
                         </div>
                     </div>
                     <div class="col-md-1 text-center">
-                        <button type="submit" class="btn btn-primary">Apply Date</></button>
+                        <button type="submit" class="btn btn-primary">Apply Date</button>
                     </div>
 
                     <div class="col-md-1 text-center">
@@ -92,16 +93,63 @@
                     <div class="col-md-3">
                         <div class="form-group mb-0">
                             <label>Filter by Upload Window</label>
-                            <select name="urlsTimingId" class="form-control" asp-for="SelectedURLsTimingId" onchange="this.form.submit()">
+                            @* CHANGED: name mapping attribute adjusted to windowDescription; bound via string tracking data value property *@
+                            <select name="urlsTimingId" class="form-control" onchange="this.form.submit()">
                                 <option value="">-- All Closed Windows --</option>
-                                @if (Model.URLsTimingList != null)
+                               @*  @if (Model.ClosedDocuments != null)
                                 {
-                                    @foreach (var item in Model.URLsTimingList)
+                                        // 1. Group by description to find unique text entries
+                                        var currentTime = DateTime.Now;
+                                    var groupedWindows = Model.ClosedDocuments
+                                        .Where(item => !(item.FromTime <= currentTime && item.ToTime >= currentTime) && !string.IsNullOrEmpty(item.Description) )
+                                         .GroupBy(item => item.Description.Trim())
+                                        .ToList();
+
+                                    @foreach (var group in groupedWindows)
                                     {
-                                        var isOpen = item.FromTime <= DateTime.Now && item.ToTime >= DateTime.Now;
-                                        if (!isOpen && !string.IsNullOrEmpty(item.Description))
+                                        // 2. Extract exactly ONE representative URLsTiming ID from this group
+                                        var singleUrlTimingId = group.First().URLsTimingId;
+            
+                                        // 3. Convert it to a string to match against your page model's active filter property
+                                        var idValueString = singleUrlTimingId.ToString();
+                    
+                                        // 4. Keep the option visually highlighted if it matches the active route payload
+                                        if (Model.SelectedURLsTimingIdString == idValueString)
                                         {
-                                            <option value="@item.Id">@item.Description</option>
+                                            <option value="@idValueString" selected="selected">@group.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@idValueString">@group.Key</option>
+                                        }
+                                    }
+                                } *@
+                                @if (Model.ClosedDocuments != null)
+                                {
+                                    // 1. Group by the Description property directly available on URLsTimingVM
+                                    var currentTime = DateTime.Now;
+                                    var groupedWindows = Model.ClosedDocuments
+                                        .Where(item => !(item.FromTime <= currentTime && item.ToTime >= currentTime) &&
+                                                       !string.IsNullOrEmpty(item.Description))
+                                        .GroupBy(item => item.Description.Trim())
+                                        .ToList();
+
+                                    @foreach (var group in groupedWindows)
+                                    {
+                                        // 2. Extract exactly ONE representative ID from this group
+                                        var singleUrlTimingId = group.First().Id;
+        
+                                        // 3. Convert it to a string to match against your page model's active filter property
+                                        var idValueString = singleUrlTimingId.ToString();
+        
+                                        // 4. Keep the option visually highlighted if it matches the active route payload
+                                        if (Model.SelectedURLsTimingIdString == idValueString)
+                                        {
+                                            <option value="@idValueString" selected="selected">@group.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@idValueString">@group.Key</option>
                                         }
                                     }
                                 }
@@ -117,7 +165,7 @@
                     <table id="tblDataTable" class="table table-sm table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th class="text-center">Sr. No</th> @* Changed from ID *@
+                                <th class="text-center">Sr. No</th>
                                 <th class="search">Bank Name</th>
                                 <th class="search">Branch Name</th>
                                 <th class="search">Upload Window</th>
@@ -137,7 +185,14 @@
                                     <td>@item.BankName</td>
                                     <td>@item.BranchName</td>
                                     <td>@(item.URLsTiming?.Description ?? "N/A")</td>
-                                    <td><a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)">@Html.Encode(item.DocumentNameDecrypted)</a></td>
+                                   @*  <td><a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)">@Html.Encode(item.DocumentNameDecrypted)</a></td> *@
+                                    <td>
+                                        <a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)"
+                                               class="lnk-download-track"
+                                               data-docname="@item.DocumentNameDecrypted">
+                                            @Html.Encode(item.DocumentNameDecrypted)
+                                        </a>
+                                    </td>
                                     <td>@item.CreatedBy</td>
                                     <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 </tr>
@@ -156,48 +211,61 @@
         </div>
     </div>
 </section>
+
 @section Scripts
 {
+    <script>
+                $(document).ready(function () {
+            $('.lnk-download-track').on('click', function () {
+                const documentName = $(this).attr('data-docname');
+
+                // Fire-and-forget tracking log notification payload back to the server
+                $.ajax({
+                    url: '/api/Documents/LogDownload',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ documentName: documentName }),
+                    headers: {
+                        // Secure handling via request verification tokens
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    error: function(err) {
+                        console.error("Audit log synchronization pipeline failed:", err);
+                    }
+                });
+            });
+        });
+
+    </script>
+
     <script type="text/javascript" asp-append-version="true">
         $('#tblDataTable').DataTable();
-
-        $(document).ready(function () {
-            // Add Validations here
-        });
     </script>
     <script type="text/javascript" asp-append-version="true">
         $('form').keypress((e) => {
-            if (e.which === 13) {
-                SubmitForm(e);
-                return true;
-            }
+        if (e.which === 13) {
+        return true;
+        }
         });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let inputs = document.querySelectorAll("input, textarea");
             inputs.forEach(function (input) {
-                input.addEventListener('paste', function (e) {
-                    e.preventDefault();
-                });
-                input.addEventListener('copy', function (e) {
-                    e.preventDefault();
-                });
-                input.addEventListener('cut', function (e) {
-                    e.preventDefault();
-                });
+                input.addEventListener('paste', function (e) { e.preventDefault(); });
+                input.addEventListener('copy', function (e) { e.preventDefault(); });
+                input.addEventListener('cut', function (e) { e.preventDefault(); });
             });
         });
     </script>
     <script>
         $(document).ready(function () {
-            // Prevent future date selection via JS as a backup to the 'max' attribute
             const today = new Date().toISOString().split('T')[0];
             $('#fromDate, #toDate').attr('max', today);
 
-            // Sync validation: Ensure ToDate is not before FromDate
             $('#fromDate').change(function () {
                 $('#toDate').attr('min', $(this).val());
             });
-        });</script>
+        });
+    </script>
 }

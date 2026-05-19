@@ -58,7 +58,8 @@ namespace Infrastructure.Repositories
                 query = query.Where(d => d.URLsTiming != null && d.URLsTiming.FromTime >= fromDate.Value && d.URLsTiming.FromTime <= toDate.Value);
             }
 
-            return await query.OrderByDescending(d => d.CreatedDate).ToListAsync();
+             var  test =  await query.OrderByDescending(d => d.CreatedDate).ToListAsync();
+            return test;
         }
 
         public async Task<List<Documents>> GetGroupedByURLsTiming()
@@ -76,6 +77,64 @@ namespace Infrastructure.Repositories
                 .Include(d => d.URLsTiming)
                 .OrderByDescending(d => d.CreatedDate)
                 .ToListAsync();
+        }
+
+        public async Task<List<URLsTiming>> GetDocumentsIsShow()
+        {
+            return await DbContext.URLsTiming
+                .Include(x => x.Documents)
+                .Where(x => x.IsShow == true)
+                .ToListAsync();
+        }
+        
+            public async Task<List<Documents>> GetDocumentsList(int? urlsTimingId, DateTime? fromDate, DateTime? toDate)
+          {
+            var query = DbContext.Documents
+                .Include(d => d.URLsTiming)
+                .Where(d => d.URLsTiming.IsShow == true)
+                .AsQueryable();
+
+            // 1. Filter by the specific Window tracking ID if chosen
+            if (urlsTimingId.HasValue && urlsTimingId.Value > 0)
+            {
+                query = query.Where(d => d.URLsTimingId == urlsTimingId.Value);
+            }
+
+            // 2. Filter from the START of the fromDate (00:00:00)
+            if (fromDate.HasValue)
+            {
+                // Use Date property to ensure time is stripped back to midnight
+                var startOfDays = fromDate.Value.Date;
+                query = query.Where(d => d.CreatedDate >= startOfDays);
+            }
+
+            // 3. FIXED: Filter to the END of the toDate day (23:59:59)
+            if (toDate.HasValue)
+            {
+                // This takes the date and moves the constraint to 1 tick before midnight of the next day
+                var endOfDays = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(d => d.CreatedDate <= endOfDays);
+            }
+
+            return await query.OrderByDescending(d => d.CreatedDate).ToListAsync();
+        }
+
+
+        public async Task<bool> SaveDownloadLog(DocumentDownloadLog logs)
+        {
+            if (logs == null) return false;
+
+            try
+            {
+
+            var log =  await DbContext.documentDownloadLogs.AddAsync(logs);
+            var rowAffected = await DbContext.SaveChangesAsync();
+            return rowAffected > 0  ;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

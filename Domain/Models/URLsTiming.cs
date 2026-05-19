@@ -10,6 +10,7 @@ namespace Domain.Models
         public DateTime FromTime { get; set; }
         public DateTime ToTime { get; set; }
         public string Description { get; set; }
+        public bool IsShow { get; set; }
         public virtual ICollection<Documents> Documents { get; set; }
     }
 }

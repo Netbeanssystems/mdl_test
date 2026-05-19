@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.ViewModels;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,5 +29,13 @@ namespace Application.ServiceInterfaces
         Task<int> DeleteRange(List<DocumentsDTO> entities);
         //Custom Methods
         Task<List<DropdownVM>> GetDropdown();
+
+        Task<List<ClosedWindowsVM>> GetClosedWindows();
+
+        Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos);
+
+        Task<List<URLsTimingVM>> GetDocumentsIsShow();
+        Task<List<DocumentsVM>> GetDocumentsList(int? urlsTimingId, DateTime? fromDate, DateTime? toDate);
+        Task<bool> SaveDownloadLog(DocumentDownloadLog logEntity);
     }
 }

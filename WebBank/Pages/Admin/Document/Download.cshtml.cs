@@ -12,6 +12,8 @@
 //}
 
 
+using Application.Dtos;
+using Application.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,25 +21,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace WebBank.Pages.Admin.Document
 {
     [Authorize(Roles = "BankUser,SuperAdmin")]
-    [Authorize]
     public class DownloadModel : PageModel
     {
+        private readonly IHttpClientService _httpClient;
 
+        // Constructor injection for your existing HTTP client communication service
+        public DownloadModel(IHttpClientService httpClient)
+        {
+            _httpClient = httpClient;
+        }
 
-
-        public IActionResult OnGet(string file)
+        // Changed from IActionResult to async Task<IActionResult> for the API log dispatch
+        public async Task<IActionResult> OnGetAsync(string file)
         {
             if (!User.Identity.IsAuthenticated)
             {
                 return Redirect("/Account/Login");
             }
-
-
-
 
             if (string.IsNullOrWhiteSpace(file))
                 return NotFound();
@@ -61,7 +67,29 @@ namespace WebBank.Pages.Admin.Document
             if (!System.IO.File.Exists(filePath))
                 return NotFound();
 
-            // 🔐 FORCE DOWNLOAD
+            
+            try
+            {
+                var logDto = new DocumentDownloadLogDTO
+                {
+                    DocumentName = safeFileName,
+                    DownloadedBy = User.Identity?.Name ?? "Unknown User",
+                    DownloadedAt = DateTimeOffset.Now, 
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown"
+                };
+
+                // Forwarding payload to your backend API route
+                // Second parameter set to true assuming it handles token pass-through like your other gets
+                await _httpClient.PostAsync("Documents/LogDownload", true, logDto);
+            }
+            catch (Exception ex)
+            {
+                // Log exception internally if backend logging pipeline fails, 
+                // but don't crash the request—let the user download their file anyway.
+                // _logger.LogError(ex, "Failed to record file download audit trail.");
+            }
+
+            //  FORCE DOWNLOAD
             return PhysicalFile(
                 filePath,
                 "application/pdf",

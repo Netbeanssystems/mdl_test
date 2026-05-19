@@ -69,8 +69,8 @@
                                         <tr>
                                             <th class="text-center">Sr. No</th>
                                             <th class="text-center noExport noSort">Description</th>
-                                            <th class="text-center">From Date</th>
-                                            <th class="search">To Date</th>
+                                            <th class="text-center hidden">From Date</th>
+                                            <th class="search hidden">To Date</th>
                                             <th class="search">Enabled By</th>
                                             <th class="search">Enabled Date and Time</th>
                                         </tr>
@@ -82,8 +82,8 @@
                                             <tr>
                                                 <td class="text-center">@(i + 1)</td>
                                                 <td>@item.Description</td>
-                                                <td class="text-center">@item.FromTime.ToString("dd/MM/yyyy HH:mm")</td>
-                                                <td>@item.ToTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="text-center hidden">@item.FromTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="hidden">@item.ToTime.ToString("dd/MM/yyyy HH:mm")</td>
                                                 <td>@item.CreatedBy</td>
                                                 <td class="text-right">@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                                             </tr>

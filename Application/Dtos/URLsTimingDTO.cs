@@ -21,4 +21,12 @@ namespace Application.Dtos
         [StringLength(256, ErrorMessage = "{1} characters max")]
         public string Description { get; set; }
     }
+
+
+    public class ClosedWindowsDTO
+    {
+        public int Id { get; set; }
+
+        public bool IsShow { get; set; }
+    }
 }

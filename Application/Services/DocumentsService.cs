@@ -216,5 +216,142 @@ namespace Application.Services
             
             return years;
         }
+
+        public async Task<List<ClosedWindowsVM>> GetClosedWindows()
+        {
+            var result = await _unitOfWork.URLsTimingRepo.GetClosed().ConfigureAwait(false); 
+
+            if (result == null || result.Count <= 0) return null;
+
+            var modelVm =  _mapper.Map<List<ClosedWindowsVM>>(result);
+
+            return modelVm;
+
+        }
+
+        public async Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos)
+        {
+            // 1. Extract all IDs from the incoming DTO list
+            var idsToUpdate = dtos.Select(d => d.Id).ToList();
+
+            // 2. Fetch all matching records from the database in a single query
+            var existingRecords = await _unitOfWork.URLsTimingRepo.GetByMultipleIds(idsToUpdate).ConfigureAwait(false);
+
+            if (existingRecords == null || !existingRecords.Any())
+            {
+                return false; // No matching records found in the system
+            }
+
+            // 3. Loop through and map each DTO properties onto its corresponding tracked database entity
+            foreach (var dto in dtos)
+            {
+                var recordToUpdate = existingRecords.FirstOrDefault(r => r.Id == dto.Id);
+                if (recordToUpdate != null)
+                {
+                    // AutoMapper applies changes directly onto the EF-tracked entity
+                    _mapper.Map(dto, recordToUpdate);
+
+                    // Mark the entity as modified in the repository wrapper
+                    await _unitOfWork.URLsTimingRepo.Update(recordToUpdate).ConfigureAwait(false);
+                }
+            }
+
+            // 4. Commit all changes to the database in a single round-trip save operation
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+
+            return true;
+        }
+
+
+        //public async Task<List<DocumentsVM>> GetDocumentsIsShow()
+        //{
+        //    var documents = await _unitOfWork.DocumentsRepo.GetDocumentsIsShow().ConfigureAwait(false);
+
+        //    if (documents == null || !documents.Any())
+        //    {
+        //        return new List<DocumentsVM>();
+        //    }
+        //    return  _mapper.Map<List<DocumentsVM>>(documents);
+
+        //}
+
+        //public async Task<List<DocumentsVM>> GetDocumentsIsShow()
+        //{
+        //    // 1. Fetch the URLsTiming list (which contains the nested Documents collections)
+        //    var urlsTimings = await _unitOfWork.DocumentsRepo.GetDocumentsIsShow().ConfigureAwait(false);
+
+        //    if (urlsTimings == null || !urlsTimings.Any())
+        //    {
+        //        return new List<DocumentsVM>();
+        //    }
+
+        //    // 2. Flatten the nested Documents collections into a single list of DocumentsVM
+        //    var modelVm = urlsTimings
+        //        .Where(ut => ut.Documents != null) // Ensure there are documents to map
+        //        .SelectMany(ut => ut.Documents.Select(doc => new DocumentsVM
+        //        {
+        //            Id = doc.Id,
+        //            DocumentName = doc.DocumentName,
+        //       //     DocumentNameDecrypted = doc.DocumentNameDecrypted,
+        //            BankName = doc.BankName,
+        //            BranchName = doc.BranchName,
+        //            Description = doc.Description,
+        //            URLsTimingId = doc.URLsTimingId,
+        //      //      DocumentCount = doc.DocumentCount,
+
+        //            // Correctly reference the parent 'ut' (URLsTiming) object here
+        //            URLsTiming = new URLsTimingVM
+        //            {
+        //                Id = ut.Id,
+        //         //       WindowDescription = ut.WindowDescription, // Map other properties from parent as needed
+        //                FromTime = ut.FromTime,
+        //                ToTime = ut.ToTime
+        //            }
+        //        }))
+        //        .ToList();
+
+        //    return modelVm;
+        //}
+        public async Task<List<URLsTimingVM>> GetDocumentsIsShow()
+        {
+            var urlsTimings = await _unitOfWork.DocumentsRepo.GetDocumentsIsShow().ConfigureAwait(false);
+
+            if (urlsTimings == null || !urlsTimings.Any())
+            {
+                return new List<URLsTimingVM>();
+            }
+
+            // Directly map URLsTiming entities to URLsTimingVM instances
+            var modelVm = urlsTimings.Select(ut => new URLsTimingVM
+            {
+                Id = ut.Id,
+                Url = ut.Url,
+                FromTime = ut.FromTime,
+                ToTime = ut.ToTime,
+                Description = ut.Description,
+                URLsTimingId = ut.Id.ToString() // Matching your virtual string ID requirement if needed
+            }).ToList();
+
+            return modelVm;
+        }
+
+
+        public async Task<List<DocumentsVM>> GetDocumentsList(int? urlsTimingId, DateTime? fromDate, DateTime? toDate)
+        {
+            var models = await _unitOfWork.DocumentsRepo.GetDocumentsList(urlsTimingId, fromDate, toDate).ConfigureAwait(false);
+            if (models == null || models.Count <= 0) return null;
+            var modelVms = _mapper.Map<List<DocumentsVM>>(models);
+            if (modelVms == null || modelVms.Count <= 0) return null;
+            return modelVms;
+        }
+
+        public async Task<bool> SaveDownloadLog(DocumentDownloadLog logEntity)
+        {
+            if (logEntity == null) return false;
+
+            var result = await _unitOfWork.DocumentsRepo.SaveDownloadLog(logEntity);
+            return result;
+
+        }
     }
 }
