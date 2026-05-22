@@ -102,62 +102,269 @@
         </div>
     </div>
 </section>
+@* 
 @section Scripts
 {
     <script type="text/javascript" asp-append-version="true">
+        $(document).ready(function () {
+            
+        // ==========================================
+        // 1. DATERANGEPICKER INITIALIZERS
+        // ==========================================
         $('#FromTime').daterangepicker({
-            "showDropdowns": true,
-            "singleDatePicker": true,
-            "timePicker": true,
-            "timePicker24Hour": true,
-            "timePickerIncrement": 1,
-            "locale": {
-                "format": "MM/DD/YYYY HH:mm",
-                "separator": " - "
-            },
+        "showDropdowns": true,
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePicker24Hour": true,
+        "timePickerIncrement": 1,
+        "locale": {
+        "format": "MM/DD/YYYY HH:mm",
+        "separator": " - "
+        },
         },
         function (start) {
-            $('#URLsTimingDTO_FromTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
-            $('#FromTime').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#URLsTimingDTO_FromTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#FromTime').val(start.format('MM/DD/YYYY HH:mm'));
         });
 
         $('#ToTime').daterangepicker({
-            "showDropdowns": true,
-            "singleDatePicker": true,
-            "timePicker": true,
-            "timePicker24Hour": true,
-            "timePickerIncrement": 1,
-            "locale": {
-                "format": "MM/DD/YYYY HH:mm",
-                "separator": " - "
-            },
+        "showDropdowns": true,
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePicker24Hour": true,
+        "timePickerIncrement": 1,
+        "locale": {
+        "format": "MM/DD/YYYY HH:mm",
+        "separator": " - "
+        },
         },
         function (start) {
-            $('#URLsTimingDTO_ToTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
-            $('#ToTime').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#URLsTimingDTO_ToTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#ToTime').val(start.format('MM/DD/YYYY HH:mm'));
         });
 
+        // ==========================================
+        // 2. HELPER TO GENERATE LIVE TIMESTAMP
+        // ==========================================
+        function getDownloadTimestamp() {
+        var now = new Date();
+        var day = String(now.getDate()).padStart(2, '0');
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var year = now.getFullYear();
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = String(now.getMinutes()).padStart(2, '0');
+        return "Exported On: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+        }
 
-        $('#tblDataTable').DataTable();
+        // ==========================================
+        // 3. ADVANCED DATATABLE INITIALIZATION
+        // ==========================================
+        // Retains your exact table architecture, including search/column toggles,
+        // while embedding customized Excel and PDF configurations.
+        $('#tblDataTable').DataTable({
+        dom: 'Bfrtip', // Preserves your show/hide control rendering positions
+        buttons: [
+        {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel"></i> Excel',
+        className: 'btn btn-sm btn-success',
+        title: 'URLs Timing Report',
+        exportOptions: {
+        columns: ':visible:not(.noExport)' // Crucial: dynamically updates according to Show/Hide column visibility state
+        },
+        // FIXED: Safely injects text layout directly without risking broken row indexing loops
+        customize: function (xlsx) {
+        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+        var timestamp = getDownloadTimestamp();
+                            
+        // Target the `<sheetHeader>` or `<title>` properties directly inside Excel markup styles
+        // This ensures the timestamp appears cleanly at the top without shifting row indexes
+        var sheetData = sheet.getElementsByTagName('sheetData')[0];
+                            
+        // Build custom row elements
+        var rowEl = xlsx.xl.worksheets['sheet1.xml'].createElement('row');
+        rowEl.setAttribute('r', '1');
+                            
+        var cellEl = xlsx.xl.worksheets['sheet1.xml'].createElement('c');
+        cellEl.setAttribute('r', 'D1'); // Automatically lands near top right corner of data array grid
+        cellEl.setAttribute('t', 'inlineStr');
+                            
+        var inlineStrEl = xlsx.xl.worksheets['sheet1.xml'].createElement('is');
+        var textEl = xlsx.xl.worksheets['sheet1.xml'].createElement('t');
+        textEl.textContent = timestamp;
+                            
+        inlineStrEl.appendChild(textEl);
+        cellEl.appendChild(inlineStrEl);
+        rowEl.appendChild(cellEl);
+                            
+        // Safely inject right before DataTables builds your core records rows
+        sheetData.insertBefore(rowEl, sheetData.childNodes[0]);
+        }
+        },
+        {
+        extend: 'pdfHtml5',
+        text: '<i class="fas fa-file-pdf"></i> PDF',
+        className: 'btn btn-sm btn-danger',
+        title: 'URLs Timing Report',
+        exportOptions: {
+        columns: ':visible:not(.noExport)' // Dynamically checks current visible columns selection list
+        },
+        customize: function (doc) {
+        var timestamp = getDownloadTimestamp();
+                            
+        // Insert the live timestamp right at the apex of the PDF document content tree
+        doc.content.splice(0, 0, {
+        text: timestamp,
+        alignment: 'right',
+        fontSize: 9,
+        margin: [0, 0, 0, 15]
+        });
 
-
-        $(document).ready(function () {
-            // Add Validations here
+        // Enforce cohesive style overrides for DataTables tables
+        if (doc.styles && doc.styles.tableHeader) {
+        doc.styles.tableHeader.fillColor = '#343a40';
+        doc.styles.tableHeader.color = 'white';
+        doc.styles.tableHeader.alignment = 'center';
+        }
+        }
+        },
+        // Retains your default show/hide visibility selectors dropdown toggle button
+        {
+        extend: 'colvis',
+        text: '<i class="fas fa-columns"></i> Show/Hide Columns',
+        className: 'btn btn-sm btn-secondary'
+        }
+        ]
+        });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             let inputs = document.querySelectorAll("input, textarea");
             inputs.forEach(function (input) {
-                input.addEventListener('paste', function (e) {
-                    e.preventDefault();
-                });
-                input.addEventListener('copy', function (e) {
-                    e.preventDefault();
-                });
-                input.addEventListener('cut', function (e) {
-                    e.preventDefault();
-                });
+                input.addEventListener('paste', function (e) { e.preventDefault(); });
+                input.addEventListener('copy', function (e) { e.preventDefault(); });
+                input.addEventListener('cut', function (e) { e.preventDefault(); });
+            });
+        });
+    </script>
+} *@
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        $(document).ready(function () {
+            
+        // ==========================================
+        // 1. DATERANGEPICKER INITIALIZERS
+        // ==========================================
+        $('#FromTime').daterangepicker({
+        "showDropdowns": true,
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePicker24Hour": true,
+        "timePickerIncrement": 1,
+        "locale": {
+        "format": "MM/DD/YYYY HH:mm",
+        "separator": " - "
+        },
+        },
+        function (start) {
+        $('#URLsTimingDTO_FromTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#FromTime').val(start.format('MM/DD/YYYY HH:mm'));
+        });
+
+        $('#ToTime').daterangepicker({
+        "showDropdowns": true,
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePicker24Hour": true,
+        "timePickerIncrement": 1,
+        "locale": {
+        "format": "MM/DD/YYYY HH:mm",
+        "separator": " - "
+        },
+        },
+        function (start) {
+        $('#URLsTimingDTO_ToTimeStr').val(start.format('MM/DD/YYYY HH:mm'));
+        $('#ToTime').val(start.format('MM/DD/YYYY HH:mm'));
+        });
+
+        // ==========================================
+        // 2. HELPER TO GENERATE LIVE TIMESTAMP
+        // ==========================================
+        function getDownloadTimestamp() {
+        var now = new Date();
+        var day = String(now.getDate()).padStart(2, '0');
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var year = now.getFullYear();
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = String(now.getMinutes()).padStart(2, '0');
+        return "Exported On: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+        }
+
+        // ==========================================
+        // 3. DATATABLE INITIALIZATION
+        // ==========================================
+        $('#tblDataTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+        {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel"></i> Excel',
+        className: 'btn btn-sm btn-success',
+        // FIX: We merge the main title and right-side timestamp into a single string using tabs (\t).
+        // DataTables handles this natively by rendering the Title on the left, and pushing the \t value to the top-right column cell!
+        title: function () {
+        return 'URLs Timing Report\t\t\t\t' + getDownloadTimestamp();
+        },
+        exportOptions: {
+        columns: ':visible:not(.noExport)'
+        }
+        },
+        {
+        extend: 'pdfHtml5',
+        text: '<i class="fas fa-file-pdf"></i> PDF',
+        className: 'btn btn-sm btn-danger',
+        title: 'URLs Timing Report',
+        exportOptions: {
+        columns: ':visible:not(.noExport)'
+        },
+        customize: function (doc) {
+        var timestamp = getDownloadTimestamp();
+                            
+        // Prepend live timestamp at the apex of the PDF content tree
+        doc.content.splice(0, 0, {
+        text: timestamp,
+        alignment: 'right',
+        fontSize: 9,
+        margin: [0, 0, 0, 15]
+        });
+
+        if (doc.styles && doc.styles.tableHeader) {
+        doc.styles.tableHeader.fillColor = '#343a40';
+        doc.styles.tableHeader.color = 'white';
+        doc.styles.tableHeader.alignment = 'center';
+        }
+        }
+        },
+        {
+        extend: 'colvis',
+        text: '<i class="fas fa-columns"></i> Show/Hide Columns',
+        className: 'btn btn-sm btn-secondary'
+        }
+        ]
+        });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) { e.preventDefault(); });
+                input.addEventListener('copy', function (e) { e.preventDefault(); });
+                input.addEventListener('cut', function (e) { e.preventDefault(); });
             });
         });
     </script>

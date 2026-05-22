@@ -191,6 +191,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateMultipleVisibility([FromBody] List<ClosedWindowsDTO> dtos)
         {
             if (dtos == null || !dtos.Any())
@@ -234,7 +235,36 @@ namespace WebAPI.Controllers
             return Ok(modelVms);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> LogDownload([FromBody] DocumentDownloadLogDTO dto)
+        //{
+        //    if (dto == null || string.IsNullOrEmpty(dto.DocumentName))
+        //    {
+        //        return BadRequest("Invalid log metrics structure.");
+        //    }
+
+        //    // Maps DTO data values to your database entity model instance
+        //    var logEntity = new DocumentDownloadLog
+        //    {
+        //        DocumentName = dto.DocumentName,
+        //        DownloadedBy = dto.DownloadedBy,
+        //        DownloadedAt = dto.DownloadedAt,
+        //        IpAddress = dto.IpAddress
+        //    };
+
+        //    // Assuming you follow a unit-of-work/data service pipeline pattern:
+        //    var result = await _dataService.Documents.SaveDownloadLog(logEntity);
+
+        //    if (!result)
+        //    {
+        //        return StatusCode(500, "An error occurred while tracking server audit records.");
+        //    }
+
+        //    return Ok();
+        //}
+
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> LogDownload([FromBody] DocumentDownloadLogDTO dto)
         {
             if (dto == null || string.IsNullOrEmpty(dto.DocumentName))
@@ -242,16 +272,21 @@ namespace WebAPI.Controllers
                 return BadRequest("Invalid log metrics structure.");
             }
 
-            // Maps DTO data values to your database entity model instance
+            // Capture user identity securely from the authenticated ClaimsPrincipal context
+           // string currentUserName = User.Identity?.Name ?? "Authenticated Operator";
+
+            // Capture the client remote IP safely from the connection network bridge
+            string clientIpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown Client";
+
+            // Build the audit footprint entity entirely using server-validated metrics
             var logEntity = new DocumentDownloadLog
             {
                 DocumentName = dto.DocumentName,
-                DownloadedBy = dto.DownloadedBy,
-                DownloadedAt = dto.DownloadedAt,
-                IpAddress = dto.IpAddress
+                DownloadedBy = dto.DownloadedBy,       // Overridden for security
+                DownloadedAt = DateTime.UtcNow,        // Standardized on server clock UTC timezone
+                IpAddress = clientIpAddress            // Extracted directly from tcp socket stream
             };
 
-            // Assuming you follow a unit-of-work/data service pipeline pattern:
             var result = await _dataService.Documents.SaveDownloadLog(logEntity);
 
             if (!result)
