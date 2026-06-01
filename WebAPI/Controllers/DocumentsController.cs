@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -190,16 +191,86 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        //[HttpPut]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> UpdateMultipleVisibility([FromBody] List<ClosedWindowsDTO> dtos)
+        //{
+        //    if (dtos == null || !dtos.Any())
+        //    {
+        //        return BadRequest("The update list cannot be empty.");
+        //    }
+        //    string updatedBy = "Anonymous";
+
+        //    // 1. Check if the cookie exists in the incoming request
+        //    if (Request.Cookies.TryGetValue(".MDLBNK.AuthToken", out var tokenStr) && !string.IsNullOrEmpty(tokenStr))
+        //    {
+        //        try
+        //        {
+        //            var handler = new JwtSecurityTokenHandler();
+        //            if (handler.CanReadToken(tokenStr))
+        //            {
+        //                var jwtToken = handler.ReadJwtToken(tokenStr);
+
+        //                // 2. Look for the claim (Checking both standard SOAP format and short key fallback)
+        //                var nameClaim = jwtToken.Claims.FirstOrDefault(c =>
+        //                    c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" ||
+        //                    c.Type == "unique_name" ||
+        //                    c.Type == "name" ||
+        //                    c.Type == "uid");
+
+        //                if (nameClaim != null)
+        //                {
+        //                    updatedBy = nameClaim.Value;
+        //                }
+        //                else
+        //                {
+        //                    // DEBUG: The cookie was read, but the specific claim wasn't found
+        //                    updatedBy = "CookieFound_ClaimMissing";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                // DEBUG: Cookie found, but handler says it's not a valid JWT format
+        //                updatedBy = "Malformed_JWT_Token";
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // DEBUG: See the exact exception if parsing crashed
+        //            updatedBy = $"Error_{ex.Message.Replace(" ", "_")}";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // DEBUG: The browser did NOT send the cookie to this API route
+        //        updatedBy = "Cookie_Not_Sent_By_Browser";
+        //    }
+        //    var result = await _dataService.Documents.UpdateMultipleWindowsVisibility(dtos, updatedBy);
+
+        //    if (!result)
+        //    {
+        //        return StatusCode(500, "An error occurred while updating the records.");
+        //    }
+
+        //    return NoContent(); // 204 No Content
+        //}
         [HttpPut]
         [AllowAnonymous]
-        public async Task<IActionResult> UpdateMultipleVisibility([FromBody] List<ClosedWindowsDTO> dtos)
+        public async Task<IActionResult> UpdateMultipleVisibility([FromBody] UpdateVisibilityRequest request)
         {
-            if (dtos == null || !dtos.Any())
+            // Validate the incoming wrapper payload data structure
+            if (request == null || request.Dtos == null || !request.Dtos.Any())
             {
                 return BadRequest("The update list cannot be empty.");
             }
 
-            var result = await _dataService.Documents.UpdateMultipleWindowsVisibility(dtos);
+            // Capture the username string passed cleanly through the request body
+            string updatedBy = !string.IsNullOrEmpty(request.UpdatedBy)
+                               ? request.UpdatedBy
+                               : "Anonymous";
+
+            // Pass the DTO array and the username string down to your service layer
+            var result = await _dataService.Documents.UpdateMultipleWindowsVisibility(request.Dtos, updatedBy);
 
             if (!result)
             {
@@ -209,6 +280,12 @@ namespace WebAPI.Controllers
             return NoContent(); // 204 No Content
         }
 
+        // 📄 Add this wrapper class right below your controller or in your models folder
+        public class UpdateVisibilityRequest
+        {
+            public List<ClosedWindowsDTO> Dtos { get; set; }
+            public string UpdatedBy { get; set; }
+        }
 
         [HttpGet]
         public async Task<ActionResult<List<DocumentsVM>>> GetVisibleDocuments()

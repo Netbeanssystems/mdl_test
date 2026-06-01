@@ -11,6 +11,8 @@ namespace Domain.Models
         public DateTime ToTime { get; set; }
         public string Description { get; set; }
         public bool IsShow { get; set; }
+        public DateTimeOffset? IsShowUpdatedDate { get; set; }
+        public string IsShowUpdatedBy { get; set; } = string.Empty;
         public virtual ICollection<Documents> Documents { get; set; }
     }
 }

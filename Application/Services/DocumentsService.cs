@@ -229,7 +229,7 @@ namespace Application.Services
 
         }
 
-        public async Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos)
+        public async Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos, string updatedBy)
         {
             // 1. Extract all IDs from the incoming DTO list
             var idsToUpdate = dtos.Select(d => d.Id).ToList();
@@ -250,6 +250,9 @@ namespace Application.Services
                 {
                     // AutoMapper applies changes directly onto the EF-tracked entity
                     _mapper.Map(dto, recordToUpdate);
+
+                    recordToUpdate.IsShowUpdatedBy = updatedBy;
+                    recordToUpdate.IsShowUpdatedDate = DateTime.Now;
 
                     // Mark the entity as modified in the repository wrapper
                     await _unitOfWork.URLsTimingRepo.Update(recordToUpdate).ConfigureAwait(false);

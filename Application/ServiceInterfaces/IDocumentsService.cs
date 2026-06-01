@@ -32,7 +32,7 @@ namespace Application.ServiceInterfaces
 
         Task<List<ClosedWindowsVM>> GetClosedWindows();
 
-        Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos);
+        Task<bool> UpdateMultipleWindowsVisibility(List<ClosedWindowsDTO> dtos, string updatedBy);
 
         Task<List<URLsTimingVM>> GetDocumentsIsShow();
         Task<List<DocumentsVM>> GetDocumentsList(int? urlsTimingId, DateTime? fromDate, DateTime? toDate);
