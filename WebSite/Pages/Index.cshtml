@@ -648,8 +648,8 @@
             <span class="stop5"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
         </div>
     </div>
-    @* <div id="popup"> *@
-        @* <button id="closeButton">&times;</button> *@
+    <div id="popup"> 
+         <button id="closeButton">&times;</button> 
 
         @* <img src="assets/images/DRISHTI_Challenge.jpg"
              class="banner-img"
@@ -660,7 +660,10 @@
              class="banner-img"
              data-link="https://mazagondock.webex.com/mazagondock/j.php?MTID=ma83d4b9da587b6b1a370f0ae4b9deade"
              style="display: none;">*@
-    @* </div> *@
+        <img src="assets/images/b1-D9jDLF60.jpeg"
+             class="banner-img"
+             style="display: none;">
+     </div> 
 </section>
 
 <div id="bot-container" class="">
@@ -767,7 +770,7 @@
         </div>
     </div>
 </div>
-
+@*
 @section Scripts {
     <script>
         const plax1 = document.querySelector(".hero-sec");
@@ -776,7 +779,7 @@
             plax1.style.transform = "translateY(" + offset * 0.7 + "px)";
         });
     </script>
-     @*  <script>
+      <script>
         function PopUp() {
             $('#popup').fadeIn();
         }
@@ -809,8 +812,8 @@
                 $('#popup').fadeOut();
             });
         });
-    </script>  *@
-    }
+    </script>  
+    }*@
 
     @*<script>
         $(document).ready(function () {
@@ -865,3 +868,97 @@
     </script>
     <script src="~/js/botscript.js"></script>
 }*@
+
+
+
+@section Scripts {
+
+    <style>
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            background: #ffffff;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            /* --- FIXED UNITS FOR A TRULY BIGGER POPUP --- */
+            max-width: 90vw; /* Use vw (Viewport Width) so it takes up 90% of screen width */
+            min-width:80vw;
+           
+        }
+
+        #closeButton {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 30px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+            #closeButton:hover {
+                background: #d9534f;
+            }
+
+        .banner-img {
+            width: 100%; /* Spreads the image smoothly to fill the container width */
+            height: auto; /* Keeps the aspect ratio perfectly intact without distortion */
+            max-height: 80vh; /* Restricts vertical height so it never overflows off the screen bottom */
+            display: block;
+            border-radius: 6px;
+        }
+    </style>
+    <script>
+        // Parallax Effect for Hero Section
+        const plax1 = document.querySelector(".hero-sec");
+        if (plax1) {
+            window.addEventListener("scroll", function () {
+                let offset = window.pageYOffset;
+                plax1.style.transform = "translateY(" + offset * 0.7 + "px)";
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Show popup after 1 second
+            setTimeout(function () {
+                // 1. Force the hidden image to display first
+                $('#popup .banner-img').show();
+
+                // 2. Then fade in the entire popup container
+                $('#popup').fadeIn();
+            }, 1000);
+
+            // Close popup when clicking the Close Button
+            $('#closeButton').on('click', function (event) {
+                event.stopPropagation();
+                $('#popup').fadeOut();
+            });
+
+            // Close the popup when clicking anywhere outside the image box
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#popup').length) {
+                    $('#popup').fadeOut();
+                }
+            });
+
+            // Prevent closing when clicking inside the popup element itself
+            $('#popup').on('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+    </script>
+}
