@@ -49,7 +49,7 @@ namespace WebSite.Pages.Forms
         {
             if (!Captcha.ValidateCaptchaCode(vigi.CaptchaCode, HttpContext))
             {
-                ModelState.AddModelError("Captcha", "Please enter correct captcha");
+                ModelState.AddModelError("vigi.CaptchaCode", "Please enter correct captcha");
             }
 
             vigi.SubmitOn = System.DateTime.Now;
@@ -69,6 +69,7 @@ namespace WebSite.Pages.Forms
             filteredmodel.SubmitOn = vigi.SubmitOn;
             filteredmodel.CaptchaCode = vigi.CaptchaCode;
 
+            /*
             if (vigi.UploadFile != null)
             {
                 //...........Check Valid File ...................
@@ -81,6 +82,7 @@ namespace WebSite.Pages.Forms
                 filteredmodel.UploadFileName = await _fileService.SaveImageAsync(@"\img\Uploads\VigilanceForm\", vigi.UploadFile);
                 filteredmodel.UploadFile = null;
             }
+            */
 
             vigi = ModelAuditor<VigilanceFormDTO>.SetAudit(User.Identity.Name, "Create", HttpContext.Connection.RemoteIpAddress.ToString(), filteredmodel);
             if (!ModelState.IsValid) { _notyf.Error(ModelState.GetErrorMessageString()); return Page(); }

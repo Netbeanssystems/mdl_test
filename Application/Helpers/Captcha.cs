@@ -14,17 +14,35 @@ namespace Application.Helpers
 
         public static string GenerateCaptchaCode()
         {
-            var rand = new Random();
-            var maxRand = Letters.Length - 1;
-            var sb = new StringBuilder();
+            const string Numbers = "2346789";
+            const string Alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string Specials = "$#@&";
+            const string AllLetters = "2346789ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&";
 
-            for (var i = 0; i < 6; i++)
+            var rand = new Random();
+            var captcha = new char[6];
+
+            // Enforce at least 1 number, 1 alphabet, and 1 special character
+            captcha[0] = Numbers[rand.Next(Numbers.Length)];
+            captcha[1] = Alphabets[rand.Next(Alphabets.Length)];
+            captcha[2] = Specials[rand.Next(Specials.Length)];
+
+            // Fill the remaining characters randomly
+            for (int i = 3; i < 6; i++)
             {
-                var index = rand.Next(maxRand);
-                sb.Append(Letters[index]);
+                captcha[i] = AllLetters[rand.Next(AllLetters.Length)];
             }
 
-            return sb.ToString();
+            // Shuffle the captcha characters to make the positions of characters random (Fisher-Yates shuffle)
+            for (int i = 5; i > 0; i--)
+            {
+                int j = rand.Next(i + 1);
+                var temp = captcha[i];
+                captcha[i] = captcha[j];
+                captcha[j] = temp;
+            }
+
+            return new string(captcha);
         }
 
         public static bool ValidateCaptchaCode(string userInputCaptcha, HttpContext context)

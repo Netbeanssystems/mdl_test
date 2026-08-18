@@ -5,7 +5,7 @@
     Layout = "_InternalPagesLayout";
     @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
     {
-      
+
         ViewData["Title"] = "Register Complaint";
     }
     else
@@ -27,13 +27,13 @@ else
 {
     <div class="hero" style="position: relative;">
         <div class="item"><div class="heading">शिकायत दर्ज करना </div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
-                <div class="strip"><span><a href="/">मुख्य पृष्ठ </a> > हमारे बारे में > <a href="/English/vigilance">सतर्कता</a> > शिकायत दर्ज करना </span></div>
+        <div class="strip"><span><a href="/">मुख्य पृष्ठ </a> > हमारे बारे में > <a href="/English/vigilance">सतर्कता</a> > शिकायत दर्ज करना </span></div>
     </div>
 }
 
 <div class="mid-content">
     <div class="container">
-        
+
         @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
         {
             <h5 class="main-head"><b>Register a Complaint Online</b></h5>
@@ -58,69 +58,69 @@ else
             <p>शिकायत निम्नलिखित फॉर्म को भरकर और उसे सबमिट करके ऑनलाइन दर्ज की जा सकती है।  </p>
             <p>(कृपया सभी विवरण भरें)</p>
         }
-      @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
         {
             <div class="row">
                 <div class="col-md-12 mb-4">
-                <form method="post" class="row g-3" asp-page-handler="Complaint" enctype="multipart/form-data" id="complaintForm">
+                    <form method="post" class="row g-3" asp-page-handler="Complaint" enctype="multipart/form-data" id="complaintForm">
 
-                    <span style="font-size:medium;">   <b> NOTE :</b> All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _ ) etc. are not allowed. By any way you try to save it will be removed and then saved.</span>
+                        <span style="font-size:medium;">   <b> NOTE :</b> All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _ ) etc. are not allowed. By any way you try to save it will be removed and then saved.</span>
                         <p>(<span class="astricks">*</span>) Information Required</p>
-                    <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
-                    <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
-                    <div class="col-md-4">
+                        <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
+                        <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
+                        <div class="col-md-4">
                             <label for="vigi_Name" asp-for="vigi.Name" class="form-label">Name<span class="astricks">*</span></label>
                             <input asp-for="vigi.Name" autocomplete="off" aria-describedby="vigi_Name-error" placeholder="Name" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                        <span asp-validation-for="vigi.Name" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
+                            <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
                             <label for="vigi_Designation" asp-for="vigi.Designation" class="form-label">Designation<span class="astricks">*</span></label>
                             <input asp-for="vigi.Designation" aira-discribedby="vigi_Designation-error" autocomplete="off" placeholder="Designation" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                        <span asp-validation-for="vigi.Designation" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
+                            <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
                             <label for="vigi_Organization" asp-for="vigi.Organization" class="form-label">Organization<span class="astricks">*</span></label>
                             <input asp-for="vigi.Organization" autocomplete="off" placeholder="Organization" aria-describedby="vigi_Organization-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                        <span asp-validation-for="vigi.Organization" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
+                            <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
                             <label for="vigi_Email" asp-for="vigi.Email" class="form-label">E-Mail<span class="astricks">*</span></label>
                             <input asp-for="vigi.Email" autocomplete="off" class="form-control vic" aria-describedby="vigi_Email-error" placeholder="E-Mail" onkeypress="return myKeyPress(event)">
-                        <span asp-validation-for="vigi.Email" class="text-danger"></span>
-                    </div>
+                            <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                        </div>
 
-                    <div class="col-4">
-                        <label  asp-for="vigi.Contact" class="form-label">Contact No<span class="astricks">*</span></label>
-                 @*            <input asp-for="vigi.Contact" autocomplete="off" class="form-control vic" aria-describedby="vigi_Contact-error" onplaying="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)"> *@
+                        <div class="col-4">
+                            <label asp-for="vigi.Contact" class="form-label">Contact No<span class="astricks">*</span></label>
+                            @*            <input asp-for="vigi.Contact" autocomplete="off" class="form-control vic" aria-describedby="vigi_Contact-error" onplaying="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)"> *@
                             <input asp-for="vigi.Contact" autocomplete="off" placeholder="Contact No" class="form-control vic" onplaying="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)">
-                        <span asp-validation-for="vigi.Contact" class="text-danger"></span>
-                    </div>
-                    <div class="col-4">
-                        <label  asp-for="vigi.Fax" class="form-label">Fax No</label>
+                            <span asp-validation-for="vigi.Contact" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label asp-for="vigi.Fax" class="form-label">Fax No</label>
                             <input asp-for="vigi.Fax" autocomplete="off" class="form-control vic" placeholder="Fax No" maxlength="20" oninput="this.value = this.value.replace(/[^0-9+.-]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                        <span asp-validation-for="vigi.Fax" class="text-danger"></span>
-                    </div>
-                    <div class="col-6">
-                        <label   asp-for="vigi.PostalAddress" class="form-label">Postal Address<span class="astricks">*</span></label>
+                            <span asp-validation-for="vigi.Fax" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="vigi.PostalAddress" class="form-label">Postal Address<span class="astricks">*</span></label>
                             <textarea class="form-control vic" autocomplete="off" placeholder="Postal Address" aria-describedby="vigi_PostalAddress-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="vigi.PostalAddress" rows="3"></textarea>
-                        <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
-                    </div>
-                    <div class="col-6">
-                        <label   asp-for="vigi.ComplaintDetails" class="form-label">Complaint details<span class="astricks">*</span></label>
+                            <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="vigi.ComplaintDetails" class="form-label">Complaint details<span class="astricks">*</span></label>
                             <textarea class="form-control vic" autocomplete="off" placeholder="Complaint details" aria-describedby="vigi_ComplaintDetails-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="vigi.ComplaintDetails" onkeypress="return myKeyPress(event)" rows="3"></textarea>
-                        <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
-                    </div>
+                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
+                        </div>
 
-                    <div class="col-6">
+                        @* <div class="col-6">
                         <label asp-for="vigi.UploadFile" class="form-label">
                             Upload File (if required) Maximum upload size is 3 MB. .pdf
                             Photos
                         </label>
                         <input class="form-control Attachment" accept=".pdf,.PDF" asp-for="vigi.UploadFile" />
-                        @* <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span> *@
-                    </div>
+                        <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span>
+                    </div> *@
 
-                   @*  <div class="col-12">
+                        @*  <div class="col-12">
                         <div class="form-check form-check-inline">
                             <label class="form-check-label" for="inlineCheckbox3">Queries Regarding</label>
                         </div>
@@ -135,33 +135,33 @@ else
 
                     </div> *@
 
-                    <div class="col-4">
+                        <div class="col-4">
                             <label for="captcha">
                                 Captcha <span class="astricks">*</span>
                             </label>
-                        <div class="form-group mt-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
-                                </div>
+                            <div class="form-group mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                                    </div>
                                     <button onclick="speakCaptcha()">🔊</button>
                                     <input type="text" class="form-control" placeholder="Captcha Code" aria-describedby="vigi_CaptchaCode-error" asp-for="vigi.CaptchaCode" />
-                                <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
-                                    <div class="input-group-text" tabindex="0">
-                                        <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                                        <div class="input-group-text" tabindex="0">
+                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                        </div>
                                     </div>
                                 </div>
+                                <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
                             </div>
-                            <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
                         </div>
-                    </div>
 
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Submit</button> 
-                        <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
-                    </div>
-                </form>
-            </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
+                        </div>
+                    </form>
+                </div>
 
             </div>
         }
@@ -217,14 +217,13 @@ else
                             <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
                         </div>
 
-                        <div class="col-6">
+                        @* <div class="col-6">
                             <label for="vigi_UploadFile" asp-for="vigi.UploadFile" class="form-label">
-
                                 फ़ाइल अपलोड करें (यदि आवश्यक हो) अधिकतम अपलोड आकार 3 एमबी है। .pdf तस्वीरें
                             </label>
                             <input class="form-control Attachment" accept=".pdf,.PDF" asp-for="vigi.UploadFile" />
-                            @* <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span> *@
-                        </div>
+                            <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span>
+                        </div> *@
 
                         @*  <div class="col-12">
                     <div class="form-check form-check-inline">
@@ -270,8 +269,8 @@ else
             </div>
         }
     </div>
-    
 
+    
 </div>
 
 @*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
@@ -286,115 +285,119 @@ else
 
     // Display SweetAlert if the form was successfully submitted
     if (complaintSubmitted==1) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Your Complaint has been forwarded to CVO/MDL',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            text: 'Very shortly you will receive a “Complaint Tracking No.” on your E-mail ID. You can use the “Complaint Tracking No.” to check the status of your complaint on MDL Website.',
-            didClose: (e) => {
-                window.location.href = '/English/Forms/RegisterComplaint';
-            },
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
-        });
+    Swal.fire({
+    icon: 'success',
+    title: 'Your Complaint has been forwarded to CVO/MDL',
+    allowEscapeKey: false,
+    allowOutsideClick: false,
+    text: 'Very shortly you will receive a “Complaint Tracking No.” on your E-mail ID. You can use the “Complaint Tracking No.” to check the status of your complaint on MDL Website.',
+    didClose: (e) => {
+    window.location.href = '/English/Forms/RegisterComplaint';
+    },
+    showClass: {
+    popup: 'animate__animated animate__fadeInDown'
+    },
+    hideClass: {
+    popup: 'animate__animated animate__fadeOutUp'
+    }
+    });
     }
 
     // Reset the TempData flag to avoid showing the alert on page refresh
     @(TempData["ComplaintSubmitted"] = null)
 
     $("#img-captcha,#captchaRefresh").click(function () {
-        resetCaptchaImage();
-            // setTimeout(() => speakCaptcha(), 300);
+    resetCaptchaImage();
+    // setTimeout(() => speakCaptcha(), 300);
     });
     function resetCaptchaImage() {
-        var d = new Date();
-        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+    var d = new Date();
+    $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
     }
 
     $("#inlineCheckbox1").change(function () {
-        if (this.checked) {
-            $("#vigi_ShipBuildRelated").val(1);
-        }
-        else {
-            $("#vigi_ShipBuildRelated").val(0);
-        }
+    if (this.checked) {
+    $("#vigi_ShipBuildRelated").val(1);
+    }
+    else {
+    $("#vigi_ShipBuildRelated").val(0);
+    }
     });
 
 
     $("#inlineCheckbox2").change(function () {
-        if (this.checked) {
-            $("#vigi_SubHeavyRelated").val(1);
-        }
-        else {
-            $("#vigi_SubHeavyRelated").val(0);
-        }
+    if (this.checked) {
+    $("#vigi_SubHeavyRelated").val(1);
+    }
+    else {
+    $("#vigi_SubHeavyRelated").val(0);
+    }
     });
 
     $.validator.setDefaults({
-        onkeyup: false
+    onkeyup: false
     })
 
+    /*
     $('#vigi_UploadFile').on('change', function () {
-        var fileUpload = $("#vigi_UploadFile").get(0);
-        var files = fileUpload.files;
-        var path = $("#vigi_UploadFile").val();
-        var Filename = path.split('/').pop()
-        var valid_extensions = /(\.pdf|\.PDF)$/i;
+    var fileUpload = $("#vigi_UploadFile").get(0);
+    var files = fileUpload.files;
+    var path = $("#vigi_UploadFile").val();
+    var Filename = path.split('/').pop()
+    var valid_extensions = /(\.pdf|\.PDF)$/i;
 
-        if (valid_extensions.test(Filename)) {
-            const size = (this.files[0].size / 1024 / 1024).toFixed(2);
+    if (valid_extensions.test(Filename)) {
+    const size = (this.files[0].size / 1024 / 1024).toFixed(2);
 
-            if (size > 1) {
-                $('#vigi_UploadFile').val(null);
-                alert("File size must be less than 3 MB");
-            }
-        }
-        else {
-            $('#vigi_UploadFile').val(null);
-            alert("Please Upload a Valid File PDF Only");
-        }
+    if (size > 1) {
+    $('#vigi_UploadFile').val(null);
+    alert("File size must be less than 3 MB");
+    }
+    }
+    else {
+    $('#vigi_UploadFile').val(null);
+    alert("Please Upload a Valid File PDF Only");
+    }
     });
+    */
 
     $('.vic').keyup(function (e) {
-        var strg = this.value;
-        var firstChar = strg.charAt(0);
-        if ((firstChar == " ") || (firstChar == "&nbsp;") || (strg == "")) {
-            this.value = this.value.replace(/\s/g, '');
-        }
+    var strg = this.value;
+    var firstChar = strg.charAt(0);
+    if ((firstChar == " ") || (firstChar == "&nbsp;") || (strg == "")) {
+    this.value = this.value.replace(/\s/g, '');
+    }
     });
 
     $("#btn_reset").click(function () {
-        $("#vigi_Name").val("");
-        $("#vigi_Designation").val("");
-        $("#vigi_Organization").val("");
-        $("#vigi_Email").val("");
-        $("#vigi_Contact").val("");
-        $("#vigi_Fax").val("");
-        $("#vigi_PostalAddress").val("");
-        $("#vigi_ComplaintDetails").val("");
-        $("#vigi_CaptchaCode").val("");
-        $("html, body").animate({ scrollTop: 0 }, "fast");
+    $("#vigi_Name").val("");
+    $("#vigi_Designation").val("");
+    $("#vigi_Organization").val("");
+    $("#vigi_Email").val("");
+    $("#vigi_Contact").val("");
+    $("#vigi_Fax").val("");
+    $("#vigi_PostalAddress").val("");
+    $("#vigi_ComplaintDetails").val("");
+    $("#vigi_CaptchaCode").val("");
+    $("html, body").animate({ scrollTop: 0 }, "fast");
     });
 
     $('#vigi_CaptchaCode').on('blur', function () {
-            var capcha = $(this).val();
-            if (capcha.length > 0) {
-                $.get("/English/Forms/Vigilance?handler=Validatecapcha", { CaptchaCode: capcha })
-                    .done(function (data) {
+    var capcha = $(this).val();
+    if (capcha.length > 0) {
+    $.get("?handler=Validatecapcha", { CaptchaCode: capcha })
+    .done(function (data) {
 
-                        if (data != capcha) {
-                            $("#captchavalid").html("Please Enter Valid Captcha")
-                            $("#vigi_CaptchaCode").val("");
-                            resetCaptchaImage();
-                        }
-                    });
-            }
-        });
+    if (data != capcha) {
+    $("#captchavalid").html("Please Enter Valid Captcha");
+    $("#vigi_CaptchaCode").val("");
+    resetCaptchaImage();
+    } else {
+    $("#captchavalid").html("");
+    }
+    });
+    }
+    });
 
         
 </script>

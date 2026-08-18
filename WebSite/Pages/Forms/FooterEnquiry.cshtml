@@ -103,7 +103,7 @@
 @if (Model.ModelVM != null)
 {
     ViewData["Title"] = Model.ModelVM.Heading;
-    <partial name="_Description" model="Model.ModelVM" />   
+    <partial name="_Description" model="Model.ModelVM" />
 }
 else
 {
@@ -134,66 +134,66 @@ else
 
 <div class="mid-content">
     <div class="container">
-    <div class="row">
-        <div class="col-md-12 mb-4">
-            <form method="post" class="form-container">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <form method="post" class="form-container">
 
-                <span style="font-size:medium;">
-                    <b> NOTE :</b>
-                    <span>
-                        All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _) etc. are not allowed. By any way you try to save it will be removed and then saved.
+                    <span style="font-size:medium;">
+                        <b> NOTE :</b>
+                        <span>
+                            All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _) etc. are not allowed. By any way you try to save it will be removed and then saved.
+                        </span>
                     </span>
-                </span>
                     <p>(<span class="astricks">*</span>) Information Required</p>
-                <div class="col-md-12">
+                    <div class="col-md-12">
                         <label asp-for="@Model.contactusform.FirstName" class="form-label" for="Name"><b>First Name<span class="astricks">*</span></b></label>
-                    <input class="form-control" onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.FirstName" placeholder="Enter First Name" required="">
-                    <span asp-validation-for="@Model.contactusform.FirstName" class="text-danger"></span>
+                        <input class="form-control" onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.FirstName" placeholder="Enter First Name" required="">
+                        <span asp-validation-for="@Model.contactusform.FirstName" class="text-danger"></span>
                     </div>
-                 
-                <div class="col-md-12">
+
+                    <div class="col-md-12">
                         <label asp-for="@Model.contactusform.LastName" for="LastName"><b>Last Name<span class="astricks">*</span></b></label>
                         <input class="form-control" onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.LastName" placeholder="Enter Last Name" required="">
-                    <span asp-validation-for="@Model.contactusform.LastName" class="text-danger"></span>
-                    </div >
+                        <span asp-validation-for="@Model.contactusform.LastName" class="text-danger"></span>
+                    </div>
                     <div class="col-md-12">
                         <label asp-for="@Model.contactusform.CompanyName" for="Company"><b>Company<span class="astricks">*</span></b></label>
                         <input class="form-control" onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.CompanyName" placeholder="Enter Company Name" required="">
-                    <span asp-validation-for="@Model.contactusform.CompanyName" class="text-danger"></span>
-                      </div>
+                        <span asp-validation-for="@Model.contactusform.CompanyName" class="text-danger"></span>
+                    </div>
                     <div class="col-md-12">
                         <label asp-for="@Model.contactusform.CountryName" for="Company"><b>Country<span class="astricks">*</span></b></label>
                         <input class="form-control" asp-for="@Model.contactusform.CountryName" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" placeholder="Enter Country Name" required="">
-                    <span asp-validation-for="@Model.contactusform.CountryName" class="text-danger"></span>
+                        <span asp-validation-for="@Model.contactusform.CountryName" class="text-danger"></span>
                     </div>
                     <div class="col-md-12">
-                    <label asp-for="@Model.contactusform.InterestedIn" for="cars"><b>Interested In:</b></label>
-                    <select class="form-control" id="cars" asp-for="@Model.contactusform.InterestedIn" class="browser-default custom-select">
-                        <option value="New Vessel">New Vessel</option>
-                        <option value="Services">Services</option>
-                        <option value="Other">Other</option>
-                    </select>
-                    <span asp-validation-for="@Model.contactusform.InterestedIn" class="text-danger"></span>
-            </div>
+                        <label asp-for="@Model.contactusform.InterestedIn" for="cars"><b>Interested In:</b></label>
+                        <select class="form-control" id="cars" asp-for="@Model.contactusform.InterestedIn" class="browser-default custom-select">
+                            <option value="New Vessel">New Vessel</option>
+                            <option value="Services">Services</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="@Model.contactusform.InterestedIn" class="text-danger"></span>
+                    </div>
                     <div class="col-md-12">
                         <label asp-for="@Model.contactusform.EmailId" for="email"><b>Email<span class="astricks">*</span></b></label>
-                   
+
                         <input class="form-control" type="email" placeholder="Enter Email" asp-for="@Model.contactusform.EmailId" required>
-                    <span asp-validation-for="@Model.contactusform.EmailId" class="text-danger"></span>
+                        <span asp-validation-for="@Model.contactusform.EmailId" class="text-danger"></span>
                     </div>
                     <div class="col-md-12">
                         <label asp-for="@Model.contactusform.Contact" for="Contact"><b>Contact No.<span class="astricks">*</span></b></label>
                         <input class="form-control" asp-for="@Model.contactusform.Contact" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" type="text" placeholder="Enter Contact No." required="">
-                    <span asp-validation-for="@Model.contactusform.Contact" class="text-danger"></span>
-                        </<div>
-                            <div class="col-md-12"></div>
-                            <label asp-for="@Model.contactusform.Message" for="Enquiry"><b>Your Enquiry<span class="astricks">*</span></b></label>
-                            <textarea class="form-control" rows="3" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="@Model.contactusform.Message" placeholder="Message" required=""></textarea>
+                        <span asp-validation-for="@Model.contactusform.Contact" class="text-danger"></span>
+                    </<div>
+                    <div class="col-md-12"></div>
+                    <label asp-for="@Model.contactusform.Message" for="Enquiry"><b>Your Enquiry<span class="astricks">*</span></b></label>
+                    <textarea class="form-control" rows="3" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="@Model.contactusform.Message" placeholder="Message" required=""></textarea>
                     <span asp-validation-for="@Model.contactusform.Message" class="text-danger"></span>
-                    </div>
-                      @*   <div class="col-4">
-                    
-                        </div>
+                </div>
+                @*   <div class="col-4">
+
+</div>
 
 
                         <div class="col-md-6 mt-3">
@@ -216,41 +216,41 @@ else
 
 
 
-                        @* for same  *@
+                @* for same  *@
 
-                        <div class="col-4">
-                            <label for="captcha">
-                                Captcha <span class="astricks">*</span>
-                            </label>
-                            <div class="form-group mt-3">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
-                                    </div>
-                                    <button onclick="speakCaptcha()">🔊</button>
-                                    <label for="vigi_CaptchaCode" class="sr-only">captha</label>
-                                    <input type="text" class="form-control" placeholder="Captcha Code" asp-for="vigi.CaptchaCode" />
-                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" tabindex="0" data-placement="top">
-                                        <div class="input-group-text" tabindex="0">
-                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
-                                        </div>
-                                    </div>
+                <div class="col-4">
+                    <label for="captcha">
+                        Captcha <span class="astricks">*</span>
+                    </label>
+                    <div class="form-group mt-3">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                            </div>
+                            <button onclick="speakCaptcha()">🔊</button>
+                            <label for="contactusform_CaptchaCode" class="sr-only">captha</label>
+                            <input type="text" class="form-control" placeholder="Captcha Code" asp-for="contactusform.CaptchaCode" />
+                            <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" tabindex="0" data-placement="top">
+                                <div class="input-group-text" tabindex="0">
+                                    <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
                                 </div>
-                                <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
                             </div>
                         </div>
+                        <span id="captchavalid" asp-validation-for="contactusform.CaptchaCode" class="text-danger"></span>
+                    </div>
+                </div>
 
 
                 <div class="modal-footer form-container">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                  @*   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> *@
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    @*   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> *@
                 </div>
             </form>
-            </div>
-            </div>
-            </div>
-            </div>
-      @*   </div>
+        </div>
+    </div>
+</div>
+</div>
+@*   </div>
     </div>
 </div> *@
 
@@ -265,23 +265,23 @@ else
 
 
         function refreshCaptcha() {
-            $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + new Date().getTime());
+        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + new Date().getTime());
         }
 
         $("#captchaInput").on("blur", function () {
-            var captcha = $(this).val();
+        var captcha = $(this).val();
 
-            if (captcha.length > 0) {
-                $.get("/Forms/FooterEnquiry?handler=Validatecapcha",
-                    { CaptchaCode: captcha },
-                    function (res) {
-                        if (res !== captcha) {
-                            alert("Invalid captcha");
-                            $("#captchaInput").val("");
-                            refreshCaptcha();
-                        }
-                    });
-            }
+        if (captcha.length > 0) {
+        $.get("/Forms/FooterEnquiry?handler=Validatecapcha",
+        { CaptchaCode: captcha },
+        function (res) {
+        if (res !== captcha) {
+        alert("Invalid captcha");
+        $("#captchaInput").val("");
+        refreshCaptcha();
+        }
+        });
+        }
         });
     </script>
 
@@ -292,475 +292,475 @@ else
     <script type="text/javascript">
 
         $.validator.setDefaults({
-            onkeyup: false
+        onkeyup: false
         })
 
 
         $('.read-more').popover({
-            container: 'body'
+        container: 'body'
         });
         var timelineTextHeight = $('.timeline-text p').height();
 
         $('#timelineMobileSlider').find('li').each(function () {
-            if (($(this).find('.timeline-text p').height()) > 60) {
-                $(this).find('.timeline-text').addClass('timeline-ellipsis');
-            }
+        if (($(this).find('.timeline-text p').height()) > 60) {
+        $(this).find('.timeline-text').addClass('timeline-ellipsis');
+        }
         });
         $('#walkDownSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 4,
-            slidesToScroll: 1,
-            responsive: [
-                {
-                    breakpoint: 1366,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        dots: false,
-                        infinite: true,
-                        autoplay: true,
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        responsive: [
+        {
+        breakpoint: 1366,
+        settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        dots: false,
+        infinite: true,
+        autoplay: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
 
         $('.slickPlayBtn').on('click', function (e) {
-            e.preventDefault();
-            if ($(this).hasClass("pause")) { // add class where you want to add class active for process
-                $(this).removeClass("pause");
-                $('#headerImageSlider').slick('slickPause');
-                $(this).addClass("play");
-            } else {
-                $(this).removeClass("play");
-                $(this).addClass("pause");
-                $('#headerImageSlider').slick('slickPlay');
-            }
+        e.preventDefault();
+        if ($(this).hasClass("pause")) { // add class where you want to add class active for process
+        $(this).removeClass("pause");
+        $('#headerImageSlider').slick('slickPause');
+        $(this).addClass("play");
+        } else {
+        $(this).removeClass("play");
+        $(this).addClass("pause");
+        $('#headerImageSlider').slick('slickPlay');
+        }
         });
 
         $('#keyperformanceSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 6,
-            slidesToScroll: 1,
-            responsive: [
-                {
-                    breakpoint: 1600,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1366,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        dots: false,
-                        infinite: true,
-                        autoplay: true,
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                        arrows: true,
-                        dots: true
-                    }
-                },
-                {
-                    breakpoint: 475,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: true,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 6,
+        slidesToScroll: 1,
+        responsive: [
+        {
+        breakpoint: 1600,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1366,
+        settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        dots: false,
+        infinite: true,
+        autoplay: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: true
+        }
+        },
+        {
+        breakpoint: 475,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: true
+        }
+        }
+        ]
         });
     </script>
 
     <script>
         $(".readmore-btn").on("click", function () {
-            $(".paragraph-readmore").slideToggle();
-            if ($(this).text() == "Read More") {
-                $(this).text("Read Less")
-            } else {
-                $(this).text("Read More");
-            }
+        $(".paragraph-readmore").slideToggle();
+        if ($(this).text() == "Read More") {
+        $(this).text("Read Less")
+        } else {
+        $(this).text("Read More");
+        }
         })
         $('#initiativeSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 5,
-            slidesToScroll: 1,
-            responsive: [
-                {
-                    breakpoint: 1366,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        dots: false,
-                        infinite: true,
-                        autoplay: true,
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        responsive: [
+        {
+        breakpoint: 1366,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        dots: false,
+        infinite: true,
+        autoplay: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
 
         $('#initiativeSlider').slickLightbox({
-            itemSelector: 'a',
-            navigateByKeyboard: true,
-            infinite: false,
-            closeOnBackdropClick: true,
-            caption: 'caption'
+        itemSelector: 'a',
+        navigateByKeyboard: true,
+        infinite: false,
+        closeOnBackdropClick: true,
+        caption: 'caption'
         });
 
         $('#leaderSpeaksSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 5,
-            slidesToScroll: 1,
-            responsive: [
-                {
-                    breakpoint: 1366,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        dots: false,
-                        infinite: true,
-                        autoplay: true,
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        responsive: [
+        {
+        breakpoint: 1366,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        dots: false,
+        infinite: true,
+        autoplay: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
 
     </script>
 
     <script>
         $('#walkDownSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 4,
-            slidesToScroll: 1,
-            responsive: [
-                {
-                    breakpoint: 1366,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        dots: false,
-                        infinite: true,
-                        autoplay: true,
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        responsive: [
+        {
+        breakpoint: 1366,
+        settings: {
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        dots: false,
+        infinite: true,
+        autoplay: true,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
 
     </script>
 
     <script>
         $('#headerImageSlider').slick({
-            dots: true,
-            infinite: true,
-            arrows: true,
-            autoplay: true,
-            speed: 300,
-            slidesToShow: 1,
-            adaptiveHeight: true,
-            pauseOnFocus: false,
-            pauseOnHover: false,
-            responsive: [
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        dots: true,
-                        arrows: true,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: true,
-                        dots: true
-                    }
-                }
-            ]
+        dots: true,
+        infinite: true,
+        arrows: true,
+        autoplay: true,
+        speed: 300,
+        slidesToShow: 1,
+        adaptiveHeight: true,
+        pauseOnFocus: false,
+        pauseOnHover: false,
+        responsive: [
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: true,
+        arrows: true,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: true
+        }
+        }
+        ]
         });
 
         $('.slickPlayBtn').on('click', function (e) {
-            e.preventDefault();
-            if ($(this).hasClass("pause")) { // add class where you want to add class active for process
-                $(this).removeClass("pause");
-                $('#headerImageSlider').slick('slickPause');
-                $(this).addClass("play");
-            } else {
-                $(this).removeClass("play");
-                $(this).addClass("pause");
-                $('#headerImageSlider').slick('slickPlay');
-            }
+        e.preventDefault();
+        if ($(this).hasClass("pause")) { // add class where you want to add class active for process
+        $(this).removeClass("pause");
+        $('#headerImageSlider').slick('slickPause');
+        $(this).addClass("play");
+        } else {
+        $(this).removeClass("play");
+        $(this).addClass("pause");
+        $('#headerImageSlider').slick('slickPlay');
+        }
 
         });
 
         $('#serviceTypeSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: true,
-            speed: 300,
-            slidesToShow: 3,
-            adaptiveHeight: true,
-            responsive: [
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        dots: true,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: true,
+        speed: 300,
+        slidesToShow: 3,
+        adaptiveHeight: true,
+        responsive: [
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: true,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
 
 
 
 
         $('#quickAccessSlider').slick({
-            dots: false,
-            infinite: false,
-            arrows: false,
-            speed: 300,
-            slidesToShow: 6,
-            adaptiveHeight: true,
-            responsive: [
-                {
-                    breakpoint: 1200,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                        dots: true,
-                    }
-                },
-                {
-                    breakpoint: 992,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                        dots: true,
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 5,
-                        slidesToScroll: 1,
-                        dots: true,
-                    }
-                },
-                {
-                    breakpoint: 576,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 1,
-                        arrows: false,
-                        dots: true
-                    }
-                }
-            ]
+        dots: false,
+        infinite: false,
+        arrows: false,
+        speed: 300,
+        slidesToShow: 6,
+        adaptiveHeight: true,
+        responsive: [
+        {
+        breakpoint: 1200,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        dots: true,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        dots: true,
+        }
+        },
+        {
+        breakpoint: 768,
+        settings: {
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        dots: true,
+        }
+        },
+        {
+        breakpoint: 576,
+        settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        arrows: false,
+        dots: true
+        }
+        }
+        ]
         });
     </script>
 }
@@ -769,102 +769,110 @@ else
 <script src="/Assets/js/bootstrap-5.2.3.min.js" asp-append-version="true"></script>
 <script>
     const imageGrid = document.querySelector(".image-grid");
+    if (imageGrid) {
     const links = imageGrid.querySelectorAll("a");
     const imgs = imageGrid.querySelectorAll("img");
     const lightboxModal = document.getElementById("lightbox-modal");
+    if (lightboxModal) {
     const bsModal = new bootstrap.Modal(lightboxModal);
     const modalBody = document.querySelector(".modal-body .container-fluid");
 
     for (const link of links) {
-        link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const currentImg = link.querySelector("img");
-            const lightboxCarousel = document.getElementById("lightboxCarousel");
-            if (lightboxCarousel) {
-                const parentCol = link.parentElement.parentElement;
-                const index = [...parentCol.parentElement.children].indexOf(parentCol);
-                const bsCarousel = new bootstrap.Carousel(lightboxCarousel);
-                bsCarousel.to(index);
-            } else {
-                createCarousel(currentImg);
-            }
-            bsModal.show();
-        });
+    link.addEventListener("click", function (e) {
+    e.preventDefault();
+    const currentImg = link.querySelector("img");
+    const lightboxCarousel = document.getElementById("lightboxCarousel");
+    if (lightboxCarousel) {
+    const parentCol = link.parentElement.parentElement;
+    const index = [...parentCol.parentElement.children].indexOf(parentCol);
+    const bsCarousel = new bootstrap.Carousel(lightboxCarousel);
+    bsCarousel.to(index);
+    } else {
+    createCarousel(currentImg);
+    }
+    bsModal.show();
+    });
     }
 
     function createCarousel(img) {
-        const markup = `
-                                    <div id="lightboxCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
-                                      <div class="carousel-inner">
-                                        ${createSlides(img)}
-                                      </div>
-                                      <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev">
-                                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                       <span class="visually-hidden">Previous</span>
-                                      </button>
-                                      <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                      </button>
-                                    </div>
-                                    `;
+    const markup = `
+    <div id="lightboxCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
+    <div class="carousel-inner">
+    ${createSlides(img)}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+    `;
 
-        modalBody.innerHTML = markup;
+    if (modalBody) {
+    modalBody.innerHTML = markup;
+    }
     }
 
     function createSlides(img) {
-        let markup = "";
-        var currentImgSrc = img.getAttribute("src");
-        currentImgSrc = "'" + currentImgSrc + "'";
+    let markup = "";
+    var currentImgSrc = img.getAttribute("src");
+    currentImgSrc = "'" + currentImgSrc + "'";
 
-        for (const img of imgs) {
-            var imgSrc = img.getAttribute("src");
-            imgSrc = "'" + imgSrc + "'";
-            var imgAlt = img.getAttribute("alt");
-            imgAlt = "'" + imgAlt + "'";
+    for (const img of imgs) {
+    var imgSrc = img.getAttribute("src");
+    imgSrc = "'" + imgSrc + "'";
+    var imgAlt = img.getAttribute("alt");
+    imgAlt = "'" + imgAlt + "'";
 
-            const imgCaption = img.getAttribute("data-caption");
+    const imgCaption = img.getAttribute("data-caption");
 
-            markup += `
-                                    <div class="carousel-item${currentImgSrc === imgSrc ? " active" : ""}">
-                                          <img src=${imgSrc} alt=${imgAlt}>
-                                      ${imgCaption ? createCaption(imgCaption) : ""}
-                                    </div>
-                                    `;
-        }
+    markup += `
+    <div class="carousel-item${currentImgSrc === imgSrc ? " active" : ""}">
+    <img src=${imgSrc} alt=${imgAlt}>
+    ${imgCaption ? createCaption(imgCaption) : ""}
+    </div>
+    `;
+    }
 
-        return markup;
+    return markup;
     }
 
     function createCaption(caption) {
-        return `<div class="carousel-caption">
-                                     <p class="m-0">${caption}</p>
-                                    </div>`;
+    return `<div class="carousel-caption">
+    <p class="m-0">${caption}</p>
+    </div>`;
+    }
+    }
     }
     $("#img-captcha,#captchaRefresh").click(function () {
-        resetCaptchaImage();
+    resetCaptchaImage();
     });
 
     function resetCaptchaImage() {
-        var d = new Date();
-        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+    var d = new Date();
+    $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
     }
 
-    $('#vigi_CaptchaCode').on('blur', function () {
-        var captcha = $(this).val();
-        if (captcha.length > 0) {
-            $.ajax({
-                url: "/English/Forms/Feedback?handler=Validatecapcha",  // URL updated
-                type: "POST",  // Changed to POST request
-                data: { CaptchaCode: captcha },  // Send as POST data
-                success: function (data) {
-                    if (data !== captcha) {
-                        $("#captchavalid").html("Please Enter Valid Captcha");
-                        $("#vigi_CaptchaCode").val("");
-                        resetCaptchaImage();  // Assuming this function resets the CAPTCHA image
-                    }
-                }
-            });
-        }
+    $('#contactusform_CaptchaCode').on('blur', function () {
+    var captcha = $(this).val();
+    if (captcha.length > 0) {
+    $.ajax({
+    url: "?handler=Validatecapcha",
+    type: "GET",
+    data: { CaptchaCode: captcha },
+    success: function (data) {
+    if (data !== captcha) {
+    $("#captchavalid").html("Please Enter Valid Captcha");
+    $("#contactusform_CaptchaCode").val("");
+    resetCaptchaImage();
+    } else {
+    $("#captchavalid").html("");
+    }
+    }
+    });
+    }
     });
 </script>
