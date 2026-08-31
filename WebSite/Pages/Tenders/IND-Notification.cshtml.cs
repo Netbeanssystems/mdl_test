@@ -77,7 +77,7 @@ namespace WebSite.Pages.Tenders
             {
                 return new PartialViewResult
                 {
-                    ViewName = "_TenderNotificationPartial",
+                    ViewName = "_TenderNotificationPartialHindi",
                     ViewData = new ViewDataDictionary<NotificationDTO>(ViewData, notif)
                 };
             }

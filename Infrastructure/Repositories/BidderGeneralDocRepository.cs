@@ -13,6 +13,30 @@ namespace Infrastructure.Repositories
         public BidderGeneralDocRepository(AppDbContext context) : base(context)
         {
         }
+
+        public new Task<List<BidderGeneralDoc>> Get()
+        {
+            return DbContext.BidderGeneralDoc.ToListAsync();
+        }
+
+        public new Task<BidderGeneralDoc> Get(int id)
+        {
+            return DbContext.BidderGeneralDoc.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public new Task<BidderGeneralDoc> Get(string id)
+        {
+            if (int.TryParse(id, out int intId))
+            {
+                return Get(intId);
+            }
+            return Task.FromResult<BidderGeneralDoc>(null);
+        }
+
+        public new Task<List<BidderGeneralDoc>> GetActive()
+        {
+            return DbContext.BidderGeneralDoc.Where(x => x.IsActive).ToListAsync();
+        }
         //public Task<List<BidderGeneralDoc>> GetWithAll()
         //{
         //    return DbContext.BidderGeneralDoc

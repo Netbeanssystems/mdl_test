@@ -69,13 +69,13 @@ namespace WebForeignBidder.Pages.Account
             mail.From = new MailAddress(_config["SMTPFrom"]);
             mail.To.Add(new MailAddress(Email));
             mail.IsBodyHtml = true;
-            mail.Subject = "MAZAGON DOCK SHIPBUILDERS LIMITED :: Enquiry Form";
+            mail.Subject = "Username Recovery – Bidder Module";
             mail.Body = EmailVm.Body;
             SmtpClient smtp = new SmtpClient();
             smtp.Host = _config["SMTPHost"];
             smtp.Send(mail);
 
-            return LocalRedirect("/Account/Login");
+            return LocalRedirect("/bidder");
 
             //await _emailService.SendEmailAsync2(EmailVm).ConfigureAwait(false);
             //_notyf.Success("Your username has been sent to your email");

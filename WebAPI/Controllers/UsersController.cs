@@ -122,10 +122,10 @@ namespace WebAPI.Controllers
                                      "<p>Your one time credentials for login into the system  are:</p>" + Environment.NewLine +
                                      "<p>Username: <b>{1}</b></p>" + Environment.NewLine +
                                      "<p>Password: <b>{2}</b></p>" + Environment.NewLine + Environment.NewLine +
-                                     "<p><a href='https://mazagondock.in/bank' target='_blank'>Click here to login</a></p>" + Environment.NewLine + Environment.NewLine +
+                                     "<p><a href='https://mazagondock.in/bidder' target='_blank'>Click here to login</a></p>" + Environment.NewLine + Environment.NewLine +
                                      "<p><b>Note</b>: This password is a one time temporary password, you are highly recommended to change your password on your first login.</p>" + Environment.NewLine + Environment.NewLine +
                                      "<p>Regards,</p>" + Environment.NewLine +
-                                     "<p>Finance Department</p>" + Environment.NewLine +
+                                    // "<p>Finance Department</p>" + Environment.NewLine +
                                      "<p>Mazagon Dock Shipbuilders Limited</p>" + Environment.NewLine +
                                      "<p>Mumbai - 400010</p>" + Environment.NewLine +
                                      "</body>" + Environment.NewLine +
@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
                 mail.From = new MailAddress(_config["SMTPFrom"]);
                 mail.To.Add(new MailAddress(model.Email));
                 mail.IsBodyHtml = true;
-                mail.Subject = "Account credentials";
+                mail.Subject = "Bidder Module - Account credentials";
                 mail.Body = body;
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = _config["SMTPHost"];
@@ -150,7 +150,7 @@ namespace WebAPI.Controllers
                 var EmailVm = new EmailVM
                 {
                     ToAddresses = new List<string> { model.Email },
-                    Subject = "Account credentials",
+                    Subject = "Bidder Module - Account credentials",
                     Body = body
                 };
                 await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);

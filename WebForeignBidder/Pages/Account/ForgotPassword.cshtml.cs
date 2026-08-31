@@ -79,7 +79,8 @@ namespace WebForeignBidder.Pages.Account
                 return Page();
             }
             var callbackUrl = Url.Page(
-                "/Account/ResetPassword",
+                //"/Account/ResetPassword",
+                "/bidder",
                 pageHandler: null,
                 values: new { forgotPasswordVm.Code, forgotPasswordVm.Id },
                 protocol: Request.Scheme);
@@ -110,7 +111,7 @@ namespace WebForeignBidder.Pages.Account
                     mail.Bcc.Add(new MailAddress(bcc));
                 }
                 mail.IsBodyHtml = true;
-                mail.Subject = "Services Enquiry Form Response";
+                mail.Subject = "Reset Password Link for Bidder Module";
                 mail.Body = body;
 
                 using (SmtpClient smtp = new SmtpClient())

@@ -51,7 +51,7 @@
                                 }
                             }
                             <div class="form-group">
-                                <label asp-for="user.Name" class="col-form-label">Foreign Bidder Name<span class="required">*</span></label>
+                                <label asp-for="user.Name" class="col-form-label">Bidder Name<span class="required">*</span></label>
                                 <input asp-for="user.Name" class="form-control" oninput="this.value = this.value.replace(/[^A-Za-z0-9\-&\/ ]/g, '')" placeholder="Name">
                                 <span id="usererror" asp-validation-for="user.Name" class="text-danger"></span>
                             </div>

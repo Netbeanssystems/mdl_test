@@ -1,13 +1,13 @@
 ﻿@page
-@model WebForeignBidder.Pages.Admin.ForeignBidder.ListOfUploadedDocsModel
+@model WebForeignBidder.Pages.Admin.Bidder.ListOfTenderModel
 @{
-    ViewData["Title"] = "List Of Uploaded Documents";
+    ViewData["Title"] = "List Of Tenders";
     int serialNumber = 0;
 }
 <section class="content">
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title float-left font-weight-bold">List Of Uploaded Documents</h3>
+            <h3 class="card-title float-left font-weight-bold">List Of Tenders</h3>
             <div class="clearfix"></div>
         </div>
         <div class="card-body">
@@ -18,32 +18,55 @@
                         <thead>
                             <tr>
                                 <th class="search">Id</th>
+                                <th>Project</th>
+                                <th>Yard</th>
                                 <th>Tender No.</th>
-                                <th>Document</th>
-                                <th>Uploaded Date andTime </th>
-                                <th>Remarks</th>
-                                <th>Document type</th>
-                                <th>Status</th>
-                                <th>Uploaded by</th>
+                                <th>Tender Description</th>
+                                <th>Tender Document</th>
+                                <th>Selected Foreign Bidders</th>
+                                <th>Tender Start Date</th>
+                                <th>Closing Date</th>
+                                <th>Uploaded By</th>
+                                <th>Upload Date & Time</th>
+                                <th>Extended Tender Closing Date</th>
+                                <th>Edited By</th>
+                                <th>Date Edit</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model.ModelVms)
                             {
+                                int corSerial = 1;
                                 <tr>
                                     <td>@(++serialNumber)</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.YardId</td>
                                     <td>@item.TenderNo</td>
+                                    <td>@item.TenderDescription</td>
                                     <td>
-                                   @*      <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@item.Doc">@item.TenderDocDecrypted</a> *@
                                         <a class=" btn btn-primary genfile" data-id="@item.EncryptedId">
                                             @item.TenderDocDecrypted
                                         </a>
+                                       @*  <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@item.TenderDoc">@item.TenderDocDecrypted</a> *@
+                                        @foreach (var cor in item.TenderCorrigendums)
+                                        {
+                                            <div>
+                                                Corrigendum @corSerial:
+                                                <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@cor.CorrigendumDoc">
+                                                    @cor.CorrigendumDocDecrypted
+                                                </a>
+                                            </div>
+                                            corSerial++;
+                                        }
                                     </td>
-                                    <td>@item.CreatedDate</td>
-                                    <td>@item.Remarks</td>
-                                    <td>@item.DocType</td>
-                                    <td>@item.IsActive</td>
+                                    <td>@item.ForeignBidderId</td>
+                                    <td>@item.TenderOpeningDate</td>
+                                    <td>@item.TenderClosingDate</td>
                                     <td>@item.CreatedBy</td>
+                                    <td>@item.CreatedDate</td>
+                                    <td>@item.LatestExtendedDate</td>
+                                    <td>@item.ModifiedBy</td>
+                                    <td>@item.ModifiedDate</td>
                                 </tr>
                             }
                         </tbody>
@@ -109,6 +132,7 @@
                 }
             });
         });
+
         $('#tblDataTable').DataTable();
 
         $(document).ready(function () {
@@ -123,9 +147,6 @@
             }
             return bytes;
         }
-        $(document).ready(function () {
-            // Add Validations here
-        });
         $(document).ready(function () {
             // Add Validations here
         });

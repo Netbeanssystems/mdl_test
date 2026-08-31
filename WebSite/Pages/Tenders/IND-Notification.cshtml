@@ -70,16 +70,16 @@ else
                             <button id="btnSave" type="button" onclick="GetArchievedHindi();" class="btn btn-primary">पुरालेख के लिए यहां क्लिक करें</button>
                         }
                     </div>
-                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") //AkashS
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") 
                     {
                         <div id="tbl_partial">
-                            <partial name="_TenderNotificationWithFeePartial" model="@Model.notif" />
+                            <partial name="_TenderNotificationPartial" model="@Model.notif" />
                         </div>
                     }
                     else
                     {
                         <div id="tbl_partial">
-                            <partial name="_TenderNotificationWithFeePartialHindi" model="@Model.notif" />
+                            <partial name="_TenderNotificationPartialHindi" model="@Model.notif" />
                         </div>
                     }
                    @* <div id="tbl_partial">

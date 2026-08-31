@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebForeignBidder.Pages.Admin.ForeignBidder
+namespace WebForeignBidder.Pages.Admin.Bidder
 {
     [Authorize(Roles = "ForeignBidder,SuperAdmin")]
 

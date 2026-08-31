@@ -20,7 +20,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace WebForeignBidder.Pages.Admin.ForeignBidder
+namespace WebForeignBidder.Pages.Admin.Bidder
 {
     [Authorize(Roles = "SuperAdmin,BidderSuperAdmin")]
     public class IndexModel : PageModel

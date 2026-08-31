@@ -169,7 +169,7 @@ namespace WebForeignBidder.Pages.Account
             // Send OTP via email/SMS
             var userEmail = payload.Claims.FirstOrDefault(c => c.Type == "eml")?.Value;
 
-            var body = $"Please use this OTP <b>{otp}</b> to verify yourself for foreign bidder login.";
+            var body = $"Please use this OTP <b>{otp}</b> to verify yourself for Bidder Module login.";
 
             if (_config["Environment"].ToString() == "Live")
             {
@@ -183,7 +183,7 @@ namespace WebForeignBidder.Pages.Account
                         mail.Bcc.Add(new MailAddress(bcc));
                     }
                     mail.IsBodyHtml = true;
-                    mail.Subject = "Login OTP for foreign bidder";
+                    mail.Subject = "Login OTP for Bidder Module";
                     mail.Body = body;
 
                     using (SmtpClient smtp = new SmtpClient())
@@ -199,7 +199,7 @@ namespace WebForeignBidder.Pages.Account
                 {
                     ToAddresses = new List<string> { userEmail },
                     BccAddresses = _config["SMTPBcc"].Split(';').ToList(),
-                    Subject = "Login OTP for foreign bidder",
+                    Subject = "Login OTP for Bidder Module",
                     Body = body
                 };
                 await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
