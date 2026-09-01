@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
@@ -121,10 +121,24 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 if (ForiegnbidderResult == "unauthorized") return RedirectToPage("/Account/Login");
                 var ForeignBidder = !string.IsNullOrEmpty(ForiegnbidderResult)
                     ? JsonConvert.DeserializeObject<List<UserRoleVM>>(ForiegnbidderResult)
-                    : null;
+                    : new List<UserRoleVM>();
+
+                var BidderResult = await _httpClient.GetAsync("Users/GetByRole", true, "Bidder").ConfigureAwait(false);
+                if (BidderResult == "unauthorized") return RedirectToPage("/Account/Login");
+                var BidderList = !string.IsNullOrEmpty(BidderResult)
+                    ? JsonConvert.DeserializeObject<List<UserRoleVM>>(BidderResult)
+                    : new List<UserRoleVM>();
+
+                if (BidderList != null && BidderList.Count > 0)
+                {
+                    ForeignBidder.AddRange(BidderList);
+                }
+
+                ForeignBidder = ForeignBidder.GroupBy(x => x.UserName).Select(g => g.First()).OrderBy(x => x.UserName).ToList();
+
                 if (ForeignBidder == null || ForeignBidder.Count <= 0)
                 {
-                    _notyf.Error("Foreign Bidder not found");
+                    _notyf.Error("Bidder not found");
                     return Page();
                 }
                 ViewData["ForeignBidder"] = new SelectList(ForeignBidder, "UserName", "UserName");

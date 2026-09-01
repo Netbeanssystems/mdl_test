@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace WebForeignBidder.Pages.Admin.Bidder
 {
-    [Authorize(Roles = "ForeignBidder,SuperAdmin")]
+    [Authorize(Roles = "Bidder,ForeignBidder,SuperAdmin")]
 
 
     public class AddTenderDocModel : PageModel

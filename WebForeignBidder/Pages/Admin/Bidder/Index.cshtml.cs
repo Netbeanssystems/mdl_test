@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
 using AspNetCoreHero.ToastNotification.Abstractions;
@@ -57,7 +57,7 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 return Page();
             }
             roles.Remove(roles.Find(x => x.Name == "Anonymous"));
-            if (string.IsNullOrEmpty(role)) role = "ForeignBidder"; //User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(role)) role = "Bidder"; //User.FindFirst(ClaimTypes.Role)?.Value;
             ViewData["Roles"] = new SelectList(roles, "Name", "Name");
             var UsersResult = string.IsNullOrEmpty(role) || role == "All" ?
                 await _httpClient.GetAsync("Users/UsersForList", true).ConfigureAwait(false) :

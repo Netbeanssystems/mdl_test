@@ -1,4 +1,4 @@
-﻿@page
+@page
 @using Microsoft.Extensions.Configuration
 
 @inject IConfiguration _config;
@@ -116,7 +116,7 @@
                                     <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
                                 </div>
                             }
-                            else if (User.IsInRole("ForeignBidder"))
+                            else if (User.IsInRole("ForeignBidder") || User.IsInRole("Bidder"))
                             {
                                 <div class="form-group">
                                     <label asp-for="UserProfileDto.Name" class="col-form-label">Name*</label>
@@ -215,7 +215,7 @@
                             }
                             <div class="form-row">
                                 <div class="col-md-3 offset-md-3">
-                                    @if (User.IsInRole("CommercialExecutive") || User.IsInRole("ForeignBidder") || User.IsInRole("GeneralUpload") || User.IsInRole("HOD"))
+                                    @if (User.IsInRole("CommercialExecutive") || User.IsInRole("ForeignBidder") || User.IsInRole("Bidder") || User.IsInRole("GeneralUpload") || User.IsInRole("HOD"))
                                     {
                                         <button type="submit" disabled class="btn btn-block btn-primary">Save</button>
                                     }

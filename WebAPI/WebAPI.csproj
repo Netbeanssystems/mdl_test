@@ -6,6 +6,7 @@
 	  <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	  <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'API' " />
   <ItemGroup>
     <Content Remove="wwwroot\img\NoImage.png" />
   </ItemGroup>

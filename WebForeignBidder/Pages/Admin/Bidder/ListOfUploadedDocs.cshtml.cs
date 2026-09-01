@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace WebForeignBidder.Pages.Admin.Bidder
 {
-    [Authorize(Roles = "ForeignBidder,SuperAdmin,HOD,CommercialExecutive")]
+    [Authorize(Roles = "Bidder,ForeignBidder,SuperAdmin,HOD,CommercialExecutive")]
     public class ListOfUploadedDocsModel : PageModel
     {
         private readonly IHttpClientService _httpClient;

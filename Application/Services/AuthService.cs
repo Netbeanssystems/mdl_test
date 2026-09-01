@@ -1,4 +1,4 @@
-﻿using Application.AppSettings;
+using Application.AppSettings;
 using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
@@ -89,7 +89,7 @@ namespace Application.Services
             var User = await _userManager.FindByNameAsync(model.Username).ConfigureAwait(false);
                 if (User?.Approved != true || User.IsActive == false) return null;
 
-            if (User.LoginValidTill != null && User.LoginValidTill.Value.Date < DateTime.Now.Date && (User.UserName.Contains("ForeignBidder") || User.UserName.Contains("GeneralUpload") || User.UserName.Contains("CommercialExecutive")))
+            if (User.LoginValidTill != null && User.LoginValidTill.Value.Date < DateTime.Now.Date && (User.UserName.Contains("ForeignBidder") || User.UserName.Contains("Bidder") || User.UserName.Contains("GeneralUpload") || User.UserName.Contains("CommercialExecutive")))
             {
                 return null;
             }

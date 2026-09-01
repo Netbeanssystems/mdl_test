@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace WebForeignBidder.Pages.Admin.Bidder
 {
-    [Authorize(Roles = "ForeignBidder,SuperAdmin,CommercialExecutive,HOD")]
+    [Authorize(Roles = "Bidder,ForeignBidder,SuperAdmin,CommercialExecutive,HOD")]
 
 
     public class ListOfTenderModel : PageModel
