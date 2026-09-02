@@ -165,13 +165,60 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
         }
         public async Task<IActionResult> OnPost()
         {
-            // Validate and save tender document
+            // Validate and save tender documents (dynamic rows)
+            tenderUpload.TenderDocuments = new List<BidderTenderUploadDocumentsDTO>();
+
+            if (tenderUpload.UploadDocFiles != null && tenderUpload.UploadDocFiles.Any())
+            {
+                if (tenderUpload.UploadDocFiles.Count > 8)
+                {
+                    _notyf.Error("Maximum 8 document rows allowed.");
+                    return RedirectToPage();
+                }
+
+                for (int i = 0; i < tenderUpload.UploadDocFiles.Count; i++)
+                {
+                    var file = tenderUpload.UploadDocFiles[i];
+                    if (file != null && file.Length > 0)
+                    {
+                        var (isValid, errorMessage) = _fileService.ValidateTenderArchive(file);
+                        if (!isValid)
+                        {
+                            _notyf.Error(errorMessage);
+                            return RedirectToPage();
+                        }
+
+                        string docTitle = (tenderUpload.UploadDocNames != null && i < tenderUpload.UploadDocNames.Count && !string.IsNullOrWhiteSpace(tenderUpload.UploadDocNames[i]))
+                            ? tenderUpload.UploadDocNames[i].Trim()
+                            : file.FileName;
+
+                        string encryptedName = "";
+                        foreach (var item in tenderUpload.ProjectIds)
+                        {
+                            encryptedName = await _fileService.SaveEncryptionAsync(
+                                $@"\BidderTenders\{item}\{tenderUpload.TenderNo}\",
+                                file);
+                        }
+
+                        tenderUpload.TenderDocuments.Add(new BidderTenderUploadDocumentsDTO
+                        {
+                            OriginalFileName = docTitle,
+                            EncryptedFileName = encryptedName,
+                            FileSizeInBytes = file.Length,
+                            IsActive = true
+                        });
+                    }
+                }
+            }
+
+            // Backward compatibility for single IFFTenderDoc if present
             if (tenderUpload.IFFTenderDoc != null)
             {
-                if (!_fileService.CheckValidFile(tenderUpload.IFFTenderDoc))
+                var (isValid, errorMessage) = _fileService.ValidateTenderArchive(tenderUpload.IFFTenderDoc);
+                if (!isValid)
                 {
-                    _notyf.Information("Please Upload    Valid File");
-                    return RedirectToPage("Index");
+                    _notyf.Error(errorMessage);
+                    return RedirectToPage();
                 }
 
                 foreach (var item in tenderUpload.ProjectIds)
@@ -180,26 +227,38 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                         $@"\BidderTenders\{item}\{tenderUpload.TenderNo}\",
                         tenderUpload.IFFTenderDoc);
                 }
+
+                tenderUpload.TenderDocuments.Add(new BidderTenderUploadDocumentsDTO
+                {
+                    OriginalFileName = tenderUpload.IFFTenderDoc.FileName,
+                    EncryptedFileName = tenderUpload.TenderDoc,
+                    FileSizeInBytes = tenderUpload.IFFTenderDoc.Length,
+                    IsActive = true
+                });
                 tenderUpload.IFFTenderDoc = null;
+            }
+            else if (tenderUpload.TenderDocuments.Any())
+            {
+                tenderUpload.TenderDoc = tenderUpload.TenderDocuments.First().EncryptedFileName;
             }
 
             // Validate and save corrigendum document
             if (tenderUpload.TenderCorrigendums?.IFFCorrigendumDoc != null)
             {
-                if (!_fileService.CheckValidFile(tenderUpload.TenderCorrigendums.IFFCorrigendumDoc))
+                var (isValid, errorMessage) = _fileService.ValidateTenderArchive(tenderUpload.TenderCorrigendums.IFFCorrigendumDoc);
+                if (!isValid)
                 {
-                    _notyf.Information("Please Upload Valid File");
-                    return RedirectToPage("Index");
+                    _notyf.Error(errorMessage);
+                    return RedirectToPage();
                 }
 
                 foreach (var item in tenderUpload.ProjectIds)
                 {
                     tenderUpload.TenderCorrigendums.CorrigendumDoc = await _fileService.SaveEncryptionAsync(
-                    $@"\BidderTenders\{item}\{tenderUpload.TenderNo}\",
-                    tenderUpload.TenderCorrigendums.IFFCorrigendumDoc
-                );
+                        $@"\BidderTenders\{item}\{tenderUpload.TenderNo}\",
+                        tenderUpload.TenderCorrigendums.IFFCorrigendumDoc
+                    );
                 }
-
 
                 tenderUpload.TenderCorrigendums.IFFCorrigendumDoc = null;
             }

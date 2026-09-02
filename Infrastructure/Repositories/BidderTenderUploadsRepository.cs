@@ -1,4 +1,4 @@
-﻿using Domain.Models;
+using Domain.Models;
 using Domain.RepositoryInterfaces;
 using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +27,15 @@ namespace Infrastructure.Repositories
                 TenderNo = c.TenderNo,
                 TenderDescription = c.TenderDescription,
                 ForeignBidderId = c.ForeignBidderId,
+                TenderStartDate = c.TenderStartDate,
                 TenderOpeningDate = c.TenderOpeningDate,
                 TenderClosingDate = c.TenderClosingDate,
                 TenderDoc = c.TenderDoc,
                 TenderCorrigendums = DbContext.BidderTenderCorrigendum
                     .Where(b => b.TenderId == c.Id.ToString())
+                    .ToList(),
+                TenderDocuments = DbContext.BidderTenderUploadDocuments
+                    .Where(d => d.TenderId == c.Id && d.IsActive)
                     .ToList()
             }).FirstOrDefaultAsync();
 

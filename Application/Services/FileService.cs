@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Microsoft.AspNetCore.Hosting;
@@ -567,6 +567,70 @@ namespace Application.Services
             foreach (var file in files)
                 filenames.Add(await SaveImageAsync(path, file));
             return filenames;
+        }
+
+        public (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return (false, "File is empty or not provided.");
+
+            const long maxFileSize = 30 * 1024 * 1024;
+            if (file.Length > maxFileSize)
+                return (false, $"File '{file.FileName}' exceeds the maximum allowed size of 30 MB.");
+
+            string ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (ext != ".zip" && ext != ".rar")
+                return (false, $"File '{file.FileName}' has an invalid extension '{ext}'. Only .zip and .rar formats are allowed.");
+
+            byte[] header = new byte[7];
+            using (var stream = file.OpenReadStream())
+            {
+                int read = stream.Read(header, 0, header.Length);
+                if (read < 4)
+                    return (false, $"File '{file.FileName}' is corrupted or invalid.");
+
+                bool isZip = header[0] == 0x50 && header[1] == 0x4B && header[2] == 0x03 && header[3] == 0x04;
+                bool isRar = read >= 6 && header[0] == 0x52 && header[1] == 0x61 && header[2] == 0x72 && header[3] == 0x21 && header[4] == 0x1A && header[5] == 0x07;
+
+                if (ext == ".zip" && !isZip)
+                    return (false, $"File '{file.FileName}' is not a valid ZIP archive.");
+
+                if (ext == ".rar" && !isRar)
+                    return (false, $"File '{file.FileName}' is not a valid RAR archive.");
+            }
+
+            if (ext == ".zip")
+            {
+                try
+                {
+                    using (var stream = file.OpenReadStream())
+                    using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
+                    {
+                        var allowedInnerExtensions = new[] { ".pdf", ".xlsx", ".xls" };
+                        var fileEntries = archive.Entries
+                            .Where(e => !string.IsNullOrEmpty(e.Name) && !e.FullName.EndsWith("/") && !e.FullName.EndsWith("\\"))
+                            .ToList();
+
+                        if (fileEntries.Count == 0)
+                            return (false, $"Archive '{file.FileName}' does not contain any files.");
+
+                        foreach (var entry in fileEntries)
+                        {
+                            string innerExt = Path.GetExtension(entry.Name)?.ToLowerInvariant();
+                            if (!allowedInnerExtensions.Contains(innerExt))
+                            {
+                                return (false, $"Archive '{file.FileName}' contains invalid file '{entry.FullName}'. Only .pdf, .xlsx, and .xls files are allowed inside the archive.");
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Could not read archive '{file.FileName}': {ex.Message}");
+                }
+            }
+
+            return (true, string.Empty);
         }
     }
 }

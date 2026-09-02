@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +27,7 @@ namespace Application.ServiceInterfaces
 
         //Added later from HPCL to be refactored
         bool CheckValidFile(IFormFile file);
+        (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file);
         bool CheckFiles(IFormFile file, string AllowedExtentions);
         //Added later from HPCL to be refactored
         Task<string> SaveImageAsync(string path, IFormFile file);

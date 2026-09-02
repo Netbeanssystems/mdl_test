@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     // local state (avoid polluting global namespace)
     var lastProjectValue = '';
     var lastProjectTime = 0;
@@ -150,23 +150,41 @@ $('#tenderUpload_TenderNo').on('input', function () {
                         $("#tenderUpload_CreatedDate").val(tender.createdDate || '');
                         $("#tenderUpload_TenderDoc").val(tender.tenderDoc || '');
 
-
-                        $("#tenderUpload_TenderClosingDate").val(tender.tenderClosingDate || '');
-                        $("#tenderUpload_TenderOpeningDate").val(tender.tenderOpeningDate || '');
+                        $("#tenderUpload_TenderStartDate").val(tender.tenderStartDate ? tender.tenderStartDate.split('T')[0] : '');
+                        $("#tenderUpload_TenderOpeningDate").val(tender.tenderOpeningDate ? tender.tenderOpeningDate.split('T')[0] : '');
+                        $("#tenderUpload_TenderClosingDate").val(tender.tenderClosingDate ? tender.tenderClosingDate.split('T')[0] : '');
                         $("#tenderUpload_TenderDescription").val(tender.tenderDescription || '');
                         $("#tenderUpload_ForeignBidderId").val(tender.foreignBidderId || '');
-                        if (!isNewTender && tender.tenderDoc && tender.projectId && tender.tenderNo) {
-                            const existingDocLink = `
-                                <span id="existdoc">
-                                    <a href='/bidder/BidderTenders/${tender.projectId}/${tender.tenderNo}/${tender.tenderDoc}' target='_blank'>View Doc</a>
-                                </span>`;
-                            $("#tenderUpload_IFFTenderDoc").parent().append(existingDocLink);
+
+                        if (!isNewTender) {
+                            $("#tenderUpload_TenderStartDate").prop("readonly", true).addClass("bg-light");
+                            $("#tenderUpload_TenderClosingDate").prop("readonly", true).addClass("bg-light");
+                            $("#tenderUpload_TenderOpeningDate").prop("readonly", false).removeClass("bg-light");
 
                             $("#corrigendumOptionContainer").show();
+
+                            // Populate existing documents
+                            $('#tenderDocsBody').empty();
+                            deletedDocIds = [];
+                            $('#tenderUpload_DeletedDocIds').val('');
+                            if (tender.tenderDocuments && tender.tenderDocuments.length > 0) {
+                                tender.tenderDocuments.forEach(doc => {
+                                    addTenderDocRow(doc.originalFileName, true, doc.id, doc.encryptedFileName, tender.projectId, tender.tenderNo);
+                                });
+                            } else if (tender.tenderDoc) {
+                                addTenderDocRow("Tender Document", true, 0, tender.tenderDoc, tender.projectId, tender.tenderNo);
+                            }
                         } else {
                             $('input[name="IsNew"]').val(true);
-                            $("#tenderUpload_IFFTenderDoc").parent().find("#existdoc").remove();
+                            $("#tenderUpload_TenderStartDate").prop("readonly", false).removeClass("bg-light");
+                            $("#tenderUpload_TenderClosingDate").prop("readonly", false).removeClass("bg-light");
+                            $("#tenderUpload_TenderOpeningDate").prop("readonly", false).removeClass("bg-light");
+
                             $("#corrigendumOptionContainer").hide();
+                            $('#tenderDocsBody').empty();
+                            deletedDocIds = [];
+                            $('#tenderUpload_DeletedDocIds').val('');
+                            addTenderDocRow();
                         }
 
                         const corrigendums = tender.tenderCorrigendums;
@@ -255,28 +273,194 @@ $("input[name='addCorrigendum']").on("change", function () {
     }
 });
 
+let tenderDocRowIndex = 0;
+const MAX_DOC_ROWS = 8;
+let deletedDocIds = [];
+
+function getActiveRowCount() {
+    return $('#tenderDocsBody tr:not(.deleted-row)').length;
+}
+
+function updateDocCountInfo() {
+    const count = getActiveRowCount();
+    $('#docCountInfo').text(`Rows: ${count} / ${MAX_DOC_ROWS}`);
+    if (count >= MAX_DOC_ROWS) {
+        $('#btnAddDocRow').prop('disabled', true);
+    } else {
+        $('#btnAddDocRow').prop('disabled', false);
+    }
+    reindexDocRows();
+}
+
+function reindexDocRows() {
+    let sr = 1;
+    $('#tenderDocsBody tr:not(.deleted-row)').each(function () {
+        $(this).find('.doc-sr-no').text(sr++);
+    });
+}
+
+function addTenderDocRow(docName = '', isExisting = false, existingDocId = 0, encryptedFileName = '', projectId = '', tenderNo = '') {
+    if (getActiveRowCount() >= MAX_DOC_ROWS) {
+        alert('Maximum 8 document rows allowed.');
+        return;
+    }
+
+    tenderDocRowIndex++;
+    const rowId = `docRow_${tenderDocRowIndex}`;
+    let rowHtml = '';
+
+    if (isExisting) {
+        rowHtml = `
+            <tr id="${rowId}" data-existing-id="${existingDocId}">
+                <td class="text-center font-weight-bold doc-sr-no"></td>
+                <td>
+                    <span>${docName || encryptedFileName}</span>
+                </td>
+                <td>
+                    <a href="/bidder/BidderTenders/${projectId}/${tenderNo}/${encryptedFileName}" target="_blank" class="btn btn-sm btn-outline-info">
+                        <i class="fa fa-download"></i> View Document
+                    </a>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-existing-doc" data-id="${existingDocId}" data-row="${rowId}">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    } else {
+        rowHtml = `
+            <tr id="${rowId}">
+                <td class="text-center font-weight-bold doc-sr-no"></td>
+                <td>
+                    <input type="text" name="tenderUpload.UploadDocNames" class="form-control form-control-sm doc-name-input" placeholder="Enter Document Name" value="${docName}" required />
+                </td>
+                <td>
+                    <input type="file" name="tenderUpload.UploadDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar" required onchange="validateArchiveFileInput(this)" />
+                    <small class="text-muted">.zip or .rar (max 30 MB)</small>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-doc-row" data-row="${rowId}">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    $('#tenderDocsBody').append(rowHtml);
+    updateDocCountInfo();
+}
+
+function validateArchiveFileInput(input) {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    const fileName = file.name;
+    const ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+
+    // Check extension
+    if (ext !== '.zip' && ext !== '.rar') {
+        alert(`Invalid format for '${fileName}'. Only .zip and .rar formats are allowed.`);
+        input.value = '';
+        return false;
+    }
+
+    // Check size (30 MB = 30 * 1024 * 1024 bytes)
+    const maxSize = 30 * 1024 * 1024;
+    if (file.size > maxSize) {
+        alert(`File '${fileName}' exceeds the maximum allowed size of 30 MB.`);
+        input.value = '';
+        return false;
+    }
+
+    return true;
+}
+
 function validateDates() {
+    const startDateVal = document.getElementById("tenderUpload_TenderStartDate")?.value;
+    const openingDateVal = document.getElementById("tenderUpload_TenderOpeningDate")?.value;
+    const closingDateVal = document.getElementById("tenderUpload_TenderClosingDate")?.value;
 
-    const startDate1 = new Date(document.getElementById("tenderUpload_TenderOpeningDate").value);
-    const endDate1 = new Date(document.getElementById("tenderUpload_TenderClosingDate").value);
+    const startDate = startDateVal ? new Date(startDateVal) : null;
+    const openingDate = openingDateVal ? new Date(openingDateVal) : null;
+    const closingDate = closingDateVal ? new Date(closingDateVal) : null;
 
-    if (startDate1 && endDate1 && endDate1 < startDate1) {
-        alert("End date cannot be earlier than start date.");
+    if (startDate && openingDate && openingDate < startDate) {
+        alert("Tender Opening Date cannot be earlier than Tender Start Date.");
+        document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+    }
+
+    if (openingDate && closingDate && closingDate < openingDate) {
+        alert("Tender Closing Date cannot be earlier than Tender Opening Date.");
         document.getElementById("tenderUpload_TenderClosingDate").value = "";
     }
 
-    const startDate = new Date(document.getElementById("tenderUpload_TenderClosingDate").value);
-    const endDate = new Date(document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate").value);
-
-    if (startDate && endDate && endDate < startDate) {
-        alert("End date cannot be earlier than start date.");
-        document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate").value = "";
+    const extendedDateInput = document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate");
+    if (extendedDateInput && extendedDateInput.value) {
+        const extendedDate = new Date(extendedDateInput.value);
+        if (closingDate && extendedDate && extendedDate < closingDate) {
+            alert("Extended Date cannot be earlier than Tender Closing Date.");
+            extendedDateInput.value = "";
+        }
     }
-
 }
 
 $(document).ready(function () {
     $('.js-example-basic-multiple').select2();
+
+    // Initialize 1 row if empty
+    if ($('#tenderDocsBody tr').length === 0) {
+        addTenderDocRow();
+    }
+
+    // Dynamic row addition
+    $('#btnAddDocRow').on('click', function () {
+        addTenderDocRow();
+    });
+
+    // Remove newly added row
+    $(document).on('click', '.btn-remove-doc-row', function () {
+        const rowId = $(this).data('row');
+        $(`#${rowId}`).remove();
+        updateDocCountInfo();
+    });
+
+    // Remove existing document
+    $(document).on('click', '.btn-remove-existing-doc', function () {
+        const docId = $(this).data('id');
+        const rowId = $(this).data('row');
+        if (confirm('Are you sure you want to remove this document?')) {
+            if (docId > 0) {
+                deletedDocIds.push(docId);
+                $('#tenderUpload_DeletedDocIds').val(deletedDocIds.join(','));
+            }
+            $(`#${rowId}`).remove();
+            updateDocCountInfo();
+        }
+    });
+
+    // Confirmation modal logic
+    $('#btnOpenSaveModal').on('click', function () {
+        const form = $(this).closest('form')[0];
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const activeRows = getActiveRowCount();
+        if (activeRows === 0) {
+            alert('Please add at least one document row.');
+            return;
+        }
+
+        $('#confirmSaveModal').modal('show');
+    });
+
+    $('#btnConfirmSave').on('click', function () {
+        $('#confirmSaveModal').modal('hide');
+        const form = $('#btnOpenSaveModal').closest('form')[0];
+        form.submit();
+    });
     // Delete Action
     $('#corrigendumTable').on('click', '.delete-btn', function () {
         debugger

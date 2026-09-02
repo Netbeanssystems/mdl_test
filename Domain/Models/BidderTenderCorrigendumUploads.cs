@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Domain.Models
@@ -11,9 +11,11 @@ namespace Domain.Models
         public string TenderNo { get; set; }
         public string TenderDescription { get; set; }
         public string ForeignBidderId { get; set; }
+        public DateTime? TenderStartDate { get; set; }
         public DateTime TenderOpeningDate { get; set; }
         public DateTime TenderClosingDate { get; set; }
         public string TenderDoc { get; set; }
         public List<BidderTenderCorrigendum> TenderCorrigendums { get; set; }
+        public List<BidderTenderUploadDocuments> TenderDocuments { get; set; } = new();
     }
 }

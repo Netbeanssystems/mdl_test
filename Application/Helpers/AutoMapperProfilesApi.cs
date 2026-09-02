@@ -304,6 +304,11 @@ namespace Application.Helpers
             CreateMap<BidderGeneralDoc, BidderGeneralDocDTO>();
             CreateMap<BidderGeneralDocDTO, BidderGeneralDoc>();
             CreateMap<BidderGeneralDoc, BidderGeneralDocVM>();
+
+            // For BidderTenderUploadDocuments
+            CreateMap<BidderTenderUploadDocuments, BidderTenderUploadDocumentsDTO>().ReverseMap();
+            CreateMap<BidderTenderUploadDocuments, BidderTenderUploadDocumentsVM>();
+            CreateMap<BidderTenderUploadDocumentsDTO, BidderTenderUploadDocumentsVM>();
         }
     }
 }

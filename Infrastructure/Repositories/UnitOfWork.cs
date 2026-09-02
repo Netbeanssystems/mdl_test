@@ -1,4 +1,4 @@
-﻿using Domain.RepositoryInterfaces;
+using Domain.RepositoryInterfaces;
 using Infrastructure.Context;
 using System.Threading.Tasks;
 namespace Infrastructure.Repositories
@@ -61,6 +61,7 @@ namespace Infrastructure.Repositories
         public IBidderCorrigendumUploadsRepository BidderCorrigendumRepo { get; set; }
         public IBidderTenderDocumentsRepository BidderTenderDocumentsRepo { get; set; }
         public IBidderGeneralDocRepository BidderGeneralDocRepo { get; set; }
+        public IBidderTenderUploadDocumentsRepository BidderTenderUploadDocumentsRepo { get; set; }
 
         private readonly AppDbContext _dbContext;
 
@@ -123,6 +124,7 @@ namespace Infrastructure.Repositories
             BidderCorrigendumRepo = new BidderCorrigendumUploadsRepository(_dbContext);
             BidderTenderDocumentsRepo = new BidderTenderDocumentsRepository(_dbContext);
             BidderGeneralDocRepo = new BidderGeneralDocRepository(_dbContext);
+            BidderTenderUploadDocumentsRepo = new BidderTenderUploadDocumentsRepository(_dbContext);
         }
         public void Dispose()
         {

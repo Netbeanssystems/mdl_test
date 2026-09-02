@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model ManageModel
 @{
     ViewData["Title"] = "Create Commercial Execute Login";
@@ -77,8 +77,13 @@
                                 <span asp-validation-for="tenderUpload.ForeignBidderId" class="text-danger"></span>
                             </div> *@
                             <div class="form-group">
-                                <label asp-for="tenderUpload.TenderOpeningDate" class="col-form-label">Tender Open Date<span class="required">*</span></label>
-                                <input asp-for="tenderUpload.TenderOpeningDate" class="form-control" onchange="validateDates()" placeholder="Tender Open Date" />
+                                <label asp-for="tenderUpload.TenderStartDate" class="col-form-label">Tender Start Date<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderStartDate" class="form-control" onchange="validateDates()" placeholder="Tender Start Date" />
+                                <span asp-validation-for="tenderUpload.TenderStartDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderOpeningDate" class="col-form-label">Tender Opening Date<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderOpeningDate" class="form-control" onchange="validateDates()" placeholder="Tender Opening Date" />
                                 <span asp-validation-for="tenderUpload.TenderOpeningDate" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -86,10 +91,31 @@
                                 <input asp-for="tenderUpload.TenderClosingDate" class="form-control" onchange="validateDates()" placeholder="Tender Closing Date" />
                                 <span asp-validation-for="tenderUpload.TenderClosingDate" class="text-danger"></span>
                             </div>
+
                             <div class="form-group">
-                                <label asp-for="tenderUpload.IFFTenderDoc" class="col-form-label">Tender Documents (Maximum file size allowed 2 MB)<span class="required">*</span></label>
-                                <input class="form-control Attachment" asp-for="tenderUpload.IFFTenderDoc" />
-                                <span asp-validation-for="tenderUpload.IFFTenderDoc" class="text-danger"></span>
+                                <label class="col-form-label font-weight-bold">Upload Tender related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
+                                <small class="form-text text-muted mb-2">Note: .zip/.rar having ONLY valid .pdf, .xlsx and .xls file format will be allowed. Max total rows : 8 (Means max size: 240 MB).</small>
+
+                                <input type="hidden" asp-for="tenderUpload.DeletedDocIds" id="tenderUpload_DeletedDocIds" />
+
+                                <table class="table table-sm table-bordered" id="tblTenderDocs">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th style="width: 70px;" class="text-center">Sr No.</th>
+                                            <th>Document Name</th>
+                                            <th>File Upload (.zip / .rar)</th>
+                                            <th style="width: 100px;" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tenderDocsBody">
+                                        <!-- Rows dynamically added via JavaScript -->
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddDocRow">
+                                    <i class="fa fa-plus"></i> Add Row
+                                </button>
+                                <span id="docCountInfo" class="badge badge-info ml-2">Rows: 0 / 8</span>
+                                <span id="docValidationError" class="text-danger d-block mt-1"></span>
                             </div>
 
                             <div class="form-group" id="corrigendumOptionContainer" style="margin-top: 10px;display: none;">
@@ -110,15 +136,16 @@
                                     <span asp-validation-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="col-form-label">Corrigendum Documents(Maximum file size allowed 2 MB)<span class="required">*</span></label>
-                                    <input class="form-control Attachment" asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" />
+                                    <label asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="col-form-label font-weight-bold">Corrigendum Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
+                                    <small class="form-text text-muted mb-2">Note: .zip/.rar having ONLY valid .pdf, .xlsx and .xls file format will be allowed. Max total rows : 8 (Means max size: 240 MB).</small>
+                                    <input class="form-control Attachment" asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" accept=".zip,.rar" onchange="validateArchiveFileInput(this)" />
                                     <span asp-validation-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="col-md-3 offset-md-3">
-                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                    <button type="button" id="btnOpenSaveModal" class="btn btn-block btn-primary">Save</button>
                                 </div>
                                 <div class="col-md-3">
                                     <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
@@ -133,6 +160,27 @@
             <thead></thead>
             <tbody></tbody>
         </table>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bold" id="confirmSaveModalTitle">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Are you sure you want to save the tender details?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmSave">Yes, Save</button>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 @section Scripts {

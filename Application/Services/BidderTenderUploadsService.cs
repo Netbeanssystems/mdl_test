@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+using System;
+using Application.Dtos;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
 using AutoMapper;
@@ -66,6 +67,22 @@ namespace Application.Services
             _unitOfWork.BidderTenderUploadRepo.Create(heading);
             var rowsChanged = await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             modelDto.Id = heading.Id;
+
+            // Save Tender Documents if present
+            if (modelDto.TenderDocuments != null && modelDto.TenderDocuments.Any())
+            {
+                foreach (var doc in modelDto.TenderDocuments)
+                {
+                    var docEntity = _mapper.Map<BidderTenderUploadDocuments>(doc);
+                    docEntity.TenderId = heading.Id;
+                    docEntity.CreatedBy = modelDto.CreatedBy ?? "MDL";
+                    docEntity.CreatedDate = DateTime.Now;
+                    docEntity.IsActive = true;
+                    _unitOfWork.BidderTenderUploadDocumentsRepo.Create(docEntity);
+                }
+                await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            }
+
             return rowsChanged > 0 ? modelDto : null;
         }
         public async Task<BidderTenderUploadsDTO> Get(int id)
@@ -83,12 +100,48 @@ namespace Application.Services
             var tenderEntity = _mapper.Map<BidderTenderUploads>(modelDto);
             _unitOfWork.BidderTenderUploadRepo.Update(tenderEntity);
 
+            // Handle Tender Documents additions
+            if (modelDto.TenderDocuments != null && modelDto.TenderDocuments.Any())
+            {
+                foreach (var doc in modelDto.TenderDocuments)
+                {
+                    if (doc.Id == 0)
+                    {
+                        var docEntity = _mapper.Map<BidderTenderUploadDocuments>(doc);
+                        docEntity.TenderId = modelDto.Id;
+                        docEntity.CreatedBy = modelDto.ModifiedBy ?? "MDL";
+                        docEntity.CreatedDate = DateTime.Now;
+                        docEntity.IsActive = true;
+                        _unitOfWork.BidderTenderUploadDocumentsRepo.Create(docEntity);
+                    }
+                }
+            }
+
+            // Handle DeletedDocIds
+            if (!string.IsNullOrEmpty(modelDto.DeletedDocIds))
+            {
+                var deleteIds = modelDto.DeletedDocIds.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(id => int.TryParse(id.Trim(), out var parsed) ? parsed : 0)
+                    .Where(id => id > 0).ToList();
+
+                foreach (var delId in deleteIds)
+                {
+                    var existingDoc = await _unitOfWork.BidderTenderUploadDocumentsRepo.Get(delId).ConfigureAwait(false);
+                    if (existingDoc != null)
+                    {
+                        existingDoc.IsActive = false;
+                        existingDoc.ModifiedBy = modelDto.ModifiedBy ?? "MDL";
+                        existingDoc.ModifiedDate = DateTime.Now;
+                        _unitOfWork.BidderTenderUploadDocumentsRepo.Update(existingDoc);
+                    }
+                }
+            }
+
             // Update Corrigendum if present
-            //if (modelDto.TenderCorrigendums.Id != 0)
-            //{
-                // Fetch existing corrigendum based on TenderId (assuming TenderId is unique for corrigendum)
+            if (modelDto.TenderCorrigendums != null && (!string.IsNullOrEmpty(modelDto.TenderCorrigendums.CorrigendumDescription) || !string.IsNullOrEmpty(modelDto.TenderCorrigendums.CorrigendumDoc)))
+            {
                 var existingCorrigendum = await _unitOfWork.BidderCorrigendumRepo
-                    .GetFirstOrDefaultAsync(c => c.Id == modelDto.TenderCorrigendums.Id); // Or use modelDto.Id if needed
+                    .GetFirstOrDefaultAsync(c => c.Id == modelDto.TenderCorrigendums.Id);
 
                 if (existingCorrigendum != null)
                 {
@@ -96,18 +149,21 @@ namespace Application.Services
                     existingCorrigendum.CorrigendumDescription = modelDto.TenderCorrigendums.CorrigendumDescription;
                     existingCorrigendum.CorrigendumDoc = modelDto.TenderCorrigendums.CorrigendumDoc;
                     existingCorrigendum.ExtendedDate = modelDto.TenderCorrigendums.ExtendedDate;
+                    existingCorrigendum.ModifiedBy = modelDto.ModifiedBy ?? "MDL";
+                    existingCorrigendum.ModifiedDate = DateTime.Now;
 
                     _unitOfWork.BidderCorrigendumRepo.Update(existingCorrigendum);
                 }
                 else
                 {
-                modelDto.CreatedBy = "MDL";
                     modelDto.TenderCorrigendums.TenderId = modelDto.Id.ToString();
-                    // Optionally insert new if not found
                     var newCorrigendum = _mapper.Map<BidderTenderCorrigendum>(modelDto.TenderCorrigendums);
+                    newCorrigendum.CreatedBy = modelDto.CreatedBy ?? "MDL";
+                    newCorrigendum.CreatedDate = DateTime.Now;
+                    newCorrigendum.IsActive = true;
                     _unitOfWork.BidderCorrigendumRepo.Create(newCorrigendum);
                 }
-            //}
+            }
 
             var rowsChanged = await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             return rowsChanged > 0 ? modelDto : null;

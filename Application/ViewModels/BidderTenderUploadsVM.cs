@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -15,12 +15,14 @@ namespace Application.ViewModels
         public string TenderNo { get; set; }
         public string TenderDescription { get; set; }
         public string ForeignBidderId { get; set; }
+        public DateTime? TenderStartDate { get; set; }
         public DateTime TenderOpeningDate { get; set; }
         public DateTime TenderClosingDate { get; set; }
         public string TenderDoc { get; set; }
         public string TenderDocDecrypted{ get; set; }
         public DateTime? LatestExtendedDate { get; set; }
         public List<BidderTenderCorrigendumVM> TenderCorrigendums { get; set; }
+        public List<BidderTenderUploadDocumentsVM> TenderDocuments { get; set; } = new();
     }
     public class BidderTenderCorrigendumVM : BaseVM
     {

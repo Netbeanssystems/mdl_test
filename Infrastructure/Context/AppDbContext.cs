@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -80,5 +80,6 @@ namespace Infrastructure.Context
         public DbSet<GeneraluploadURL> GeneraluploadURL { get; set; }
         public DbSet<BidderTenderDocuments> BidderTenderDocuments { get; set; }
         public DbSet<BidderGeneralDoc> BidderGeneralDoc { get; set; }
+        public DbSet<BidderTenderUploadDocuments> BidderTenderUploadDocuments { get; set; }
     }
 }

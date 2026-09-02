@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 namespace Domain.RepositoryInterfaces
 {
@@ -60,6 +60,7 @@ namespace Domain.RepositoryInterfaces
         IBidderCorrigendumUploadsRepository BidderCorrigendumRepo { get; set; }
         IBidderTenderDocumentsRepository BidderTenderDocumentsRepo { get; set; }
         IBidderGeneralDocRepository BidderGeneralDocRepo { get; set; }
+        IBidderTenderUploadDocumentsRepository BidderTenderUploadDocumentsRepo { get; set; }
 
         Task<int> SaveChangesAsync();
         int SaveChanges();

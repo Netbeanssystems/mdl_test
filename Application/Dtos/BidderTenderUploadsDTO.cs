@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 
@@ -15,10 +15,15 @@ namespace Application.Dtos
         public string TenderDescription { get; set; }
         public string ForeignBidderId { get; set; }
         public List<string> ForeignBidderIds { get; set; } = new();
+        public DateTime? TenderStartDate { get; set; }
         public DateTime TenderOpeningDate { get; set; }
         public DateTime TenderClosingDate { get; set; }
         public string TenderDoc { get; set; }
         public IFormFile IFFTenderDoc { get; set; }
+        public List<BidderTenderUploadDocumentsDTO> TenderDocuments { get; set; } = new();
+        public List<string> UploadDocNames { get; set; } = new();
+        public List<IFormFile> UploadDocFiles { get; set; } = new();
+        public string DeletedDocIds { get; set; }
         public BidderTenderCorrigendumDto TenderCorrigendums { get; set; }
     }
 
