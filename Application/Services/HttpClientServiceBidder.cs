@@ -806,7 +806,7 @@ namespace Application.Services
                         }
                     }
                 }
-                return null;
+                return result;
             }
             if (response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.OK)
                 return result;
@@ -815,7 +815,7 @@ namespace Application.Services
             {
                 _notyf.Error(result);
             }
-            return null;
+            return result;
         }
 
         //Disposer

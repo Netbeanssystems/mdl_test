@@ -296,18 +296,24 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 if (tenderUpload.ProjectIds != null)
                     tenderUpload.ProjectId = string.Join(",", tenderUpload.ProjectIds);
 
+                string clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+                if (!string.IsNullOrEmpty(clientIp) && clientIp.Length > 16)
+                {
+                    clientIp = clientIp.Substring(0, 16);
+                }
+
                 // Audit fields
                 if (tenderUpload.Id == 0) // New record
                 {
                     tenderUpload.CreatedBy = User.Identity.Name;
                     tenderUpload.CreatedDate = DateTime.Now;
-                    tenderUpload.IP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    tenderUpload.IP = clientIp;
                 }
                 else // Update existing record
                 {
                     tenderUpload.ModifiedBy = User.Identity.Name;
                     tenderUpload.ModifiedDate = DateTime.Now;
-                    tenderUpload.IP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    tenderUpload.IP = clientIp;
                 }
 
                 if (tenderUpload.TenderCorrigendums != null)
@@ -317,23 +323,23 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                         tenderUpload.TenderCorrigendums.CreatedBy = User.Identity.Name;
                         if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
                             tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
-                        tenderUpload.TenderCorrigendums.IP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                        tenderUpload.TenderCorrigendums.IP = clientIp;
                     }
                     else
                     {
                         tenderUpload.TenderCorrigendums.ModifiedBy = User.Identity.Name;
                         if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
                             tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
-                        tenderUpload.TenderCorrigendums.IP = HttpContext.Connection.RemoteIpAddress?.ToString();
+                        tenderUpload.TenderCorrigendums.IP = clientIp;
                     }
                 }
 
                 // Set proper audit action
                 string auditAction = tenderUpload.Id == 0 ? "Create" : "Edit";
-                tenderUpload = ModelAuditor<BidderTenderUploadsDTO>.SetAudit(User.Identity.Name, auditAction, HttpContext.Connection.RemoteIpAddress?.ToString(), tenderUpload);
+                tenderUpload = ModelAuditor<BidderTenderUploadsDTO>.SetAudit(User.Identity.Name, auditAction, clientIp, tenderUpload);
                 if (tenderUpload.TenderCorrigendums != null)
                 {
-                    tenderUpload.TenderCorrigendums = ModelAuditor<BidderTenderCorrigendumDto>.SetAudit(User.Identity.Name, auditAction, HttpContext.Connection.RemoteIpAddress?.ToString(), tenderUpload.TenderCorrigendums);
+                    tenderUpload.TenderCorrigendums = ModelAuditor<BidderTenderCorrigendumDto>.SetAudit(User.Identity.Name, auditAction, clientIp, tenderUpload.TenderCorrigendums);
                 }
 
                 // Call API (POST for new, PUT for update)

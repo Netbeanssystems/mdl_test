@@ -83,7 +83,7 @@ namespace Application.Services
                 await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            return rowsChanged > 0 ? modelDto : null;
+            return modelDto;
         }
         public async Task<BidderTenderUploadsDTO> Get(int id)
         {
@@ -164,7 +164,7 @@ namespace Application.Services
             }
 
             var rowsChanged = await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            return rowsChanged > 0 ? modelDto : null;
+            return modelDto;
         }
 
         public async Task<int> Remove(int id)

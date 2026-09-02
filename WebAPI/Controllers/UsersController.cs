@@ -127,33 +127,56 @@ namespace WebAPI.Controllers
                                      "<p>Regards,</p>" + Environment.NewLine +
                                     // "<p>Finance Department</p>" + Environment.NewLine +
                                      "<p>Mazagon Dock Shipbuilders Limited</p>" + Environment.NewLine +
-                                     "<p>Mumbai - 400010</p>" + Environment.NewLine +
+                                     "<p>MumbaiÂ -Â 400010</p>" + Environment.NewLine +
                                      "</body>" + Environment.NewLine +
                                      "</html>", model.Role, user.UserName, model.Password);
 
 
-            if (_config["Environment"].ToString() == "Live")
+            if (string.Equals(_config["Environment"]?.ToString(), "Live", StringComparison.OrdinalIgnoreCase))
             {
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(_config["SMTPFrom"]);
-                mail.To.Add(new MailAddress(model.Email));
-                mail.IsBodyHtml = true;
-                mail.Subject = "Bidder Module - Account credentials";
-                mail.Body = body;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = _config["SMTPHost"];
-                smtp.Send(mail);
-            }
-            else if (_config["Environment"].ToString() == "Dev")
-            {
-                //Send email
-                var EmailVm = new EmailVM
+                try
                 {
-                    ToAddresses = new List<string> { model.Email },
-                    Subject = "Bidder Module - Account credentials",
-                    Body = body
-                };
-                await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress(_config["SMTPFrom"]);
+                    mail.To.Add(new MailAddress(model.Email));
+                    mail.IsBodyHtml = true;
+                    mail.Subject = "Bidder Module - Account credentials";
+                    mail.Body = body;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = _config["SMTPHost"];
+                    smtp.Send(mail);
+                }
+                catch
+                {
+                    try
+                    {
+                        var EmailVm = new EmailVM
+                        {
+                            ToAddresses = new List<string> { model.Email },
+                            Subject = "Bidder Module - Account credentials",
+                            Body = body
+                        };
+                        await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+                    }
+                    catch { }
+                }
+            }
+            else
+            {
+                try
+                {
+                    var EmailVm = new EmailVM
+                    {
+                        ToAddresses = new List<string> { model.Email },
+                        Subject = "Bidder Module - Account credentials",
+                        Body = body
+                    };
+                    await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle error
+                }
             }
 
             //using (MailMessage mail = new MailMessage())

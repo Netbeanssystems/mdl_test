@@ -142,19 +142,58 @@ $('#tenderUpload_TenderNo').on('input', function () {
                     const isNewTender = response.status === "0";
                     $(".card-header h3").html(isNewTender ? "Add Tender" : "Edit Tender");
 
-                    const tender = isNewTender ? {} : response?.data?.value;
+                    const tender = isNewTender ? {} : (response?.data?.value || response?.data || {});
+
+                    function formatDateTimeForInput(dateVal, $input) {
+                        if (!dateVal) return '';
+                        try {
+                            const d = new Date(dateVal);
+                            if (isNaN(d.getTime())) return dateVal;
+                            const pad = n => String(n).padStart(2, '0');
+                            const year = d.getFullYear();
+                            const month = pad(d.getMonth() + 1);
+                            const day = pad(d.getDate());
+                            const hours = pad(d.getHours());
+                            const minutes = pad(d.getMinutes());
+
+                            const dtLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
+                            const dtDate = `${year}-${month}-${day}`;
+
+                            const type = $input.attr('type');
+                            if (type === 'datetime-local') return dtLocal;
+                            if (type === 'date') return dtDate;
+
+                            $input.val(dtLocal);
+                            if ($input.val()) return dtLocal;
+                            $input.val(dtDate);
+                            if ($input.val()) return dtDate;
+                            return dateVal;
+                        } catch (e) {
+                            return dateVal;
+                        }
+                    }
 
                     if (isNewTender || tender) {
-                        $("#tenderUpload_Id").val(tender.id || '');
-                        $("#tenderUpload_CreatedBy").val(tender.createdBy || '');
-                        $("#tenderUpload_CreatedDate").val(tender.createdDate || '');
-                        $("#tenderUpload_TenderDoc").val(tender.tenderDoc || '');
+                        $("#tenderUpload_Id").val(tender.id || tender.Id || '');
+                        $("#tenderUpload_CreatedBy").val(tender.createdBy || tender.CreatedBy || '');
+                        $("#tenderUpload_CreatedDate").val(tender.createdDate || tender.CreatedDate || '');
+                        $("#tenderUpload_TenderDoc").val(tender.tenderDoc || tender.TenderDoc || '');
 
-                        $("#tenderUpload_TenderStartDate").val(tender.tenderStartDate ? tender.tenderStartDate.split('T')[0] : '');
-                        $("#tenderUpload_TenderOpeningDate").val(tender.tenderOpeningDate ? tender.tenderOpeningDate.split('T')[0] : '');
-                        $("#tenderUpload_TenderClosingDate").val(tender.tenderClosingDate ? tender.tenderClosingDate.split('T')[0] : '');
-                        $("#tenderUpload_TenderDescription").val(tender.tenderDescription || '');
-                        $("#tenderUpload_ForeignBidderId").val(tender.foreignBidderId || '');
+                        const rawStartDate = tender.tenderStartDate || tender.TenderStartDate;
+                        const rawOpeningDate = tender.tenderOpeningDate || tender.TenderOpeningDate;
+                        const rawClosingDate = tender.tenderClosingDate || tender.TenderClosingDate;
+
+                        $("#tenderUpload_TenderStartDate").val(formatDateTimeForInput(rawStartDate, $("#tenderUpload_TenderStartDate")));
+                        $("#tenderUpload_TenderOpeningDate").val(formatDateTimeForInput(rawOpeningDate, $("#tenderUpload_TenderOpeningDate")));
+                        $("#tenderUpload_TenderClosingDate").val(formatDateTimeForInput(rawClosingDate, $("#tenderUpload_TenderClosingDate")));
+
+                        $("#tenderUpload_TenderDescription").val(tender.tenderDescription || tender.TenderDescription || '');
+                        
+                        const fbVal = tender.foreignBidderId || tender.ForeignBidderId;
+                        if (fbVal) {
+                            const selectedBidders = fbVal.split(',').map(s => s.trim());
+                            $('#tenderUpload_ForeignBidderIds').val(selectedBidders).trigger('change');
+                        }
 
                         if (!isNewTender) {
                             $("#tenderUpload_TenderStartDate").prop("readonly", true).addClass("bg-light");
@@ -167,12 +206,13 @@ $('#tenderUpload_TenderNo').on('input', function () {
                             $('#tenderDocsBody').empty();
                             deletedDocIds = [];
                             $('#tenderUpload_DeletedDocIds').val('');
-                            if (tender.tenderDocuments && tender.tenderDocuments.length > 0) {
-                                tender.tenderDocuments.forEach(doc => {
-                                    addTenderDocRow(doc.originalFileName, true, doc.id, doc.encryptedFileName, tender.projectId, tender.tenderNo);
+                            const docs = tender.tenderDocuments || tender.TenderDocuments;
+                            if (docs && docs.length > 0) {
+                                docs.forEach(doc => {
+                                    addTenderDocRow(doc.originalFileName || doc.OriginalFileName, true, doc.id || doc.Id, doc.encryptedFileName || doc.EncryptedFileName, tender.projectId || tender.ProjectId, tender.tenderNo || tender.TenderNo);
                                 });
-                            } else if (tender.tenderDoc) {
-                                addTenderDocRow("Tender Document", true, 0, tender.tenderDoc, tender.projectId, tender.tenderNo);
+                            } else if (tender.tenderDoc || tender.TenderDoc) {
+                                addTenderDocRow("Tender Document", true, 0, tender.tenderDoc || tender.TenderDoc, tender.projectId || tender.ProjectId, tender.tenderNo || tender.TenderNo);
                             }
                         } else {
                             $('input[name="IsNew"]').val(true);
