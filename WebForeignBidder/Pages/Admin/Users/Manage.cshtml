@@ -1,4 +1,4 @@
-﻿@page "{id?}"
+@page "{id?}"
 @model ManageModel
 @{
     ViewData["Title"] = "Manage User";
@@ -34,7 +34,7 @@
                             }
                             else
                             {
-                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("BankAdmin"))
+                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("BankAdmin") || User.IsInRole("BidderSuperAdmin"))
                                 {
                                     <div class="form-group">
                                         <label asp-for="user.Role" class="col-form-label">Role<span class="required">*</span></label>

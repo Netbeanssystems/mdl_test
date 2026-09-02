@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Extensions;
 using Application.ServiceInterfaces;
 using AspNetCoreHero.ToastNotification.Abstractions;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,14 @@ namespace WebForeignBidder.Pages.Admin.Users
     {
         private readonly IHttpClientService _httpClient;
         private readonly INotyfService _notyf;
+        private readonly IConfiguration _config;
         public ManageModel(
             IHttpClientService httpClient,
+            IConfiguration config,
             INotyfService notyf)
         {
             _httpClient = httpClient;
+            _config = config;
             _notyf = notyf;
         }
         [FromRoute] public string id { get; set; }
@@ -44,6 +48,14 @@ namespace WebForeignBidder.Pages.Admin.Users
             if (User.IsInRole("BankAdmin"))
             {
                 roles = roles?.Where(role => role.Name.ToLower().Contains("bank")).ToList();
+            }
+            if (User.IsInRole("BidderSuperAdmin"))
+            {
+                var rolesNameBidder = _config.GetSection("RolesNameBidder").GetChildren().Select(x => x.Value).ToList();
+                if (rolesNameBidder != null && rolesNameBidder.Any())
+                {
+                    roles = roles?.Where(x => rolesNameBidder.Any(n => !string.IsNullOrEmpty(n) && x.Name.Contains(n, StringComparison.OrdinalIgnoreCase))).ToList();
+                }
             }
 
             ViewData["Roles"] = new SelectList(roles, "Name", "Name");
