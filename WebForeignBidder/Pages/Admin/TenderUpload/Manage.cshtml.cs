@@ -119,19 +119,27 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 var role = "ForeignBidder";
                 var ForiegnbidderResult = await _httpClient.GetAsync("Users/GetByRole", true, role).ConfigureAwait(false);
                 if (ForiegnbidderResult == "unauthorized") return RedirectToPage("/Account/Login");
-                var ForeignBidder = !string.IsNullOrEmpty(ForiegnbidderResult)
-                     //? JsonConvert.DeserializeObject<List<UserRoleVM>>(ForiegnbidderResult)
-                     //: new List<UserRoleVM>();
-                     ? JsonConvert.DeserializeObject<List<UserVM>>(ForiegnbidderResult)
-                    : new List<UserVM>();
+                var ForeignBidder = new List<UserVM>();
+                if (!string.IsNullOrEmpty(ForiegnbidderResult) && ForiegnbidderResult.TrimStart().StartsWith("["))
+                {
+                    try
+                    {
+                        ForeignBidder = JsonConvert.DeserializeObject<List<UserVM>>(ForiegnbidderResult) ?? new List<UserVM>();
+                    }
+                    catch { }
+                }
 
                 var BidderResult = await _httpClient.GetAsync("Users/GetByRole", true, "Bidder").ConfigureAwait(false);
                 if (BidderResult == "unauthorized") return RedirectToPage("/Account/Login");
-                var BidderList = !string.IsNullOrEmpty(BidderResult)
-                    //? JsonConvert.DeserializeObject<List<UserRoleVM>>(BidderResult)
-                    //: new List<UserRoleVM>();
-                    ? JsonConvert.DeserializeObject<List<UserVM>>(BidderResult)
-                    : new List<UserVM>();
+                var BidderList = new List<UserVM>();
+                if (!string.IsNullOrEmpty(BidderResult) && BidderResult.TrimStart().StartsWith("["))
+                {
+                    try
+                    {
+                        BidderList = JsonConvert.DeserializeObject<List<UserVM>>(BidderResult) ?? new List<UserVM>();
+                    }
+                    catch { }
+                }
 
                 if (BidderList != null && BidderList.Count > 0)
                 {
