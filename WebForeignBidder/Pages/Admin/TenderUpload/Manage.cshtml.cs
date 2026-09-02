@@ -120,14 +120,18 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 var ForiegnbidderResult = await _httpClient.GetAsync("Users/GetByRole", true, role).ConfigureAwait(false);
                 if (ForiegnbidderResult == "unauthorized") return RedirectToPage("/Account/Login");
                 var ForeignBidder = !string.IsNullOrEmpty(ForiegnbidderResult)
-                    ? JsonConvert.DeserializeObject<List<UserRoleVM>>(ForiegnbidderResult)
-                    : new List<UserRoleVM>();
+                     //? JsonConvert.DeserializeObject<List<UserRoleVM>>(ForiegnbidderResult)
+                     //: new List<UserRoleVM>();
+                     ? JsonConvert.DeserializeObject<List<UserVM>>(ForiegnbidderResult)
+                    : new List<UserVM>();
 
                 var BidderResult = await _httpClient.GetAsync("Users/GetByRole", true, "Bidder").ConfigureAwait(false);
                 if (BidderResult == "unauthorized") return RedirectToPage("/Account/Login");
                 var BidderList = !string.IsNullOrEmpty(BidderResult)
-                    ? JsonConvert.DeserializeObject<List<UserRoleVM>>(BidderResult)
-                    : new List<UserRoleVM>();
+                    //? JsonConvert.DeserializeObject<List<UserRoleVM>>(BidderResult)
+                    //: new List<UserRoleVM>();
+                    ? JsonConvert.DeserializeObject<List<UserVM>>(BidderResult)
+                    : new List<UserVM>();
 
                 if (BidderList != null && BidderList.Count > 0)
                 {
@@ -142,6 +146,16 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                     return Page();
                 }
                 ViewData["ForeignBidder"] = new SelectList(ForeignBidder, "UserName", "UserName");
+
+                //-----------------------
+                var bidderOptions = ForeignBidder.Select(x => new
+                {
+                    Value = x.UserName,
+                    Text = $"{(!string.IsNullOrWhiteSpace(x.Name) ? x.Name : x.UserName)} - {(!string.IsNullOrWhiteSpace(x.Country) ? x.Country : "N/A")} - {(!string.IsNullOrWhiteSpace(x.Email) ? x.Email : "N/A")}"
+                }).ToList();
+
+                ViewData["ForeignBidder"] = new SelectList(bidderOptions, "Value", "Text");
+//---------------
 
             }
             if (UserProfileDto != null) return Page();

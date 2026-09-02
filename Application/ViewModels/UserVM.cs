@@ -13,5 +13,6 @@
         public bool Approved { get; set; }
         public bool IsActive { get; set; }
         public string PlainPass { get; set; }
+        public string Country { get; set; }
     }
 }

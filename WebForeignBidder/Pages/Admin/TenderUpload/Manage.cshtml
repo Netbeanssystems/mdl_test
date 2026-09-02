@@ -58,7 +58,12 @@
                                 <span asp-validation-for="tenderUpload.TenderDescription" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="tenderUpload.ForeignBidderIds" class="col-form-label">Foreign Bidder<span class="required">*</span></label>
+                                <label asp-for="tenderUpload.ForeignBidderIds" class="col-form-label">
+                                    Bidder (Select
+                                    bidders from dropdown to allow
+                                    participation for bidding against
+                                    this tender)<span class="required">*</span>
+                                </label>
                                 <select asp-for="tenderUpload.ForeignBidderIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.ForeignBidder" multiple="multiple">
                                     <option>-select-</option>
                                 </select>
