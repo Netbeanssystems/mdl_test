@@ -1,4 +1,4 @@
-﻿using Application.Helpers;
+using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
 using AspNetCoreHero.ToastNotification.Abstractions;
@@ -785,11 +785,12 @@ namespace Application.Services
         //Response Handler
         private async Task<string> ResponseHandler(HttpResponseMessage response)
         {
+            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                _notyf.Error("An internal error occured. Please try again later.");
-                var result1 = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                if (_config["Environment"].ToString() == "Live")
+                var errMsg = !string.IsNullOrWhiteSpace(result) ? result : "An internal error occured. Please try again later.";
+                _notyf.Error(errMsg);
+                if (_config["Environment"]?.ToString() == "Live")
                 {
                     using (MailMessage mail = new MailMessage())
                     {
@@ -797,7 +798,7 @@ namespace Application.Services
                         mail.To.Add(new MailAddress(_config["ErrorEmail"]));
                         mail.IsBodyHtml = true;
                         mail.Subject = "Exception Details";
-                        mail.Body = MessageBuilder.BuildExceptionMessage(_httpContextAccessor.HttpContext, new Exception(result1));
+                        mail.Body = MessageBuilder.BuildExceptionMessage(_httpContextAccessor.HttpContext, new Exception(result));
                         using (SmtpClient smtp = new SmtpClient())
                         {
                             smtp.Host = _config["SMTPHost"];
@@ -805,12 +806,16 @@ namespace Application.Services
                         }
                     }
                 }
+                return result;
             }
-            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.OK)
                 return result;
-            //_notyf.Information(result);
-            return null;
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                _notyf.Error(result);
+            }
+            return result;
         }
 
         //Disposer

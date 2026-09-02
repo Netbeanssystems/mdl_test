@@ -1,7 +1,9 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -22,10 +24,22 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Create([FromBody] BidderTenderUploadsDTO modelDto)
         {
             if (modelDto == null) return BadRequest("Input not valid or null");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var categoryDto = await _dataService.BidderTenderUpload.Add(modelDto).ConfigureAwait(false);
-            if (categoryDto == null) return BadRequest("Create failed");
-            return Ok(modelDto);
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return BadRequest($"Model validation failed: {errors}");
+            }
+            try
+            {
+                var categoryDto = await _dataService.BidderTenderUpload.Add(modelDto).ConfigureAwait(false);
+                if (categoryDto == null) return BadRequest("Create failed: Add operation returned null");
+                return Ok(modelDto);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, $"Exception in Create: {msg}");
+            }
         }
         [HttpGet]
         [AllowAnonymous]
@@ -47,11 +61,23 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Edit([FromRoute] int id, [FromBody] BidderTenderUploadsDTO modelDto)
         {
             if (modelDto == null) return BadRequest("Input not valid or null");
-            if (id != modelDto.Id) return BadRequest("Invalid Id");
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var categoryDto = await _dataService.BidderTenderUpload.Update(modelDto).ConfigureAwait(false);
-            if (categoryDto == null) return BadRequest("Update failed");
-            return Ok(categoryDto);
+            if (id != modelDto.Id) return BadRequest($"Invalid Id mismatch: route id {id} vs body id {modelDto.Id}");
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                return BadRequest($"Model validation failed: {errors}");
+            }
+            try
+            {
+                var categoryDto = await _dataService.BidderTenderUpload.Update(modelDto).ConfigureAwait(false);
+                if (categoryDto == null) return BadRequest("Update failed: Update operation returned null");
+                return Ok(categoryDto);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, $"Exception in Edit: {msg}");
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)

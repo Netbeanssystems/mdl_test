@@ -130,8 +130,6 @@ namespace Application.Services
                     if (existingDoc != null)
                     {
                         existingDoc.IsActive = false;
-                        existingDoc.ModifiedBy = modelDto.ModifiedBy ?? "MDL";
-                        existingDoc.ModifiedDate = DateTime.Now;
                         _unitOfWork.BidderTenderUploadDocumentsRepo.Update(existingDoc);
                     }
                 }
