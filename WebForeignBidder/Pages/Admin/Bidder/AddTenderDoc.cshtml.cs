@@ -108,6 +108,27 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 {
                     return new JsonResult("Please upload a valid file.");
                 }
+
+                if (string.Equals(BidderTenderDocumentsDTOs.DocType, "Price Bid", StringComparison.OrdinalIgnoreCase))
+                {
+                    var ext = System.IO.Path.GetExtension(file.FileName)?.ToLowerInvariant();
+                    if (ext != ".pdf")
+                    {
+                        return new JsonResult("Price Bid document must be a PDF file.");
+                    }
+
+                    byte[] buffer = new byte[Math.Min(file.Length, 100 * 1024)];
+                    using (var stream = file.OpenReadStream())
+                    {
+                        stream.Read(buffer, 0, buffer.Length);
+                    }
+                    string headerContent = System.Text.Encoding.UTF8.GetString(buffer);
+                    if (!headerContent.Contains("/Encrypt"))
+                    {
+                        return new JsonResult("Price Bid PDF file must be password protected.");
+                    }
+                }
+
                 BidderTenderDocumentsDTOs.Doc = await _fileService.SaveEncryptionAsync(@"\BidderTenders\" + ProjectsVM.ProjectId + @"\" + ProjectsVM.TenderNo + @"\", file);
                 BidderTenderDocumentsDTOs.ProjectId = ProjectsVM.ProjectId;
             }

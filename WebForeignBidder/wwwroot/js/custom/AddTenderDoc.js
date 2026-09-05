@@ -1,4 +1,4 @@
-﻿let cvFileCount = 0;
+let cvFileCount = 0;
 let ncvFileCount = 0;
 function addNewRow(containerId, count) {
     const container = document.getElementById(containerId);
@@ -41,6 +41,7 @@ function addNewRow(containerId, count) {
             <option value="0">--Select--</option>
             <option value="Technical">Technical</option>
             <option value="Financial">Financial</option>
+            <option value="Price Bid">Price Bid</option>
             <option value="Miscellaneous">Miscellaneous</option>
         </select>
         </div>
@@ -89,8 +90,12 @@ function addNewRow(containerId, count) {
         const Remarks = row.querySelector(`input[name="${containerId}Remarks${count}"]`).value;
         const TenderNo = $("#ModelDto_TenderNo").val();
 
+        if (!fileType || fileType === "0") {
+            showToast("Please select a Doc Type.");
+            return;
+        }
+
         if (fileName && fileInput) {
-            const allowedImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
             const allowedPdfType = 'application/pdf';
             const allowedExcelTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'];
 
@@ -101,9 +106,8 @@ function addNewRow(containerId, count) {
             }
 
             // Check if the file type is allowed
-            /*if (![...allowedImageTypes, allowedPdfType, ...allowedExcelTypes].includes(fileInput.type)) {*/
             if (![allowedPdfType, ...allowedExcelTypes].includes(fileInput.type)) {
-                showToast("Invalid file type. Please upload an image, PDF,word, or Excel file.");
+                showToast("Invalid file type. Please upload a PDF or Excel file.");
                 return;
             }
 
@@ -113,57 +117,80 @@ function addNewRow(containerId, count) {
                 return;
             }
 
-            const modelData = JSON.stringify({
-                TenderNo: TenderNo,
-                DocType: fileType,
-                DocTitle: fileName,
-                Remarks: Remarks
-            });
-
-            const formData = new FormData();
-            formData.append('model', modelData);
-            formData.append('file', fileInput);
-
-
-            getConfirm('Are you sure you want to upload ' + fileType + ' Documents', function (result) {
-                if (result === true) {
-                    $.ajax({
-                        type: "POST",
-                        url: "?handler=UploadDocuments",
-                        beforeSend: function (xhr) {
-                            //$('#loadingDiv').show();
-                            xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
-                        },
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (result) {
-                            if (result == "1") {
-                                alert("Document Uploaded Successfully");
-                                ///location.reload();
-                            }
-                            else if (result == "9") {
-                                alert("Failed to save the file, because initial files have been already submitted!");
-                                //window.location.href = "/Petitioner/PetitionerCaseList";
-                            }
-
-                            else {
-                                showToast(result);
-                            }
-                        },
-                        error: function (error) {
-                            showToast("Server Error!" + error);
-                        },
-                        complete: function () {
-                            // Hide loader
-                            $('#loadingDiv').hide();
-                        }
-                    });
+            // Validate Price Bid specific requirements (must be password-protected PDF)
+            if (fileType === "Price Bid") {
+                if (fileInput.type !== allowedPdfType && !fileInput.name.toLowerCase().endsWith('.pdf')) {
+                    showToast("Price Bid document must be a PDF file.");
+                    return;
                 }
-                else {
-                    event.preventDefault()
-                }
-            });
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const content = e.target.result;
+                    // Check PDF encryption dictionary tag
+                    const isEncrypted = content.includes('/Encrypt');
+                    if (!isEncrypted) {
+                        showToast("Price Bid PDF file must be password protected.");
+                        return;
+                    }
+                    proceedUpload();
+                };
+                reader.onerror = function () {
+                    showToast("Error reading file for password protection validation.");
+                };
+                reader.readAsText(fileInput.slice(0, Math.min(fileInput.size, 100 * 1024)));
+                return;
+            }
+
+            proceedUpload();
+
+            function proceedUpload() {
+                const modelData = JSON.stringify({
+                    TenderNo: TenderNo,
+                    DocType: fileType,
+                    DocTitle: fileName,
+                    Remarks: Remarks
+                });
+
+                const formData = new FormData();
+                formData.append('model', modelData);
+                formData.append('file', fileInput);
+
+                getConfirm('Are you sure you want to upload ' + fileType + ' Documents', function (result) {
+                    if (result === true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "?handler=UploadDocuments",
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                            },
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (result) {
+                                if (result == "1") {
+                                    alert("Document Uploaded Successfully");
+                                }
+                                else if (result == "9") {
+                                    alert("Failed to save the file, because initial files have been already submitted!");
+                                }
+                                else {
+                                    showToast(result);
+                                }
+                            },
+                            error: function (error) {
+                                showToast("Server Error!" + error);
+                            },
+                            complete: function () {
+                                $('#loadingDiv').hide();
+                            }
+                        });
+                    }
+                    else {
+                        event.preventDefault();
+                    }
+                });
+            }
 
 
 
