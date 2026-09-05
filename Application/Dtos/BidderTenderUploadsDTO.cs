@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -19,11 +20,17 @@ namespace Application.Dtos
         public DateTime TenderOpeningDate { get; set; }
         public DateTime TenderClosingDate { get; set; }
         public string TenderDoc { get; set; }
+        [JsonIgnore]
         public IFormFile IFFTenderDoc { get; set; }
         public List<BidderTenderUploadDocumentsDTO> TenderDocuments { get; set; } = new();
         public List<string> UploadDocNames { get; set; } = new();
+        [JsonIgnore]
         public List<IFormFile> UploadDocFiles { get; set; } = new();
         public string DeletedDocIds { get; set; }
+        public List<string> UploadCorrigendumDocNames { get; set; } = new();
+        [JsonIgnore]
+        public List<IFormFile> UploadCorrigendumDocFiles { get; set; } = new();
+        public string DeletedCorrigendumDocIds { get; set; }
         public BidderTenderCorrigendumDto TenderCorrigendums { get; set; }
     }
 
@@ -33,6 +40,10 @@ namespace Application.Dtos
         public string TenderId { get; set; }
         public string CorrigendumDescription { get; set; }
         public string CorrigendumDoc { get; set; }
+        public string OriginalFileName { get; set; }
+        public string HashedFileName { get; set; }
+        public long? FileSizeInBytes { get; set; }
+        [JsonIgnore]
         public IFormFile IFFCorrigendumDoc { get; set; }
         public DateTime? ExtendedDate { get; set; }
     }

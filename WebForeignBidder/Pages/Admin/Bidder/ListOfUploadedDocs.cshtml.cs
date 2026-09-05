@@ -33,7 +33,8 @@ namespace WebForeignBidder.Pages.Admin.Bidder
 
         public BidderTenderDocumentsVM GenUpload { get; set; }
         [BindProperty] public BidderTenderDocumentsDTO ModelDto { get; set; }
-        public async Task<IActionResult> OnGetAsync()
+        public bool IsAdminOrExecutive { get; set; }
+        public async Task<IActionResult> OnGetAsync(string tenderNo)
         {
             var modelResponse = await _httpClient.GetAsync("BidderTenderDocuments/Get", true).ConfigureAwait(false);
             if (modelResponse == "unauthorized")
@@ -41,12 +42,37 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 _notyf.Information("Please login");
                 return RedirectToPage("/Account/Login");
             }
-            //ModelVms = !string.IsNullOrEmpty(modelResponse) ? JsonConvert.DeserializeObject<List<BidderTenderDocumentsVM>>(modelResponse) : null;
+
             ModelVms = !string.IsNullOrEmpty(modelResponse)
-    ? JsonConvert.DeserializeObject<List<BidderTenderDocumentsVM>>(modelResponse)
-        ?.OrderByDescending(x => x.Id)
-        .ToList()
-    : null;
+                ? JsonConvert.DeserializeObject<List<BidderTenderDocumentsVM>>(modelResponse)
+                    ?.OrderByDescending(x => x.Id)
+                    .ToList()
+                : null;
+
+            bool isSuperAdmin = User.IsInRole("SuperAdmin") || User.IsInRole("BidderSuperAdmin") || (!string.IsNullOrEmpty(uid) && uid.Contains("SuperAdmin", StringComparison.OrdinalIgnoreCase));
+            bool isCommExec = User.IsInRole("CommercialExecutive") || User.IsInRole("HOD") || (!string.IsNullOrEmpty(uid) && (uid.Contains("CommercialExecutive", StringComparison.OrdinalIgnoreCase) || uid.Contains("HOD", StringComparison.OrdinalIgnoreCase)));
+            bool isBidder = User.IsInRole("Bidder") || User.IsInRole("ForeignBidder") || (!isSuperAdmin && !isCommExec);
+
+            IsAdminOrExecutive = isSuperAdmin || isCommExec;
+
+            if (ModelVms != null && ModelVms.Count > 0)
+            {
+                if (!isSuperAdmin)
+                {
+                    if (isCommExec)
+                    {
+                        if (!string.IsNullOrEmpty(tenderNo))
+                        {
+                            ModelVms = ModelVms.Where(x => string.Equals(x.TenderNo?.Trim(), tenderNo.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+                        }
+                    }
+                    else if (isBidder)
+                    {
+                        ModelVms = ModelVms.Where(x => !string.IsNullOrEmpty(x.CreatedBy) && string.Equals(x.CreatedBy.Trim(), uid?.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+                    }
+                }
+            }
+
             if (ModelVms == null || ModelVms.Count <= 0)
             {
                 _notyf.Error("Document not found");

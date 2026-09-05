@@ -35,16 +35,12 @@
 
                             <div class="form-group">
                                 <label asp-for="tenderUpload.ProjectIds" class="col-form-label">Project<span class="required">*</span></label>
-                                <select asp-for="tenderUpload.ProjectIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Projects" multiple="multiple">
-                                    <option>-select-</option>
-                                </select>
+                                <select asp-for="tenderUpload.ProjectIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Projects" multiple="multiple"></select>
                                 <span asp-validation-for="tenderUpload.ProjectIds" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="tenderUpload.YardIds" class="col-form-label">Yard<span class="required">*</span></label>
-                                <select asp-for="tenderUpload.YardIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Yards" multiple="multiple">
-                                    <option>-select-</option>
-                                </select>
+                                <select asp-for="tenderUpload.YardIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.Yards" multiple="multiple"></select>
                                 <span asp-validation-for="tenderUpload.YardIds" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -64,9 +60,7 @@
                                     participation for bidding against
                                     this tender)<span class="required">*</span>
                                 </label>
-                                <select asp-for="tenderUpload.ForeignBidderIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.ForeignBidder" multiple="multiple">
-                                    <option>-select-</option>
-                                </select>
+                                <select asp-for="tenderUpload.ForeignBidderIds" class="js-example-basic-multiple form-control" asp-items="ViewBag.ForeignBidder" multiple="multiple"></select>
                                 <span asp-validation-for="tenderUpload.ForeignBidderIds" class="text-danger"></span>
                             </div>
                           @*   <div class="form-group">
@@ -136,10 +130,29 @@
                                     <span asp-validation-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="col-form-label font-weight-bold">Corrigendum Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
+                                    <label class="col-form-label font-weight-bold">Upload Corrigendum related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
                                     <small class="form-text text-muted mb-2">Note: .zip/.rar having ONLY valid .pdf, .xlsx and .xls file format will be allowed. Max total rows : 8 (Means max size: 240 MB).</small>
-                                    <input class="form-control Attachment" asp-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" accept=".zip,.rar" onchange="validateArchiveFileInput(this)" />
-                                    <span asp-validation-for="tenderUpload.TenderCorrigendums.IFFCorrigendumDoc" class="text-danger"></span>
+
+                                    <input type="hidden" asp-for="tenderUpload.DeletedCorrigendumDocIds" id="tenderUpload_DeletedCorrigendumDocIds" />
+
+                                    <table class="table table-sm table-bordered" id="tblCorrigendumDocs">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th style="width: 70px;" class="text-center">Sr No.</th>
+                                                <th>Document Name</th>
+                                                <th>File Upload (.zip / .rar)</th>
+                                                <th style="width: 100px;" class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="corrigendumDocsBody">
+                                            <!-- Rows dynamically added via JavaScript -->
+                                        </tbody>
+                                    </table>
+                                    <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddCorrigendumDocRow">
+                                        <i class="fa fa-plus"></i> Add Row
+                                    </button>
+                                    <span id="corrigendumDocCountInfo" class="badge badge-info ml-2">Rows: 0 / 8</span> -->
+                                    <span id="corrigendumDocValidationError" class="text-danger d-block mt-1"></span>
                                 </div>
                             </div>
 
@@ -156,10 +169,17 @@
                 </div>
             </div>
         </div>
-        <table id="corrigendumTable">
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="table-responsive bg-white p-3 rounded shadow-sm">
+                    <h5 class="font-weight-bold mb-3 text-primary">Corrigendum History</h5>
+                    <table id="corrigendumTable" class="table table-bordered table-striped table-hover w-100">
+                        <thead class="thead-light"></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Confirmation Modal -->

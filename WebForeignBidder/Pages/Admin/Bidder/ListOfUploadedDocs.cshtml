@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model WebForeignBidder.Pages.Admin.Bidder.ListOfUploadedDocsModel
 @{
     ViewData["Title"] = "List Of Uploaded Documents";
@@ -18,13 +18,16 @@
                         <thead>
                             <tr>
                                 <th class="search">Id</th>
-                                <th>Tender No.</th>
+                                <th>Tender/Reference No.</th>
                                 <th>Document</th>
                                 <th>Uploaded Date andTime </th>
                                 <th>Remarks</th>
                                 <th>Document type</th>
                                 <th>Status</th>
-                                <th>Uploaded by</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
+                                    <th>Uploaded by</th>
+                                }
                             </tr>
                         </thead>
                         <tbody>
@@ -43,7 +46,10 @@
                                     <td>@item.Remarks</td>
                                     <td>@item.DocType</td>
                                     <td>@item.IsActive</td>
-                                    <td>@item.CreatedBy</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
+                                        <td>@item.CreatedBy</td>
+                                    }
                                 </tr>
                             }
                         </tbody>

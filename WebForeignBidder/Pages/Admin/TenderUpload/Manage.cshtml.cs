@@ -262,7 +262,77 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                     tenderUpload.TenderDoc = tenderUpload.TenderDocuments.First().EncryptedFileName;
                 }
 
-                // Validate and save corrigendum document
+                // Validate and save corrigendum documents (dynamic rows)
+                if (tenderUpload.UploadCorrigendumDocFiles != null && tenderUpload.UploadCorrigendumDocFiles.Any())
+                {
+                    if (tenderUpload.UploadCorrigendumDocFiles.Count > 8)
+                    {
+                        _notyf.Error("Maximum 8 corrigendum document rows allowed.");
+                        return RedirectToPage();
+                    }
+
+                    if (tenderUpload.TenderCorrigendums == null)
+                    {
+                        tenderUpload.TenderCorrigendums = new BidderTenderCorrigendumDto();
+                    }
+
+                    List<string> savedCorrigendumDocs = new List<string>();
+                    List<string> origCorrigendumNames = new List<string>();
+                    long totalSizeBytes = 0;
+
+                    for (int i = 0; i < tenderUpload.UploadCorrigendumDocFiles.Count; i++)
+                    {
+                        var file = tenderUpload.UploadCorrigendumDocFiles[i];
+                        if (file != null && file.Length > 0)
+                        {
+                            var (isValid, errorMessage) = _fileService.ValidateTenderArchive(file);
+                            if (!isValid)
+                            {
+                                _notyf.Error(errorMessage);
+                                return RedirectToPage();
+                            }
+
+                            string docTitle = (tenderUpload.UploadCorrigendumDocNames != null && i < tenderUpload.UploadCorrigendumDocNames.Count && !string.IsNullOrWhiteSpace(tenderUpload.UploadCorrigendumDocNames[i]))
+                                ? tenderUpload.UploadCorrigendumDocNames[i].Trim()
+                                : file.FileName;
+
+                            string encryptedName = "";
+                            if (tenderUpload.ProjectIds != null && tenderUpload.ProjectIds.Any())
+                            {
+                                foreach (var item in tenderUpload.ProjectIds)
+                                {
+                                    encryptedName = await _fileService.SaveEncryptionAsync(
+                                        $@"\BidderTenders\{item}\{tenderUpload.TenderNo}\",
+                                        file);
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(encryptedName))
+                            {
+                                savedCorrigendumDocs.Add(encryptedName);
+                                origCorrigendumNames.Add(docTitle);
+                                totalSizeBytes += file.Length;
+                            }
+                        }
+                    }
+
+                    if (savedCorrigendumDocs.Any())
+                    {
+                        tenderUpload.TenderCorrigendums.HashedFileName = string.Join(",", savedCorrigendumDocs);
+                        tenderUpload.TenderCorrigendums.OriginalFileName = string.Join(",", origCorrigendumNames);
+                        tenderUpload.TenderCorrigendums.FileSizeInBytes = totalSizeBytes;
+
+                        if (string.IsNullOrEmpty(tenderUpload.TenderCorrigendums.CorrigendumDoc))
+                        {
+                            tenderUpload.TenderCorrigendums.CorrigendumDoc = tenderUpload.TenderCorrigendums.HashedFileName;
+                        }
+                        else
+                        {
+                            tenderUpload.TenderCorrigendums.CorrigendumDoc += "," + tenderUpload.TenderCorrigendums.HashedFileName;
+                        }
+                    }
+                }
+
+                // Backward compatibility for single IFFCorrigendumDoc if present
                 if (tenderUpload.TenderCorrigendums?.IFFCorrigendumDoc != null)
                 {
                     var (isValid, errorMessage) = _fileService.ValidateTenderArchive(tenderUpload.TenderCorrigendums.IFFCorrigendumDoc);
@@ -318,19 +388,28 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
 
                 if (tenderUpload.TenderCorrigendums != null)
                 {
-                    if (tenderUpload.TenderCorrigendums.Id == 0)
+                    if (string.IsNullOrEmpty(tenderUpload.TenderCorrigendums.CorrigendumDescription) &&
+                        string.IsNullOrEmpty(tenderUpload.TenderCorrigendums.CorrigendumDoc) &&
+                        string.IsNullOrEmpty(tenderUpload.TenderCorrigendums.HashedFileName))
                     {
-                        tenderUpload.TenderCorrigendums.CreatedBy = User.Identity.Name;
-                        if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
-                            tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
-                        tenderUpload.TenderCorrigendums.IP = clientIp;
+                        tenderUpload.TenderCorrigendums = null;
                     }
                     else
                     {
-                        tenderUpload.TenderCorrigendums.ModifiedBy = User.Identity.Name;
-                        if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
-                            tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
-                        tenderUpload.TenderCorrigendums.IP = clientIp;
+                        if (tenderUpload.TenderCorrigendums.Id == 0)
+                        {
+                            tenderUpload.TenderCorrigendums.CreatedBy = User.Identity.Name;
+                            if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
+                                tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
+                            tenderUpload.TenderCorrigendums.IP = clientIp;
+                        }
+                        else
+                        {
+                            tenderUpload.TenderCorrigendums.ModifiedBy = User.Identity.Name;
+                            if (tenderUpload.TenderCorrigendums.CreatedDate < new DateTime(1753, 1, 1))
+                                tenderUpload.TenderCorrigendums.CreatedDate = DateTime.Now;
+                            tenderUpload.TenderCorrigendums.IP = clientIp;
+                        }
                     }
                 }
 
@@ -340,7 +419,15 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 if (tenderUpload.TenderCorrigendums != null)
                 {
                     tenderUpload.TenderCorrigendums = ModelAuditor<BidderTenderCorrigendumDto>.SetAudit(User.Identity.Name, auditAction, clientIp, tenderUpload.TenderCorrigendums);
+                    tenderUpload.TenderCorrigendums.IFFCorrigendumDoc = null;
                 }
+
+                // Ensure file handles are cleared before JSON serialization to WebAPI
+                tenderUpload.UploadDocFiles = null;
+                tenderUpload.UploadDocNames = null;
+                tenderUpload.IFFTenderDoc = null;
+                tenderUpload.UploadCorrigendumDocFiles = null;
+                tenderUpload.UploadCorrigendumDocNames = null;
 
                 // Call API (POST for new, PUT for update)
                 var Result = tenderUpload.Id == 0
@@ -483,27 +570,59 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
         //}
         public async Task<JsonResult> OnGetCheckTender(string projectId, string yardId, string tenderNo)
         {
-            var modelDto = new BidderTenderUploadsDTO
+            try
             {
-                TenderNo = tenderNo,
-                ProjectId = projectId,
-                YardId = yardId
-            };
-            var yardsResult = await _httpClient.PostAsync("BidderTenderUploads/CheckTender", true, modelDto).ConfigureAwait(false);
-            if (yardsResult == null)
-            {
-                IsNew = true;
-                return new JsonResult(new { status = "0", data = "" });
-            }
+                var modelDto = new BidderTenderUploadsDTO
+                {
+                    TenderNo = tenderNo,
+                    ProjectId = projectId,
+                    YardId = yardId
+                };
+                var yardsResult = await _httpClient.PostAsync("BidderTenderUploads/CheckTender", true, modelDto).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(yardsResult) || yardsResult.StartsWith("Failed") || yardsResult.StartsWith("Input"))
+                {
+                    IsNew = true;
+                    return new JsonResult(new { status = "0", data = (object)null });
+                }
 
-            var yards = !string.IsNullOrEmpty(yardsResult)
-                ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(yardsResult)
-                : new BidderTenderUploadsVM();
-            _notyf.Success("Edit mode Enabled");
-            foreach (var cor in yards.TenderCorrigendums) {
-                if (cor.CorrigendumDoc != null) cor.CorrigendumDoc = EnDeCryptor.DecryptStringAES(cor.CorrigendumDoc.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/"));
-            };
-            return new JsonResult(new { status = "1", data = new JsonResult(yards) });
+                BidderTenderUploadsVM yards = null;
+                try
+                {
+                    yards = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(yardsResult);
+                }
+                catch
+                {
+                    IsNew = true;
+                    return new JsonResult(new { status = "0", data = (object)null });
+                }
+
+                if (yards == null || yards.Id == 0)
+                {
+                    IsNew = true;
+                    return new JsonResult(new { status = "0", data = (object)null });
+                }
+
+                _notyf.Success("Edit mode Enabled");
+                if (yards.TenderCorrigendums != null)
+                {
+                    foreach (var cor in yards.TenderCorrigendums)
+                    {
+                        if (!string.IsNullOrEmpty(cor.CorrigendumDoc))
+                        {
+                            try
+                            {
+                                cor.CorrigendumDocDecrypted = EnDeCryptor.DecryptStringAES(cor.CorrigendumDoc.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/"));
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                return new JsonResult(new { status = "1", data = yards });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { status = "0", message = ex.Message });
+            }
         }
         public async Task<JsonResult> OnGetUploadQuota(string projectId, string fileSize)
         {
@@ -524,6 +643,14 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 : new UpdateQuotaDTO();
 
             return new JsonResult(new { status = "1", data = new JsonResult(yards) });
+        }
+
+        public async Task<IActionResult> OnPostDeleteCorrigendum(int id)
+        {
+            if (id <= 0) return new JsonResult(new { success = false, message = "Invalid ID" });
+            var result = await _httpClient.PostAsync($"BidderTenderUploads/DeleteCorrigendum/{id}", true, id).ConfigureAwait(false);
+            if (result == "unauthorized") return new JsonResult(new { success = false, message = "Unauthorized" });
+            return new JsonResult(new { success = true });
         }
     }
 }

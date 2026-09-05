@@ -21,6 +21,9 @@ namespace Domain.Models
         public string TenderId { get; set; }
         public string CorrigendumDescription { get; set; }
         public string CorrigendumDoc { get; set; }
+        public string OriginalFileName { get; set; }
+        public string HashedFileName { get; set; }
+        public long? FileSizeInBytes { get; set; }
         public DateTime? ExtendedDate { get; set; }
     }
 }

@@ -73,10 +73,11 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 ? JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(tendersResult)
                 : new List<BidderTenderUploadsVM>();
 
-            // Filter tenders by UID
+            // Filter tenders by UID and TenderStartDate
             var filteredTenders = tenders
      .Where(t => !string.IsNullOrEmpty(t.ForeignBidderId) &&
-                 t.ForeignBidderId.Split(',').Any(u => u.Trim().Equals(uid, StringComparison.OrdinalIgnoreCase)))
+                 t.ForeignBidderId.Split(',').Any(u => u.Trim().Equals(uid, StringComparison.OrdinalIgnoreCase)) &&
+                 (!t.TenderStartDate.HasValue || t.TenderStartDate.Value <= DateTime.Now))
      .ToList();
 
             if (filteredTenders.Count == 0)

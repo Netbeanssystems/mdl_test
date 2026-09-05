@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model WebForeignBidder.Pages.Admin.Bidder.ListOfTenderModel
 @{
     ViewData["Title"] = "List Of Tenders";
@@ -18,19 +18,32 @@
                         <thead>
                             <tr>
                                 <th class="search">Id</th>
-                                <th>Project</th>
-                                <th>Yard</th>
-                                <th>Tender No.</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
+                                    <th>Project</th>
+                                    <th>Yard</th>
+                                }
+                                <th>Tender/Reference No.</th>
                                 <th>Tender Description</th>
                                 <th>Tender Document</th>
-                                <th>Selected Foreign Bidders</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
+                                    <th>Selected Bidders</th>
+                                }
                                 <th>Tender Start Date</th>
+                                <th>Tender Opening Date</th>
                                 <th>Closing Date</th>
-                                <th>Uploaded By</th>
-                                <th>Upload Date & Time</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
+                                    <th>Uploaded By</th>
+                                    <th>Upload Date & Time</th>
+                                }
                                 <th>Extended Tender Closing Date</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
                                 <th>Edited By</th>
                                 <th>Date Edit</th>
+                                }
                             </tr>
                         </thead>
                         <tbody>
@@ -39,34 +52,124 @@
                                 int corSerial = 1;
                                 <tr>
                                     <td>@(++serialNumber)</td>
-                                    <td>@item.ProjectName</td>
-                                    <td>@item.YardId</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
+                                        <td>@item.ProjectName</td>
+                                        <td>@item.YardId</td>
+                                    }
                                     <td>@item.TenderNo</td>
                                     <td>@item.TenderDescription</td>
                                     <td>
-                                        <a class=" btn btn-primary genfile" data-id="@item.EncryptedId">
-                                            @item.TenderDocDecrypted
-                                        </a>
-                                       @*  <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@item.TenderDoc">@item.TenderDocDecrypted</a> *@
-                                        @foreach (var cor in item.TenderCorrigendums)
+                                        @if (item.TenderDocuments != null && item.TenderDocuments.Count > 0)
                                         {
-                                            <div>
-                                                Corrigendum @corSerial:
-                                                <a target="_blank" href="/Bidder/img/UploadedFiles/GeneralUpload/@cor.CorrigendumDoc">
-                                                    @cor.CorrigendumDocDecrypted
-                                                </a>
-                                            </div>
-                                            corSerial++;
+                                            <div class="mb-2 font-weight-bold text-dark">Tender Documents:</div>
+                                            <table class="table table-sm table-bordered mb-3 bg-white">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 50px;" class="text-center">Sr No.</th>
+                                                        <th>Document Name</th>
+                                                        <th style="width: 130px;" class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{ int tDocSr = 1; }
+                                                    @foreach (var doc in item.TenderDocuments)
+                                                    {
+                                                        var docDisplayName = !string.IsNullOrEmpty(doc.OriginalFileName) ? doc.OriginalFileName : $"Document {tDocSr}";
+                                                        <tr>
+                                                            <td class="text-center font-weight-bold">@(tDocSr++)</td>
+                                                            <td>@docDisplayName</td>
+                                                            <td class="text-center">
+                                                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-success genfile" data-id="@item.EncryptedId">
+                                                                    <i class="fa fa-download"></i> Download Zip
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else if (!string.IsNullOrEmpty(item.TenderDocDecrypted))
+                                        {
+                                            <table class="table table-sm table-bordered mb-3 bg-white">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 50px;" class="text-center">Sr No.</th>
+                                                        <th>Document Name</th>
+                                                        <th style="width: 130px;" class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="text-center font-weight-bold">1</td>
+                                                        <td>@item.TenderDocDecrypted</td>
+                                                        <td class="text-center">
+                                                            <a class="btn btn-sm btn-outline-success genfile" data-id="@item.EncryptedId">
+                                                                <i class="fa fa-download"></i> Download
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        }
+
+                                        @if (item.TenderCorrigendums != null && item.TenderCorrigendums.Count > 0)
+                                        {
+                                            <div class="mb-2 font-weight-bold text-dark">Corrigendum Documents:</div>
+                                            <table class="table table-sm table-bordered bg-white">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="width: 50px;" class="text-center">Sr No.</th>
+                                                        <th>Document Name</th>
+                                                        <th style="width: 130px;" class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{ int cDocSr = 1; }
+                                                    @foreach (var cor in item.TenderCorrigendums)
+                                                    {
+                                                        var corFileName = !string.IsNullOrEmpty(cor.HashedFileName) ? cor.HashedFileName : cor.CorrigendumDoc;
+                                                        var corDisplayName = !string.IsNullOrEmpty(cor.OriginalFileName) ? cor.OriginalFileName : cor.CorrigendumDocDecrypted;
+                                                        if (string.IsNullOrEmpty(corDisplayName)) { corDisplayName = $"Corrigendum Doc {cDocSr}"; }
+                                                        <tr>
+                                                            <td class="text-center font-weight-bold">@(cDocSr++)</td>
+                                                            <td>@corDisplayName</td>
+                                                            <td class="text-center">
+                                                                <a target="_blank" href="/bidder/BidderTenders/@item.ProjectId/@item.TenderNo/@corFileName" class="btn btn-sm btn-outline-primary">
+                                                                    <i class="fa fa-download"></i> Download
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
                                         }
                                     </td>
-                                    <td>@item.ForeignBidderId</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-success download-bidders-csv mb-1" data-id="@item.EncryptedId">
+                                                 Download CSV
+                                            </button>
+                                            <!-- <a href="/Admin/Bidder/ListOfUploadedDocs?tenderNo=@item.TenderNo" class="btn btn-sm btn-outline-info d-block">
+                                                 <i class="fa fa-folder-open"></i> View Uploaded Docs
+                                            </a> -->
+                                        </td>
+                                    }
+                                    <td>@item.TenderStartDate</td>
                                     <td>@item.TenderOpeningDate</td>
                                     <td>@item.TenderClosingDate</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
                                     <td>@item.CreatedBy</td>
                                     <td>@item.CreatedDate</td>
+                                    }
                                     <td>@item.LatestExtendedDate</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
                                     <td>@item.ModifiedBy</td>
                                     <td>@item.ModifiedDate</td>
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -126,6 +229,45 @@
                         alert('Invalid details or file not found !');
                     }
 
+                },
+                error: function (xhr, status, error) {
+                    console.error('Download failed: ' + error);
+                }
+            });
+        });
+
+        $('.download-bidders-csv').on('click', function (e) {
+            e.preventDefault();
+            var Id = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: "?handler=DownloadBiddersCsv",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: { Id: Id },
+                success: function (data) {
+                    if (data != null && data.success !== false) {
+                        var filename = data.filename;
+                        var bytes = Base64ToBytes(data.encdata);
+                        var blob = new Blob([bytes], { type: "text/csv;charset=utf-8;" });
+
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, filename);
+                        } else {
+                            var url = window.URL || window.webkitURL;
+                            var link = url.createObjectURL(blob);
+                            var a = $("<a />");
+                            a.attr("download", filename);
+                            a.attr("href", link);
+                            $("body").append(a);
+                            a[0].click();
+                            a.remove();
+                        }
+                    } else {
+                        alert('Failed to download CSV: ' + (data ? data.message : 'Unknown error'));
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error('Download failed: ' + error);

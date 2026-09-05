@@ -1,123 +1,13 @@
-(function () {
-    // local state (avoid polluting global namespace)
-    var lastProjectValue = '';
-    var lastProjectTime = 0;
-    var inFlight = false;
-    var inFlightValue = null;
-    var currentRequest = null;
-    var DUPLICATE_WINDOW_MS = 1000; // treat identical triggers within 1s as duplicate
-
-    //// ensure single binding
-    //$(document).off('change', '#tenderUpload_ProjectIds').on('change', '#tenderUpload_ProjectIds', function () {
-    //    var $this = $(this);
-
-    //    // Normalize selected value to comma-separated string
-    //    var projectIdArray = $this.val();
-    //    var normalizedValue = Array.isArray(projectIdArray) ? projectIdArray.join(',') : (projectIdArray || '');
-
-    //    var now = Date.now();
-    //    console.log('[tender] change fired. normalizedValue:', normalizedValue, 'now:', now);
-
-    //    // quick duplicate-skip: if same value and fired very soon after previous -> skip
-    //    if (normalizedValue === lastProjectValue && (now - lastProjectTime) < DUPLICATE_WINDOW_MS) {
-    //        console.log('[tender] Skipping duplicate change (time guard).');
-    //        return;
-    //    }
-
-    //    // if same value is already being requested, skip
-    //    if (inFlight && normalizedValue === inFlightValue) {
-    //        console.log('[tender] Skipping because identical request already in-flight.');
-    //        // update lastProjectTime so subsequent identical fast triggers are also skipped
-    //        lastProjectTime = now;
-    //        return;
-    //    }
-
-    //    // update last seen
-    //    lastProjectValue = normalizedValue;
-    //    lastProjectTime = now;
-
-    //    // set or update hidden input
-    //    var form = $this.closest('form');
-    //    if (form.find('#hdProjectId').length === 0) {
-    //        $('<input>').attr({
-    //            type: 'hidden',
-    //            id: 'hdProjectId',
-    //            name: 'hdProjectId'
-    //        }).appendTo(form);
-    //    }
-    //    form.find('#hdProjectId').val(normalizedValue);
-
-    //    // UI: show loading on the correct element(s)
-    //    // NOTE: your original code used both '#tenderUpload_YardId' and '#tenderUpload_YardIds' —
-    //    // make sure you actually want two different elements. I update both below to be safe.
-    //    $('#tenderUpload_YardId').html('<option value="">Loading...</option>');
-    //    $('#tenderUpload_YardIds').html('<option value="">Loading...</option>');
-
-    //    if (!normalizedValue) {
-    //        $('#tenderUpload_YardId, #tenderUpload_YardIds').html('<option value="">-select-</option>');
-    //        return;
-    //    }
-
-    //    // if a previous request exists and it's for a different value, abort it (we will send new)
-    //    if (currentRequest && currentRequest.readyState !== 4) {
-    //        try {
-    //            console.log('[tender] Aborting previous request for different value.');
-    //            currentRequest.abort();
-    //        } catch (e) {
-    //            console.warn('[tender] abort failed', e);
-    //        }
-    //        currentRequest = null;
-    //        inFlight = false;
-    //        inFlightValue = null;
-    //    }
-
-    //    // make ajax, mark as in-flight
-    //    inFlight = true;
-    //    inFlightValue = normalizedValue;
-    //    currentRequest = $.ajax({
-    //        url: '/bidder/Admin/TenderUpload/Manage?handler=GetYardsByProject',
-    //        type: 'GET',
-    //        data: { projectId: normalizedValue, _: new Date().getTime() }, // cache buster
-    //        cache: false,
-    //        success: function (data) {
-    //            console.log('[tender] Ajax success for', normalizedValue, 'received', Array.isArray(data) ? data.length : typeof data);
-    //            // populate yard select(s)
-    //            var selectedYardIdStr = $('#tenderUpload_YardId').val();
-    //            var selectedYardIdArr = selectedYardIdStr ? selectedYardIdStr.split(',').map(id => id.trim()) : [];
-    //            $('#tenderUpload_YardIds').empty().append('<option value="">-select-</option>');
-
-    //            $.each(data, function (i, yard) {
-    //                $('#tenderUpload_YardIds').append('<option value="' + yard.id + '">' + yard.yardNumber + '</option>');
-    //            });
-    //        },
-    //        error: function (jqXHR, textStatus, errorThrown) {
-    //            if (textStatus === 'abort') {
-    //                console.log('[tender] Ajax aborted for', normalizedValue);
-    //            } else {
-    //                console.error('[tender] Ajax error', textStatus, errorThrown);
-    //                $('#tenderUpload_YardId, #tenderUpload_YardIds').html('<option value="">-select-</option>');
-    //                alert('Failed to load yards.');
-    //            }
-    //        },
-    //        complete: function () {
-    //            console.log('[tender] Ajax complete for', normalizedValue);
-    //            inFlight = false;
-    //            inFlightValue = null;
-    //            currentRequest = null;
-    //        }
-    //    });
-    //});
-})();
-
 function splitHeader(header) {
     return header
-        .replace(/([a-z])([A-Z])/g, '$1 $2') // Insert space before capital letters
-        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2') // Handle acronyms like XMLHTTPRequest → XML HTTP Request
-        .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize each word
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+        .replace(/\b\w/g, char => char.toUpperCase());
 }
 
 let debounceTimer;
-$('#tenderUpload_TenderNo').on('input', function () {
+
+function triggerCheckTender() {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(function () {
         const projectId = $('#tenderUpload_ProjectIds').val();
@@ -126,7 +16,7 @@ $('#tenderUpload_TenderNo').on('input', function () {
         const yardId = $('#tenderUpload_YardIds').val();
         var yardIdArray = yardId;
         var yardNormalizedValue = Array.isArray(yardIdArray) ? yardIdArray.join(',') : (yardIdArray || '');
-        const tenderNo = $('#tenderUpload_TenderNo').val();
+        const tenderNo = $('#tenderUpload_TenderNo').val() ? $('#tenderUpload_TenderNo').val().trim() : '';
 
         if (normalizedValue && yardNormalizedValue && tenderNo) {
             $.ajax({
@@ -138,8 +28,7 @@ $('#tenderUpload_TenderNo').on('input', function () {
                     tenderNo: tenderNo
                 },
                 success: function (response) {
-                    debugger
-                    const isNewTender = response.status === "0";
+                    const isNewTender = (response.status === "0" || !response.data);
                     $(".card-header h3").html(isNewTender ? "Add Tender" : "Edit Tender");
 
                     const tender = isNewTender ? {} : (response?.data?.value || response?.data || {});
@@ -174,7 +63,7 @@ $('#tenderUpload_TenderNo').on('input', function () {
                     }
 
                     if (isNewTender || tender) {
-                        $("#tenderUpload_Id").val(tender.id || tender.Id || '');
+                        $("#tenderUpload_Id").val(tender.id || tender.Id || 0);
                         $("#tenderUpload_CreatedBy").val(tender.createdBy || tender.CreatedBy || '');
                         $("#tenderUpload_CreatedDate").val(tender.createdDate || tender.CreatedDate || '');
                         $("#tenderUpload_TenderDoc").val(tender.tenderDoc || tender.TenderDoc || '');
@@ -195,7 +84,8 @@ $('#tenderUpload_TenderNo').on('input', function () {
                             $('#tenderUpload_ForeignBidderIds').val(selectedBidders).trigger('change');
                         }
 
-                        if (!isNewTender) {
+                        if (!isNewTender && tender.id) {
+                            $('input[name="IsNew"]').val('false');
                             $("#tenderUpload_TenderStartDate").prop("readonly", true).addClass("bg-light");
                             $("#tenderUpload_TenderClosingDate").prop("readonly", true).addClass("bg-light");
                             $("#tenderUpload_TenderOpeningDate").prop("readonly", false).removeClass("bg-light");
@@ -213,9 +103,29 @@ $('#tenderUpload_TenderNo').on('input', function () {
                                 });
                             } else if (tender.tenderDoc || tender.TenderDoc) {
                                 addTenderDocRow("Tender Document", true, 0, tender.tenderDoc || tender.TenderDoc, tender.projectId || tender.ProjectId, tender.tenderNo || tender.TenderNo);
+                            } else {
+                                addTenderDocRow();
+                            }
+
+                            // Populate existing corrigendum documents
+                            $('#corrigendumDocsBody').empty();
+                            deletedCorrigendumDocIds = [];
+                            $('#tenderUpload_DeletedCorrigendumDocIds').val('');
+                            const corrigendums = tender.tenderCorrigendums || tender.TenderCorrigendums;
+                            if (corrigendums && corrigendums.length > 0) {
+                                corrigendums.forEach(cor => {
+                                    addCorrigendumDocRow(
+                                        cor.originalFileName || cor.OriginalFileName || cor.corrigendumDocDecrypted || cor.CorrigendumDocDecrypted,
+                                        true,
+                                        cor.id || cor.Id,
+                                        cor.hashedFileName || cor.HashedFileName || cor.corrigendumDoc || cor.CorrigendumDoc,
+                                        tender.projectId || tender.ProjectId,
+                                        tender.tenderNo || tender.TenderNo
+                                    );
+                                });
                             }
                         } else {
-                            $('input[name="IsNew"]').val(true);
+                            $('input[name="IsNew"]').val('true');
                             $("#tenderUpload_TenderStartDate").prop("readonly", false).removeClass("bg-light");
                             $("#tenderUpload_TenderClosingDate").prop("readonly", false).removeClass("bg-light");
                             $("#tenderUpload_TenderOpeningDate").prop("readonly", false).removeClass("bg-light");
@@ -225,93 +135,89 @@ $('#tenderUpload_TenderNo').on('input', function () {
                             deletedDocIds = [];
                             $('#tenderUpload_DeletedDocIds').val('');
                             addTenderDocRow();
+
+                            $('#corrigendumDocsBody').empty();
+                            deletedCorrigendumDocIds = [];
+                            $('#tenderUpload_DeletedCorrigendumDocIds').val('');
                         }
 
-                        const corrigendums = tender.tenderCorrigendums;
+                        const corrigendums = tender.tenderCorrigendums || tender.TenderCorrigendums;
 
-                        if (!isNewTender) {
-                            // Define only the columns you want to show
-                            const visibleHeaders = ['corrigendumDescription', 'corrigendumDoc', 'extendedDate', 'createdDate'];
-
-                            // Create the table header dynamically
+                        if (!isNewTender && corrigendums && Array.isArray(corrigendums) && corrigendums.length > 0) {
                             const thead = $('#corrigendumTable thead');
-                            let headerHtml = '<tr>';
-                            visibleHeaders.forEach(header => {
-                                headerHtml += `<th>${splitHeader(header)}</th>`;
-                            });
-                            headerHtml += '<th>Actions</th>'; // Add actions column
-                            headerHtml += '</tr>';
-                            thead.html(headerHtml);
+                            thead.html(`
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Original Document Name</th>
+                                    <th>Document File</th>
+                                    <th>Extended Date</th>
+                                    <th>Created Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            `);
 
-                            // Create the table body
                             const tbody = $('#corrigendumTable tbody');
+                            tbody.empty();
+
+                            const currentProjectId = normalizedValue;
+                            const currentTenderNo = tenderNo;
+
                             corrigendums.forEach(row => {
-                                let rowHtml = '<tr>';
-                                visibleHeaders.forEach(header => {
-                                    let cellValue = row[header];
+                                const id = row.id || row.Id || 0;
+                                const desc = row.corrigendumDescription || row.CorrigendumDescription || '';
+                                const origName = row.originalFileName || row.OriginalFileName || row.corrigendumDocDecrypted || row.CorrigendumDocDecrypted || 'Corrigendum Document';
+                                const fileDoc = row.hashedFileName || row.HashedFileName || row.corrigendumDoc || row.CorrigendumDoc || '';
+                                const extDate = row.extendedDate || row.ExtendedDate ? new Date(row.extendedDate || row.ExtendedDate).toLocaleString() : '';
+                                const crDate = row.createdDate || row.CreatedDate ? new Date(row.createdDate || row.CreatedDate).toLocaleString() : '';
 
-                                    // Format specific fields
-                                    if (header.toLocaleLowerCase().includes('date')) {
-                                        if (cellValue != null) cellValue = new Date(cellValue).toLocaleString();
-                                    }
+                                let fileLinkHtml = '';
+                                if (fileDoc) {
+                                    fileLinkHtml = `<a href="/bidder/BidderTenders/${currentProjectId}/${currentTenderNo}/${fileDoc}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fa fa-download"></i> Download Zip</a>`;
+                                }
 
-                                    if (header === 'corrigendumDoc') {
-                                        if (cellValue) cellValue = `<a href="/uploads/${cellValue}" target="_blank">${cellValue}</a>`;
-                                        else cellValue = '';
-                                    }
-                                    if (header === 'corrigendumDescription') {
-                                        if (cellValue) {
-                                        } else cellValue = '';
-                                    }
-
-                                    if (header.toLocaleLowerCase().includes('date')) {
-                                        if (cellValue) {
-                                        } else cellValue = '';
-                                    }
-
-
-                                    rowHtml += `<td>${cellValue}</td>`;
-                                });
-
-                                // Add Edit and Delete buttons
-                                rowHtml += `
-                                    <td>
-                                        <span class="edit-btn" data-id="${row.id}"><i class="fa fa-edit text-dark"></i></span>
-                                        <span class="delete-btn" data-id="${row.id}"><i class="fa fa-trash text-dark"></i></span>
-                                    </td>
+                                const rowHtml = `
+                                    <tr data-id="${id}" data-desc="${desc}" data-origname="${origName}" data-file="${fileDoc}" data-extdate="${row.extendedDate || row.ExtendedDate || ''}">
+                                        <td>${desc}</td>
+                                        <td>${origName}</td>
+                                        <td>${fileLinkHtml}</td>
+                                        <td>${extDate}</td>
+                                        <td>${crDate}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-info edit-btn mr-1" data-id="${id}" data-desc="${desc}" data-file="${fileDoc}" data-extdate="${row.extendedDate || row.ExtendedDate || ''}"><i class="fa fa-edit"></i> Edit</button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-id="${id}"><i class="fa fa-trash"></i> Delete</button>
+                                        </td>
+                                    </tr>
                                 `;
-                                rowHtml += '</tr>';
                                 tbody.append(rowHtml);
                             });
-                            $('#corrigendumTable').DataTable();
-                            $('#corrigendumTable').closest('.dataTables_wrapper').parent().show();
+
+                            if ($.fn.DataTable.isDataTable('#corrigendumTable')) {
+                                $('#corrigendumTable').DataTable().destroy();
+                            }
+                            $('#corrigendumTable').DataTable({
+                                responsive: true,
+                                autoWidth: false
+                            });
+                            $('#corrigendumTable').closest('.table-responsive').show();
                         } else {
                             if ($.fn.DataTable.isDataTable('#corrigendumTable')) {
-                                $('#corrigendumTable').closest('.dataTables_wrapper').parent().hide();
+                                $('#corrigendumTable').DataTable().destroy();
                             }
+                            $('#corrigendumTable').closest('.table-responsive').hide();
                         }
 
-
-                    } else {
-                        console.error("response.data.value is not available or invalid.");
                     }
-
                 },
                 error: function (xhr) {
-                    console.error('Error:', xhr.responseText);
+                    console.error('Error in CheckTender:', xhr.responseText);
                 }
             });
         }
-    }, 800);
-});
+    }, 500);
+}
 
-$("input[name='addCorrigendum']").on("change", function () {
-    if ($(this).val() === "yes") {
-        $("#corrigendumFields").slideDown();
-    } else {
-        $("#corrigendumFields").slideUp();
-    }
-});
+$(document).on('input change', '#tenderUpload_TenderNo', triggerCheckTender);
+$(document).on('change', '#tenderUpload_ProjectIds, #tenderUpload_YardIds', triggerCheckTender);
 
 let tenderDocRowIndex = 0;
 const MAX_DOC_ROWS = 8;
@@ -392,20 +298,96 @@ function addTenderDocRow(docName = '', isExisting = false, existingDocId = 0, en
     updateDocCountInfo();
 }
 
+let corrigendumDocRowIndex = 0;
+let deletedCorrigendumDocIds = [];
+
+function getActiveCorrigendumRowCount() {
+    return $('#corrigendumDocsBody tr:not(.deleted-row)').length;
+}
+
+function updateCorrigendumDocCountInfo() {
+    const count = getActiveCorrigendumRowCount();
+    $('#corrigendumDocCountInfo').text(`Rows: ${count} / ${MAX_DOC_ROWS}`);
+    if (count >= MAX_DOC_ROWS) {
+        $('#btnAddCorrigendumDocRow').prop('disabled', true);
+    } else {
+        $('#btnAddCorrigendumDocRow').prop('disabled', false);
+    }
+    reindexCorrigendumDocRows();
+}
+
+function reindexCorrigendumDocRows() {
+    let sr = 1;
+    $('#corrigendumDocsBody tr:not(.deleted-row)').each(function () {
+        $(this).find('.corrigendum-doc-sr-no').text(sr++);
+    });
+}
+
+function addCorrigendumDocRow(docName = '', isExisting = false, existingDocId = 0, encryptedFileName = '', projectId = '', tenderNo = '') {
+    if (getActiveCorrigendumRowCount() >= MAX_DOC_ROWS) {
+        alert('Maximum 8 corrigendum document rows allowed.');
+        return;
+    }
+
+    corrigendumDocRowIndex++;
+    const rowId = `corrigendumDocRow_${corrigendumDocRowIndex}`;
+    let rowHtml = '';
+
+    if (isExisting) {
+        rowHtml = `
+            <tr id="${rowId}" data-existing-id="${existingDocId}">
+                <td class="text-center font-weight-bold corrigendum-doc-sr-no"></td>
+                <td>
+                    <span>${docName || encryptedFileName}</span>
+                </td>
+                <td>
+                    <a href="/bidder/BidderTenders/${projectId}/${tenderNo}/${encryptedFileName}" target="_blank" class="btn btn-sm btn-outline-info">
+                        <i class="fa fa-download"></i> View Document
+                    </a>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-existing-corrigendum-doc" data-id="${existingDocId}" data-row="${rowId}">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    } else {
+        rowHtml = `
+            <tr id="${rowId}">
+                <td class="text-center font-weight-bold corrigendum-doc-sr-no"></td>
+                <td>
+                    <input type="text" name="tenderUpload.UploadCorrigendumDocNames" class="form-control form-control-sm doc-name-input" placeholder="Enter Document Name" value="${docName}" />
+                </td>
+                <td>
+                    <input type="file" name="tenderUpload.UploadCorrigendumDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar" onchange="validateArchiveFileInput(this)" />
+                    <small class="text-muted">.zip or .rar (max 30 MB)</small>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-corrigendum-doc-row" data-row="${rowId}">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    $('#corrigendumDocsBody').append(rowHtml);
+    updateCorrigendumDocCountInfo();
+}
+
 function validateArchiveFileInput(input) {
     if (!input.files || input.files.length === 0) return;
     const file = input.files[0];
     const fileName = file.name;
     const ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 
-    // Check extension
     if (ext !== '.zip' && ext !== '.rar') {
         alert(`Invalid format for '${fileName}'. Only .zip and .rar formats are allowed.`);
         input.value = '';
         return false;
     }
 
-    // Check size (30 MB = 30 * 1024 * 1024 bytes)
     const maxSize = 30 * 1024 * 1024;
     if (file.size > maxSize) {
         alert(`File '${fileName}' exceeds the maximum allowed size of 30 MB.`);
@@ -446,26 +428,36 @@ function validateDates() {
 }
 
 $(document).ready(function () {
-    $('.js-example-basic-multiple').select2();
+    $('.js-example-basic-multiple').select2({
+        placeholder: "-select-",
+        allowClear: true,
+        width: '100%'
+    });
 
-    // Initialize 1 row if empty
     if ($('#tenderDocsBody tr').length === 0) {
         addTenderDocRow();
     }
 
-    // Dynamic row addition
     $('#btnAddDocRow').on('click', function () {
         addTenderDocRow();
     });
 
-    // Remove newly added row
+    $('#btnAddCorrigendumDocRow').on('click', function () {
+        addCorrigendumDocRow();
+    });
+
     $(document).on('click', '.btn-remove-doc-row', function () {
         const rowId = $(this).data('row');
         $(`#${rowId}`).remove();
         updateDocCountInfo();
     });
 
-    // Remove existing document
+    $(document).on('click', '.btn-remove-corrigendum-doc-row', function () {
+        const rowId = $(this).data('row');
+        $(`#${rowId}`).remove();
+        updateCorrigendumDocCountInfo();
+    });
+
     $(document).on('click', '.btn-remove-existing-doc', function () {
         const docId = $(this).data('id');
         const rowId = $(this).data('row');
@@ -479,7 +471,19 @@ $(document).ready(function () {
         }
     });
 
-    // Confirmation modal logic
+    $(document).on('click', '.btn-remove-existing-corrigendum-doc', function () {
+        const docId = $(this).data('id');
+        const rowId = $(this).data('row');
+        if (confirm('Are you sure you want to remove this corrigendum document?')) {
+            if (docId > 0) {
+                deletedCorrigendumDocIds.push(docId);
+                $('#tenderUpload_DeletedCorrigendumDocIds').val(deletedCorrigendumDocIds.join(','));
+            }
+            $(`#${rowId}`).remove();
+            updateCorrigendumDocCountInfo();
+        }
+    });
+
     $('#btnOpenSaveModal').on('click', function () {
         const form = $(this).closest('form')[0];
         if (!form.checkValidity()) {
@@ -501,18 +505,24 @@ $(document).ready(function () {
         const form = $('#btnOpenSaveModal').closest('form')[0];
         form.submit();
     });
-    // Delete Action
+
     $('#corrigendumTable').on('click', '.delete-btn', function () {
-        debugger
         const id = $(this).data('id');
         if (confirm('Are you sure you want to delete this corrigendum?')) {
             $.ajax({
-                url: `/api/corrigendums/${id}`,
-                type: 'DELETE',
-                success: function () {
-                    alert('Deleted successfully!');
-                    // Reload the table or remove the row dynamically
-                    $('#corrigendumTable').DataTable().ajax.reload();
+                url: '/bidder/Admin/TenderUpload/Manage?handler=DeleteCorrigendum',
+                type: 'POST',
+                data: { id: id },
+                headers: {
+                    "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (res) {
+                    if (res && res.success) {
+                        alert('Deleted successfully!');
+                        triggerCheckTender();
+                    } else {
+                        alert(res.message || 'Failed to delete.');
+                    }
                 },
                 error: function () {
                     alert('Failed to delete.');
@@ -521,99 +531,35 @@ $(document).ready(function () {
         }
     });
 
-    // Edit Action
     $('#corrigendumTable').on('click', '.edit-btn', function () {
-        const table = $('#corrigendumTable').DataTable();
-        const tr = $(this).closest('tr');
-        const row = table.row(tr.hasClass('child') ? tr.prev() : tr);
-        const rowData = row.data();
+        const btn = $(this);
+        const id = btn.data('id');
+        const desc = btn.data('desc');
+        const fileDoc = btn.data('file');
+        const extDateRaw = btn.data('extdate');
 
+        $("input[name='addCorrigendum'][value='yes']").prop("checked", true).trigger("change");
 
-        console.log('Edit Row Data:', rowData);
-        debugger
-        $("input[name='addCorrigendum']").val("yes").trigger("change");
-        //$("#corrigendumFields").slideDown();
+        $("#tenderUpload_TenderCorrigendums_Id").val(id || 0);
+        $("#tenderUpload_TenderCorrigendums_CorrigendumDescription").val(desc || '');
+        if (extDateRaw) {
+            try {
+                const d = new Date(extDateRaw);
+                if (!isNaN(d.getTime())) {
+                    const pad = n => String(n).padStart(2, '0');
+                    const formatted = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                    $("#tenderUpload_TenderCorrigendums_ExtendedDate").val(formatted);
+                }
+            } catch (e) { }
+        }
 
-        const extendedDate = new Date(rowData[2]);
-        const createdDate = new Date(rowData[3]);
-        $("#tenderUpload_TenderCorrigendums_Id").val($(rowData[4]).data("id") || '');
-        $("#tenderUpload_TenderCorrigendums_CreatedBy").val(rowData[0] || '');
-        $("#tenderUpload_TenderCorrigendums_CreatedDate").val(createdDate.toISOString().slice(0, 16) || '');
-
-        $("#tenderUpload_TenderCorrigendums_CorrigendumDescription").val(rowData[0] || '');
-        $("#tenderUpload_TenderCorrigendums_CorrigendumDoc").val($(rowData[1]).text() || '');
-        const projectId = $("#tenderUpload_ProjectIds").val();
-        const tenderNo = $("#tenderUpload_TenderNo").val();
-        const existingDocLink = `
-                                <span id="existdoc">
-                                    <a href='/bidder/BidderTenders/${projectId}/${tenderNo}/${$(rowData[1]).text()}' target='_blank'>View Doc</a>
-                                </span>`;
-        $("#tenderUpload_TenderCorrigendums_IFFCorrigendumDoc").parent().append(existingDocLink);
-        $("#tenderUpload_TenderCorrigendums_ExtendedDate").val(extendedDate.toISOString().slice(0, 16) || '');
+        $('html, body').animate({
+            scrollTop: $("#corrigendumFields").offset().top - 100
+        }, 400);
     });
 
-    const formSelector = "form"; // Change this to "#tenderForm" if needed
-
-    //function validateField($field) {
-    //    const value = $field.val()?.trim();
-    //    const isInvalid = !value || value === "-select-";
-
-    //    $field.toggleClass("is-invalid", isInvalid);
-    //    return !isInvalid;
-    //}
-
-    //function validateCorrigendumFields() {
-    //    let isValid = true;
-    //    $("#corrigendumFields").find("input.form-control").each(function () {
-    //        if (!validateField($(this))) {
-    //            isValid = false;
-    //        }
-    //    });
-    //    return isValid;
-    //}
-
-    //function validateFormFields() {
-    //    let isValid = true;
-
-    //    // Validate required fields
-    //    $(`${formSelector} input.form-control, ${formSelector} select.form-control`).each(function () {
-    //        if (!validateField($(this))) {
-    //            isValid = false;
-    //        }
-    //    });
-
-    //    // Corrigendum section
-    //    const addCorrigendum = $("input[name='addCorrigendum']:checked").val();
-    //    if (addCorrigendum === "yes") {
-    //        if (!validateCorrigendumFields()) {
-    //            isValid = false;
-    //        }
-    //    }
-
-    //    return isValid;
-    //}
-
-    // Live validation on change/blur
-    $(formSelector).on("change blur", "input.form-control, select.form-control", function () {
-        //validateField($(this));
-    });
-
-    // Show/hide corrigendum fields
     $("input[name='addCorrigendum']").on("change", function () {
         const show = $(this).val() === "yes";
         $("#corrigendumFields").toggle(show);
-
-        // Re-validate corrigendum fields when toggled
-        if (show) {
-           // validateCorrigendumFields();
-        }
     });
-
-    // On form submit
-    //$(formSelector).on("submit", function (e) {
-    //    if (!validateFormFields()) {
-    //        e.preventDefault();
-    //        alert("Please correct all required fields.");
-    //    }
-    //});
 });

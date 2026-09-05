@@ -31,6 +31,9 @@ namespace Application.ViewModels
         public string CorrigendumDescription { get; set; }
         public string CorrigendumDoc { get; set; }
         public string CorrigendumDocDecrypted { get; set; }
+        public string OriginalFileName { get; set; }
+        public string HashedFileName { get; set; }
+        public long? FileSizeInBytes { get; set; }
         public IFormFile IFFCorrigendumDoc { get; set; }
         public DateTime? ExtendedDate { get; set; }
     }

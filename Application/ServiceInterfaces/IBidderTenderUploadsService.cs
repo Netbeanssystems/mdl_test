@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,6 +13,7 @@ namespace Application.ServiceInterfaces
         Task<BidderTenderUploadsDTO> Get(int id);
         Task<BidderTenderUploadsDTO> Update(BidderTenderUploadsDTO modelDto);
         Task<int> Remove(int id);
+        Task<bool> DeleteCorrigendum(int id);
         Task<BidderTenderUploadsVM> CheckTender(BidderTenderUploadsDTO modelDto);
         Task<BidderTenderUploadsVM> GetByTenderNo(string tenderNo);
     }

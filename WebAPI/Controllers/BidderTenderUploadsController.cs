@@ -87,6 +87,14 @@ namespace WebAPI.Controllers
             if (rowsAffected > 0) return Ok(rowsAffected);
             return BadRequest("Delete failed");
         }
+        [HttpPost("{id}")]
+        public async Task<IActionResult> DeleteCorrigendum([FromRoute] int id)
+        {
+            if (id <= 0) return BadRequest("Input not valid or null");
+            var success = await _dataService.BidderTenderUpload.DeleteCorrigendum(id).ConfigureAwait(false);
+            if (success) return Ok(true);
+            return BadRequest("Delete failed");
+        }
         [HttpPost]  
         public async Task<IActionResult> CheckTender([FromBody] BidderTenderUploadsDTO modelDto)
         {
