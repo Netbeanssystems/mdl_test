@@ -92,57 +92,106 @@ namespace WebForeignBidder.Pages.Admin.Bidder
             return Page();
         }
 
+        public async Task<IActionResult> OnGetGetUploadedDocsAsync(string tenderNo)
+        {
+            if (string.IsNullOrEmpty(tenderNo)) return new JsonResult(new List<object>());
+
+            var docsResult = await _httpClient.GetAsync("BidderTenderDocuments/Get", true).ConfigureAwait(false);
+            if (docsResult == "unauthorized" || string.IsNullOrEmpty(docsResult)) return new JsonResult(new List<object>());
+
+            var docs = JsonConvert.DeserializeObject<List<BidderTenderDocumentsVM>>(docsResult);
+            if (docs == null) return new JsonResult(new List<object>());
+
+            var currentUid = User?.Identity?.Name;
+            var filteredDocs = docs
+                .Where(d => string.Equals(d.TenderNo?.Trim(), tenderNo.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                            (string.IsNullOrEmpty(currentUid) || string.Equals(d.CreatedBy?.Trim(), currentUid.Trim(), StringComparison.OrdinalIgnoreCase)))
+                .OrderByDescending(d => d.Id)
+                .Select(d => new
+                {
+                    d.Id,
+                    d.DocTitle,
+                    d.DocType,
+                    DocName = d.Doc,
+                    d.Remarks,
+                    CreatedDate = d.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                })
+                .ToList();
+
+            return new JsonResult(filteredDocs);
+        }
+
+        public async Task<IActionResult> OnPostDeleteDocumentAsync(int id)
+        {
+            if (id <= 0) return new JsonResult(new { success = false, message = "Invalid Document ID." });
+
+            var result = await _httpClient.DeleteAsync("BidderTenderDocuments/Delete", true, id).ConfigureAwait(false);
+            if (result != null && result != "unauthorized")
+            {
+                return new JsonResult(new { success = true, message = "Document deleted successfully!" });
+            }
+
+            return new JsonResult(new { success = false, message = "Failed to delete document." });
+        }
+
         public async Task<IActionResult> OnPostUploadDocuments()
         {
-            BidderTenderDocumentsDTO BidderTenderDocumentsDTOs = JsonConvert.DeserializeObject<BidderTenderDocumentsDTO>(Request.Form["model"].ToString());
-
-            var Projects = await _httpClient.GetAsync("BidderTenderUploads/GetByTenderNo", true, BidderTenderDocumentsDTOs.TenderNo).ConfigureAwait(false);
-            var ProjectsVM = !string.IsNullOrEmpty(Projects) ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(Projects) : null;
-            if(ProjectsVM == null) return new JsonResult("0");
-
-            var files = Request.Form.Files;
-            //...........Check Valid File ...................
-            foreach (var file in files)
+            try
             {
-                if (!_fileService.CheckValidFile(file))
+                var tenderNo = Request.Form["TenderNo"].ToString();
+                if (string.IsNullOrEmpty(tenderNo)) return new JsonResult(new { success = false, message = "Please select a Tender/Reference No." });
+
+                var projectsResult = await _httpClient.GetAsync("BidderTenderUploads/GetByTenderNo", true, tenderNo).ConfigureAwait(false);
+                var projectsVM = !string.IsNullOrEmpty(projectsResult) ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(projectsResult) : null;
+                if (projectsVM == null) return new JsonResult(new { success = false, message = "Tender project details not found." });
+
+                var docTitles = Request.Form["DocTitles"].ToList();
+                var docTypes = Request.Form["DocTypes"].ToList();
+                var remarksList = Request.Form["Remarks"].ToList();
+                var files = Request.Form.Files;
+
+                if (files == null || files.Count == 0) return new JsonResult(new { success = false, message = "Please upload at least one document file." });
+                if (files.Count > 12) return new JsonResult(new { success = false, message = "Maximum 12 dynamic document rows allowed." });
+
+                int savedCount = 0;
+                for (int i = 0; i < files.Count; i++)
                 {
-                    return new JsonResult("Please upload a valid file.");
+                    var file = files[i];
+                    string docTitle = (docTitles != null && i < docTitles.Count) ? docTitles[i] : file.FileName;
+                    string docType = (docTypes != null && i < docTypes.Count) ? docTypes[i] : "Technical";
+                    string remark = (remarksList != null && i < remarksList.Count && !string.IsNullOrWhiteSpace(remarksList[i])) ? remarksList[i].Trim() : "NA";
+
+                    bool isPriceBid = string.Equals(docType, "Price Bid", StringComparison.OrdinalIgnoreCase);
+
+                    var (isValid, errorMessage) = _fileService.ValidateTenderArchive(file, isPriceBid);
+                    if (!isValid)
+                    {
+                        return new JsonResult(new { success = false, message = $"Row {i + 1} ({file.FileName}): {errorMessage}" });
+                    }
+
+                    string encryptedFileName = await _fileService.SaveEncryptionAsync(@"\BidderTenders\" + projectsVM.ProjectId + @"\" + projectsVM.TenderNo + @"\", file);
+
+                    var docDto = new BidderTenderDocumentsDTO
+                    {
+                        TenderNo = tenderNo,
+                        DocType = docType,
+                        DocTitle = docTitle,
+                        Remarks = remark,
+                        Doc = encryptedFileName,
+                        ProjectId = projectsVM.ProjectId
+                    };
+
+                    docDto = ModelAuditor<BidderTenderDocumentsDTO>.SetAudit(User.Identity.Name, "Create", HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "", docDto);
+                    var result = await _httpClient.PostAsync("BidderTenderDocuments/Create", true, docDto).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(result)) savedCount++;
                 }
 
-                if (string.Equals(BidderTenderDocumentsDTOs.DocType, "Price Bid", StringComparison.OrdinalIgnoreCase))
-                {
-                    var ext = System.IO.Path.GetExtension(file.FileName)?.ToLowerInvariant();
-                    if (ext != ".pdf")
-                    {
-                        return new JsonResult("Price Bid document must be a PDF file.");
-                    }
-
-                    byte[] buffer = new byte[Math.Min(file.Length, 100 * 1024)];
-                    using (var stream = file.OpenReadStream())
-                    {
-                        stream.Read(buffer, 0, buffer.Length);
-                    }
-                    string headerContent = System.Text.Encoding.UTF8.GetString(buffer);
-                    if (!headerContent.Contains("/Encrypt"))
-                    {
-                        return new JsonResult("Price Bid PDF file must be password protected.");
-                    }
-                }
-
-                BidderTenderDocumentsDTOs.Doc = await _fileService.SaveEncryptionAsync(@"\BidderTenders\" + ProjectsVM.ProjectId + @"\" + ProjectsVM.TenderNo + @"\", file);
-                BidderTenderDocumentsDTOs.ProjectId = ProjectsVM.ProjectId;
+                return new JsonResult(new { success = true, message = $"{savedCount} Document(s) Uploaded Successfully!" });
             }
-            BidderTenderDocumentsDTOs = ModelAuditor<BidderTenderDocumentsDTO>.SetAudit(User.Identity.Name, "Create", HttpContext.Connection.RemoteIpAddress.ToString(), BidderTenderDocumentsDTOs);
-            var result = await _httpClient.PostAsync("BidderTenderDocuments/Create", true, BidderTenderDocumentsDTOs).ConfigureAwait(false);
-            if (result != null)
+            catch (Exception ex)
             {
-                _TenderDocVM = !string.IsNullOrEmpty(result) ? JsonConvert.DeserializeObject<BidderTenderDocumentsVM>(result) : null;
-                return new JsonResult("1");
+                return new JsonResult(new { success = false, message = "Error processing upload: " + ex.Message });
             }
-
-            var uid = User.Claims.FirstOrDefault(x => x.Type == "uid")?.Value;
-
-            return new JsonResult("0");
         }
     }
 }

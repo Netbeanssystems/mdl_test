@@ -569,7 +569,7 @@ namespace Application.Services
             return filenames;
         }
 
-        public (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file)
+        public (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file, bool isPriceBid = false)
         {
             if (file == null || file.Length == 0)
                 return (false, "File is empty or not provided.");
@@ -606,7 +606,7 @@ namespace Application.Services
                     using (var stream = file.OpenReadStream())
                     using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
                     {
-                        var allowedInnerExtensions = new[] { ".pdf", ".xlsx", ".xls" };
+                        var allowedInnerExtensions = new[] { ".pdf", ".xlsx", ".xls", ".csv" };
                         var fileEntries = archive.Entries
                             .Where(e => !string.IsNullOrEmpty(e.Name) && !e.FullName.EndsWith("/") && !e.FullName.EndsWith("\\"))
                             .ToList();
@@ -619,14 +619,38 @@ namespace Application.Services
                             string innerExt = Path.GetExtension(entry.Name)?.ToLowerInvariant();
                             if (!allowedInnerExtensions.Contains(innerExt))
                             {
-                                return (false, $"Archive '{file.FileName}' contains invalid file '{entry.FullName}'. Only .pdf, .xlsx, and .xls files are allowed inside the archive.");
+                                return (false, $"Archive '{file.FileName}' contains invalid file '{entry.FullName}'. Only .pdf, .xlsx, .xls, and .csv files are allowed inside the archive.");
+                            }
+                        }
+
+                        if (isPriceBid)
+                        {
+                            // Check if any zip entry is encrypted via BitFlag (bit 0 set)
+                            bool isArchivePasswordProtected = fileEntries.Any(e => (e.GetType().GetProperty("BitFlag")?.GetValue(e) is ushort flag && (flag & 1) != 0));
+                            if (!isArchivePasswordProtected)
+                            {
+                                return (false, $"Price Bid archive '{file.FileName}' must be a password-protected archive.");
                             }
                         }
                     }
                 }
+                catch (InvalidDataException) when (isPriceBid)
+                {
+                    // Encrypted ZIP entry throws InvalidDataException when trying to read without password, which means it is password protected
+                    return (true, string.Empty);
+                }
                 catch (Exception ex)
                 {
                     return (false, $"Could not read archive '{file.FileName}': {ex.Message}");
+                }
+            }
+            else if (ext == ".rar" && isPriceBid)
+            {
+                // For RAR archive, check header encryption flags
+                bool isRarPasswordProtected = (header[0] == 0x52 && header[1] == 0x61 && header[2] == 0x72 && (header[6] & 0x80) != 0);
+                if (!isRarPasswordProtected)
+                {
+                    return (false, $"Price Bid archive '{file.FileName}' must be a password-protected archive.");
                 }
             }
 
