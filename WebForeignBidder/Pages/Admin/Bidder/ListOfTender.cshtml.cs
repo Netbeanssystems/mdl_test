@@ -57,6 +57,7 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 _notyf.Error("Document not found");
                 return Page();
             }
+            var now = DateTime.Now;
             if (!string.IsNullOrEmpty(uid) && uid.Contains("CommercialExecutive", StringComparison.OrdinalIgnoreCase))
             {
                 ModelVms = !string.IsNullOrEmpty(modelResponse)
@@ -75,7 +76,8 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                     .Where(x => !string.IsNullOrEmpty(x.ForeignBidderId) &&
                                 x.ForeignBidderId.Split(',')
                                     .Any(f => f.Trim().Equals(uid, StringComparison.OrdinalIgnoreCase)) &&
-                                (!x.TenderStartDate.HasValue || x.TenderStartDate.Value <= DateTime.Now))
+                                (!x.TenderStartDate.HasValue || x.TenderStartDate.Value <= now) &&
+                                IsTenderNotExpired(x, now))
                     .ToList();
             }
             // 🔑 Filter records to only those matching current user
@@ -146,6 +148,24 @@ namespace WebForeignBidder.Pages.Admin.Bidder
             }
             return Page();
         }
+
+        private static bool IsTenderNotExpired(BidderTenderUploadsVM x, DateTime now)
+        {
+            if (x == null) return false;
+
+            DateTime? latestExtendedDate = x.TenderCorrigendums?
+                .Where(c => c.ExtendedDate.HasValue)
+                .Select(c => c.ExtendedDate.Value)
+                .DefaultIfEmpty()
+                .Max();
+
+            DateTime effectiveClosingDate = (latestExtendedDate.HasValue && latestExtendedDate.Value != default)
+                ? latestExtendedDate.Value
+                : x.TenderClosingDate;
+
+            return effectiveClosingDate >= now;
+        }
+
         public async Task<IActionResult> OnPostDownloadGenFileAsync(string Id)
         {
             try
@@ -153,7 +173,13 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 string decryptedText = EnDeCryptor.DecryptStringAES(Id);
                 int originalId = int.Parse(decryptedText);
                 var FormsResult = await _httpClient.GetAsync("BidderTenderUploads/Get", true, originalId).ConfigureAwait(false);
-                GenUpload = !string.IsNullOrEmpty(FormsResult) ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(FormsResult) : null;
+                if (string.IsNullOrEmpty(FormsResult) || !FormsResult.TrimStart().StartsWith("{"))
+                {
+                    FormsResult = await _httpClient.GetAsync("BidderTenderUploads/Get", false, originalId).ConfigureAwait(false);
+                }
+                GenUpload = (!string.IsNullOrEmpty(FormsResult) && FormsResult.TrimStart().StartsWith("{"))
+                    ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(FormsResult)
+                    : null;
                 if (GenUpload == null)
                 {
                     return new JsonResult(new { success = false, message = "Tender record not found." });
@@ -251,28 +277,64 @@ namespace WebForeignBidder.Pages.Admin.Bidder
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(Id))
+                {
+                    return new JsonResult(new { success = false, message = "Invalid tender identifier." });
+                }
+
                 string decryptedText = EnDeCryptor.DecryptStringAES(Id);
-                int originalId = int.Parse(decryptedText);
+                if (!int.TryParse(decryptedText, out int originalId))
+                {
+                    return new JsonResult(new { success = false, message = "Invalid tender ID." });
+                }
+
                 var tenderResult = await _httpClient.GetAsync("BidderTenderUploads/Get", true, originalId).ConfigureAwait(false);
-                var tender = !string.IsNullOrEmpty(tenderResult) ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(tenderResult) : null;
-                if (tender == null) return new JsonResult(new { success = false, message = "Tender not found" });
+                if (string.IsNullOrEmpty(tenderResult) || !tenderResult.TrimStart().StartsWith("{"))
+                {
+                    tenderResult = await _httpClient.GetAsync("BidderTenderUploads/Get", false, originalId).ConfigureAwait(false);
+                }
+
+                BidderTenderUploadsVM tender = null;
+                if (!string.IsNullOrEmpty(tenderResult) && tenderResult.TrimStart().StartsWith("{"))
+                {
+                    try
+                    {
+                        tender = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(tenderResult);
+                    }
+                    catch { }
+                }
+
+                if (tender == null)
+                {
+                    return new JsonResult(new { success = false, message = "Tender details not found." });
+                }
 
                 var bidderUsernames = (tender.ForeignBidderId ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
 
                 var roleResult = await _httpClient.GetAsync("Users/GetByRole", true, "ForeignBidder").ConfigureAwait(false);
-                var foreignBidders = !string.IsNullOrEmpty(roleResult) && roleResult.TrimStart().StartsWith("[")
-                    ? JsonConvert.DeserializeObject<List<UserVM>>(roleResult) ?? new List<UserVM>()
-                    : new List<UserVM>();
+                var foreignBidders = new List<UserVM>();
+                if (!string.IsNullOrEmpty(roleResult) && roleResult.TrimStart().StartsWith("["))
+                {
+                    try
+                    {
+                        foreignBidders = JsonConvert.DeserializeObject<List<UserVM>>(roleResult) ?? new List<UserVM>();
+                    }
+                    catch { }
+                }
 
                 var bidderRoleResult = await _httpClient.GetAsync("Users/GetByRole", true, "Bidder").ConfigureAwait(false);
-                var normalBidders = !string.IsNullOrEmpty(bidderRoleResult) && bidderRoleResult.TrimStart().StartsWith("[")
-                    ? JsonConvert.DeserializeObject<List<UserVM>>(bidderRoleResult) ?? new List<UserVM>()
-                    : new List<UserVM>();
+                var normalBidders = new List<UserVM>();
+                if (!string.IsNullOrEmpty(bidderRoleResult) && bidderRoleResult.TrimStart().StartsWith("["))
+                {
+                    try
+                    {
+                        normalBidders = JsonConvert.DeserializeObject<List<UserVM>>(bidderRoleResult) ?? new List<UserVM>();
+                    }
+                    catch { }
+                }
 
                 foreignBidders.AddRange(normalBidders);
                 var allUsers = foreignBidders.GroupBy(x => x.UserName).Select(g => g.First()).ToList();
-
-                var selectedBidders = allUsers.Where(u => bidderUsernames.Contains(u.UserName, StringComparer.OrdinalIgnoreCase)).ToList();
 
                 var sb = new System.Text.StringBuilder();
                 sb.AppendLine($"\"Tender/Ref No :\",\"{tender.TenderNo}\"");
@@ -282,26 +344,25 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 sb.AppendLine("\"Sr No.\",\"Bidder Name\",\"Country\",\"Bidder Email ID\"");
 
                 int srNo = 1;
-                if (selectedBidders.Count > 0)
+                if (bidderUsernames.Count > 0)
                 {
-                    foreach (var b in selectedBidders)
+                    foreach (var username in bidderUsernames)
                     {
-                        string name = !string.IsNullOrWhiteSpace(b.Name) ? b.Name : b.UserName;
-                        string country = !string.IsNullOrWhiteSpace(b.Country) ? b.Country : "N/A";
-                        string email = !string.IsNullOrWhiteSpace(b.Email) ? b.Email : "N/A";
+                        var b = allUsers.FirstOrDefault(u => string.Equals(u.UserName, username, StringComparison.OrdinalIgnoreCase));
+                        string name = (b != null && !string.IsNullOrWhiteSpace(b.Name)) ? b.Name : username;
+                        string country = (b != null && !string.IsNullOrWhiteSpace(b.Country)) ? b.Country : "N/A";
+                        string email = (b != null && !string.IsNullOrWhiteSpace(b.Email)) ? b.Email : "N/A";
                         sb.AppendLine($"\"{srNo++}\",\"{name.Replace("\"", "\"\"")}\",\"{country.Replace("\"", "\"\"")}\",\"{email.Replace("\"", "\"\"")}\"");
                     }
                 }
                 else
                 {
-                    foreach (var username in bidderUsernames)
-                    {
-                        sb.AppendLine($"\"{srNo++}\",\"{username.Replace("\"", "\"\"")}\",\"N/A\",\"N/A\"");
-                    }
+                    sb.AppendLine("\"No bidders assigned to this tender\",\"\",\"\",\"\"");
                 }
 
                 byte[] csvBytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
-                string fileName = $"Selected_Bidders_{tender.TenderNo.Replace("/", "_")}.csv";
+                string safeTenderNo = string.Join("_", (tender.TenderNo ?? "Tender").Split(Path.GetInvalidFileNameChars())).Replace("/", "_");
+                string fileName = $"Selected_Bidders_{safeTenderNo}.csv";
 
                 return new JsonResult(new
                 {

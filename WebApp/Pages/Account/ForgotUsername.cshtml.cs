@@ -1,4 +1,4 @@
-﻿using Application.Extensions;
+using Application.Extensions;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
@@ -52,8 +52,8 @@ namespace WebApp.Pages.Account
                 ModelState.AddModelError("Captcha", "Please enter correct captcha");
             if (!ModelState.IsValid) { _notyf.Error(ModelState.GetErrorMessageString()); return Page(); }
             var result = await _httpClient.PostAsync("Auth/ForgotUsername", false, Email).ConfigureAwait(false);
-            var username = !string.IsNullOrEmpty(result) ? JsonConvert.DeserializeObject<string>(result) : null;
-            if (string.IsNullOrEmpty(username))
+            var username = !string.IsNullOrEmpty(result) && result != "unauthorized" ? result.Trim('\"', ' ') : null;
+            if (string.IsNullOrEmpty(username) || username.StartsWith("System.") || username.Contains("Exception"))
             {
                 _notyf.Error("Username could not be found");
                 return Page();

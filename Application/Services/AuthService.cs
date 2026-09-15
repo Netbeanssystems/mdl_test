@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
@@ -50,8 +51,10 @@ namespace Application.Services
         }
         public async Task<bool> CheckEmail(string email)
         {
-            var userFrmDb = await _userManager.FindByEmailAsync(email).ConfigureAwait(false);
-            return userFrmDb != null;
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+            var normalizedEmail = _userManager.NormalizeEmail(email);
+            return await _userManager.Users.AnyAsync(u => u.NormalizedEmail == normalizedEmail).ConfigureAwait(false);
         }
 
         //New Function for Hashing
@@ -211,9 +214,15 @@ namespace Application.Services
         }
         public async Task<EmailDTO> GetPasswordResetTokenByEmail(string email)
         {
-            // find user with this email
-            var user = await _userManager.FindByEmailAsync(email).ConfigureAwait(false);
-            if (user?.Approved != true || user.IsActive == false) return null;
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+            var normalizedEmail = _userManager.NormalizeEmail(email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail && u.Approved == true && u.IsActive == true).ConfigureAwait(false);
+            if (user == null)
+            {
+                user = await _userManager.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail).ConfigureAwait(false);
+            }
+            if (user == null) return null;
             //get the code
             var tokenGenerated = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
             var tokenGeneratedBytes = Encoding.UTF8.GetBytes(tokenGenerated);
@@ -228,9 +237,22 @@ namespace Application.Services
         }
         public async Task<string> GetUsernameByEmail(string email)
         {
-            // find user with this email
-            var user = await _userManager.FindByEmailAsync(email).ConfigureAwait(false);
-            return user?.Approved != true || user.IsActive == false ? string.Empty : user.UserName;
+            if (string.IsNullOrWhiteSpace(email))
+                return string.Empty;
+
+            var normalizedEmail = _userManager.NormalizeEmail(email);
+            var users = await _userManager.Users
+                .Where(u => u.NormalizedEmail == normalizedEmail)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            if (users == null || users.Count == 0)
+                return string.Empty;
+
+            var activeUsers = users.Where(u => u.Approved && u.IsActive).ToList();
+            var targetUsers = activeUsers.Count > 0 ? activeUsers : users;
+
+            return string.Join(", ", targetUsers.Select(u => u.UserName).Distinct());
         }
 
         public async Task<List<ApplicationUser>> GetUsersByUserNames(List<string> UserNames)

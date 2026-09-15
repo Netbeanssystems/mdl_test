@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,8 +35,14 @@ namespace WebForeignBidder.Pages.Admin.Bidder
         public BidderTenderDocumentsVM GenUpload { get; set; }
         [BindProperty] public BidderTenderDocumentsDTO ModelDto { get; set; }
         public bool IsAdminOrExecutive { get; set; }
-        public async Task<IActionResult> OnGetAsync(string tenderNo)
+        public string TenderNoFilter { get; set; }
+        public bool OnlyOpenedFilter { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(string tenderNo, bool? onlyOpened)
         {
+            TenderNoFilter = tenderNo;
+            OnlyOpenedFilter = onlyOpened ?? false;
+
             var modelResponse = await _httpClient.GetAsync("BidderTenderDocuments/Get", true).ConfigureAwait(false);
             if (modelResponse == "unauthorized")
             {
@@ -79,52 +86,176 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 return Page();
             }
 
+            // Load tenders to check opening date for each document
+            var tendersResponse = await _httpClient.GetAsync("BidderTenderUploads/Get", true).ConfigureAwait(false);
+            List<BidderTenderUploadsVM> allTenders = null;
+            if (!string.IsNullOrEmpty(tendersResponse) && tendersResponse != "unauthorized")
+            {
+                try
+                {
+                    allTenders = JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(tendersResponse);
+                }
+                catch { }
+            }
+
+            var tenderLookup = allTenders?
+                .Where(t => !string.IsNullOrWhiteSpace(t.TenderNo))
+                .GroupBy(t => t.TenderNo.Trim(), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, BidderTenderUploadsVM>(StringComparer.OrdinalIgnoreCase);
+
+            var now = DateTime.Now;
+
             foreach (var item in ModelVms)
             {
                 var encrptVal = item.Id.ToString();
                 byte[] encryptedBytes = EnDeCryptor.EncryptStringAES(encrptVal);
                 item.EncryptedId = Convert.ToBase64String(encryptedBytes);
-                item.TenderDocDecrypted = EnDeCryptor.DecryptStringAES(item.Doc.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/"));
+
+                try
+                {
+                    var encPart = item.Doc?.Split(".")[0].Replace("B_S", "\"").Replace("F_S", "/");
+                    item.TenderDocDecrypted = EnDeCryptor.DecryptStringAES(encPart);
+                }
+                catch
+                {
+                    item.TenderDocDecrypted = item.DocTitle ?? item.Doc;
+                }
+
+                if (!string.IsNullOrWhiteSpace(item.TenderNo) && tenderLookup.TryGetValue(item.TenderNo.Trim(), out var tender))
+                {
+                    item.TenderOpeningDate = (tender.TenderOpeningDate != default) ? tender.TenderOpeningDate : null;
+                }
+
+                // Fallback to GetByTenderNo if not in bulk response
+                if (!item.TenderOpeningDate.HasValue && !string.IsNullOrWhiteSpace(item.TenderNo))
+                {
+                    try
+                    {
+                        var singleTenderRes = await _httpClient.GetAsync($"BidderTenderUploads/GetByTenderNo?tenderNo={item.TenderNo.Trim()}", true).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(singleTenderRes) && singleTenderRes != "unauthorized" && singleTenderRes.TrimStart().StartsWith("{"))
+                        {
+                            var singleTender = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(singleTenderRes);
+                            if (singleTender != null && singleTender.TenderOpeningDate != default)
+                            {
+                                item.TenderOpeningDate = singleTender.TenderOpeningDate;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+
+                item.IsOpen = item.TenderOpeningDate.HasValue && now >= item.TenderOpeningDate.Value;
             }
+
+            if (OnlyOpenedFilter)
+            {
+                ModelVms = ModelVms.Where(x => x.IsOpen).ToList();
+            }
+
             return Page();
         }
 
-
         public async Task<IActionResult> OnPostDownloadGenFileAsync(string Id)
         {
+            if (string.IsNullOrWhiteSpace(Id))
+            {
+                return new JsonResult(new { success = false, message = "Invalid document identifier." });
+            }
+
             string decryptedText = EnDeCryptor.DecryptStringAES(Id);
-            int originalId = int.Parse(decryptedText);
+            if (!int.TryParse(decryptedText, out int originalId))
+            {
+                return new JsonResult(new { success = false, message = "Invalid document ID." });
+            }
+
             var FormsResult = await _httpClient.GetAsync("BidderTenderDocuments/Get", true, originalId).ConfigureAwait(false);
             GenUpload = !string.IsNullOrEmpty(FormsResult) ? JsonConvert.DeserializeObject<BidderTenderDocumentsVM>(FormsResult) : null;
-            if (GenUpload != null)
+            if (GenUpload == null)
             {
-
+                return new JsonResult(new { success = false, message = "Document not found." });
             }
-            string currentDomain = $"{Request.Scheme}://{Request.Host}";
-            //string fileUrl = $"{currentDomain}/Bidder/img/UploadedFiles/GeneralUpload/{GenUpload.Doc}";
-            string fileUrl = $"{currentDomain}/Bidder/BidderTenders/{GenUpload.ProjectId}/{GenUpload.TenderNo}/{GenUpload.Doc}";
-            //string fileUrl = $"{currentDomain}/bidderfiles/1/1333/{GenUpload.Doc}";
 
-            byte[] fileBytes;
-            using (HttpClient client = new HttpClient())
+            // Verify if Tender Opening Date has passed
+            if (!string.IsNullOrEmpty(GenUpload.TenderNo))
             {
-                try
+                BidderTenderUploadsVM tender = null;
+                var tenderRes = await _httpClient.GetAsync($"BidderTenderUploads/GetByTenderNo?tenderNo={GenUpload.TenderNo.Trim()}", true).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(tenderRes) && tenderRes != "unauthorized" && tenderRes.TrimStart().StartsWith("{"))
                 {
-                    fileBytes = await client.GetByteArrayAsync(fileUrl);
+                    try { tender = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(tenderRes); } catch { }
                 }
-                catch (Exception ex)
+
+                if (tender == null)
                 {
-                    return new JsonResult(new { success = false, message = ex.Message });
+                    var allTendersRes = await _httpClient.GetAsync("BidderTenderUploads/Get", true).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(allTendersRes) && allTendersRes != "unauthorized")
+                    {
+                        try
+                        {
+                            var allTenders = JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(allTendersRes);
+                            tender = allTenders?.FirstOrDefault(x => string.Equals(x.TenderNo?.Trim(), GenUpload.TenderNo.Trim(), StringComparison.OrdinalIgnoreCase));
+                        }
+                        catch { }
+                    }
+                }
+
+                if (tender != null && tender.TenderOpeningDate != default && DateTime.Now < tender.TenderOpeningDate)
+                {
+                    return new JsonResult(new
+                    {
+                        success = false,
+                        message = $"Tender opening date ({tender.TenderOpeningDate:dd-MM-yyyy HH:mm:ss}) has not passed yet. Documents cannot be downloaded before the opening date."
+                    });
                 }
             }
-            // Extract the file extension from the file path or name
-            // string fileExtension = Path.GetExtension(GenUpload.DocumentName);
 
-            // Create the file name including the extension
+            // Check physical files on disk first
+            byte[] fileBytes = null;
+            var localPaths = new[]
+            {
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "BidderTenders", GenUpload.ProjectId ?? "", GenUpload.TenderNo ?? "", GenUpload.Doc ?? ""),
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "bidder", "BidderTenders", GenUpload.ProjectId ?? "", GenUpload.TenderNo ?? "", GenUpload.Doc ?? ""),
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Bidder", "img", "UploadedFiles", "GeneralUpload", GenUpload.Doc ?? "")
+            };
+
+            foreach (var p in localPaths)
+            {
+                if (System.IO.File.Exists(p))
+                {
+                    fileBytes = await System.IO.File.ReadAllBytesAsync(p);
+                    break;
+                }
+            }
+
+            if (fileBytes == null || fileBytes.Length == 0)
+            {
+                string currentDomain = $"{Request.Scheme}://{Request.Host}";
+                string fileUrl = $"{currentDomain}/Bidder/BidderTenders/{GenUpload.ProjectId}/{GenUpload.TenderNo}/{GenUpload.Doc}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    try
+                    {
+                        fileBytes = await client.GetByteArrayAsync(fileUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        return new JsonResult(new { success = false, message = "File could not be loaded: " + ex.Message });
+                    }
+                }
+            }
+
+            if (fileBytes == null || fileBytes.Length == 0)
+            {
+                return new JsonResult(new { success = false, message = "File content is empty or not found on server." });
+            }
+
             string filenameWithExtension = $"{GenUpload.Doc}";
-                var data = new { encdata = Convert.ToBase64String(fileBytes), filename = filenameWithExtension };
+            var data = new { success = true, encdata = Convert.ToBase64String(fileBytes), filename = filenameWithExtension };
             return new JsonResult(data);
         }
 
     }
 }
+

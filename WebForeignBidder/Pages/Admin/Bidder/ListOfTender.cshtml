@@ -236,9 +236,9 @@
             });
         });
 
-        $('.download-bidders-csv').on('click', function (e) {
+        $(document).on('click', '.download-bidders-csv', function (e) {
             e.preventDefault();
-            var Id = $(this).data('id');
+            var Id = $(this).attr('data-id');
             $.ajax({
                 type: 'POST',
                 url: "?handler=DownloadBiddersCsv",

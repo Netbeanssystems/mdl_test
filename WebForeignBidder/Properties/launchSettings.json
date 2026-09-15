@@ -21,7 +21,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:55339/bidder"
+      "applicationUrl": "https://localhost:44339;http://localhost:55339"
     }
   }
 }

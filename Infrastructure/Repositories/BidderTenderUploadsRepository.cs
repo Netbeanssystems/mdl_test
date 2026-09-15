@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
                 TenderClosingDate = c.TenderClosingDate,
                 TenderDoc = c.TenderDoc,
                 TenderCorrigendums = DbContext.BidderTenderCorrigendum
-                    .Where(b => b.TenderId == c.Id.ToString())
+                    .Where(b => b.TenderId == c.Id.ToString() && b.IsActive)
                     .ToList(),
                 TenderDocuments = DbContext.BidderTenderUploadDocuments
                     .Where(d => d.TenderId == c.Id && d.IsActive)

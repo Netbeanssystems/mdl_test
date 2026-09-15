@@ -1,4 +1,4 @@
-﻿using Application.Extensions;
+using Application.Extensions;
 using Application.Helpers;
 using Application.ServiceInterfaces;
 using Application.ViewModels;
@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -52,34 +54,63 @@ namespace WebForeignBidder.Pages.Account
                 ModelState.AddModelError("Captcha", "Please enter correct captcha");
             if (!ModelState.IsValid) { _notyf.Error(ModelState.GetErrorMessageString()); return Page(); }
             var result = await _httpClient.PostAsync("Auth/ForgotUsername", false, Email).ConfigureAwait(false);
-            var username = !string.IsNullOrEmpty(result) ? JsonConvert.DeserializeObject<string>(result) : null;
-            if (string.IsNullOrEmpty(username))
+            var username = !string.IsNullOrEmpty(result) && result != "unauthorized" ? result.Trim('\"', ' ') : null;
+            if (string.IsNullOrEmpty(username) || username.StartsWith("System.") || username.Contains("Exception"))
             {
                 _notyf.Error("Username could not be found");
                 return Page();
             }
-            var EmailVm = new EmailVM
+            var subject = "Username Recovery – Bidder Module";
+            var body = $"Your Username is: <b>{username}</b>";
+
+            try
             {
-                ToAddresses = new List<string> { Email },
-                Subject = "Your Username",
-                Body = $"Your Username is: <b>{username}</b>"
-            };
+                if (_config["Environment"]?.ToString() == "Live")
+                {
+                    using (MailMessage mail = new MailMessage())
+                    {
+                        mail.From = new MailAddress(_config["SMTPFrom"]);
+                        mail.To.Add(new MailAddress(Email));
+                        var bccAddresses = _config["SMTPBcc"]?.Split(';');
+                        if (bccAddresses != null)
+                        {
+                            foreach (var bcc in bccAddresses)
+                            {
+                                if (!string.IsNullOrWhiteSpace(bcc))
+                                    mail.Bcc.Add(new MailAddress(bcc));
+                            }
+                        }
+                        mail.IsBodyHtml = true;
+                        mail.Subject = subject;
+                        mail.Body = body;
 
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(_config["SMTPFrom"]);
-            mail.To.Add(new MailAddress(Email));
-            mail.IsBodyHtml = true;
-            mail.Subject = "Username Recovery – Bidder Module";
-            mail.Body = EmailVm.Body;
-            SmtpClient smtp = new SmtpClient();
-            smtp.Host = _config["SMTPHost"];
-            smtp.Send(mail);
+                        using (SmtpClient smtp = new SmtpClient())
+                        {
+                            smtp.Host = _config["SMTPHost"];
+                            smtp.Send(mail);
+                        }
+                    }
+                }
+                else
+                {
+                    var EmailVm = new EmailVM
+                    {
+                        ToAddresses = new List<string> { Email },
+                        BccAddresses = _config["SMTPBcc"]?.Split(';').Where(x => !string.IsNullOrWhiteSpace(x)).ToList(),
+                        Subject = subject,
+                        Body = body
+                    };
+                    await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+                }
 
-            return LocalRedirect("/bidder");
-
-            //await _emailService.SendEmailAsync2(EmailVm).ConfigureAwait(false);
-            //_notyf.Success("Your username has been sent to your email");
-            //return LocalRedirect("/Account/Login");
+                _notyf.Success("Your username has been sent to your registered email");
+                return LocalRedirect("/bidder");
+            }
+            catch (Exception ex)
+            {
+                _notyf.Error($"Failed to send email: {ex.Message}");
+                return Page();
+            }
         }
         public async Task<IActionResult> OnGetValidatecapcha(string CaptchaCode)
         {

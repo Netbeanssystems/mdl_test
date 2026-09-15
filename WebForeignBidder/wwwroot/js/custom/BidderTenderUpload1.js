@@ -1,4 +1,4 @@
-﻿$('#tenderUpload_ProjectIds').on('change', function () {
+$('#tenderUpload_ProjectIds').on('change', function () {
     var projectIdArray = $(this).val(); // This is assumed to be an array of strings
     var projectId = Array.isArray(projectIdArray) ? projectIdArray.join(',') : projectIdArray;
     $('#tenderUpload_YardIds').html('<option value="">Loading...</option>');
@@ -180,23 +180,40 @@ $("input[name='addCorrigendum']").on("change", function () {
 });
 
 function validateDates() {
+    const startDateVal = document.getElementById("tenderUpload_TenderStartDate")?.value;
+    const closingDateVal = document.getElementById("tenderUpload_TenderClosingDate")?.value;
+    const openingDateVal = document.getElementById("tenderUpload_TenderOpeningDate")?.value;
 
-    const startDate1 = new Date(document.getElementById("tenderUpload_TenderOpeningDate").value);
-    const endDate1 = new Date(document.getElementById("tenderUpload_TenderClosingDate").value);
+    const startDate = startDateVal ? new Date(startDateVal) : null;
+    const closingDate = closingDateVal ? new Date(closingDateVal) : null;
+    const openingDate = openingDateVal ? new Date(openingDateVal) : null;
 
-    if (startDate1 && endDate1 && endDate1 < startDate1) {
-        alert("End date cannot be earlier than start date.");
+    if (startDate && closingDate && closingDate < startDate) {
+        alert("Tender Closing Date cannot be earlier than Tender Start Date.");
         document.getElementById("tenderUpload_TenderClosingDate").value = "";
+        return;
     }
 
-    const startDate = new Date(document.getElementById("tenderUpload_TenderClosingDate").value);
-    const endDate = new Date(document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate").value);
-
-    if (startDate && endDate && endDate < startDate) {
-        alert("End date cannot be earlier than start date.");
-        document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate").value = "";
+    if (closingDate && openingDate && openingDate < closingDate) {
+        alert("Tender Opening Date cannot be earlier than Tender Closing Date.");
+        document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+        return;
     }
 
+    const extendedDateInput = document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate");
+    if (extendedDateInput && extendedDateInput.value) {
+        const extendedDate = new Date(extendedDateInput.value);
+        if (closingDate && extendedDate && extendedDate < closingDate) {
+            alert("Extended Date cannot be earlier than Tender Closing Date.");
+            extendedDateInput.value = "";
+            return;
+        }
+        if (openingDate && extendedDate && openingDate < extendedDate) {
+            alert("Tender Opening Date cannot be earlier than Corrigendum Extended Date.");
+            document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+            return;
+        }
+    }
 }
 
 $(document).ready(function () {

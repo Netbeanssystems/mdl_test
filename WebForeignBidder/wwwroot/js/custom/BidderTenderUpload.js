@@ -400,21 +400,23 @@ function validateArchiveFileInput(input) {
 
 function validateDates() {
     const startDateVal = document.getElementById("tenderUpload_TenderStartDate")?.value;
-    const openingDateVal = document.getElementById("tenderUpload_TenderOpeningDate")?.value;
     const closingDateVal = document.getElementById("tenderUpload_TenderClosingDate")?.value;
+    const openingDateVal = document.getElementById("tenderUpload_TenderOpeningDate")?.value;
 
     const startDate = startDateVal ? new Date(startDateVal) : null;
-    const openingDate = openingDateVal ? new Date(openingDateVal) : null;
     const closingDate = closingDateVal ? new Date(closingDateVal) : null;
+    const openingDate = openingDateVal ? new Date(openingDateVal) : null;
 
-    if (startDate && openingDate && openingDate < startDate) {
-        alert("Tender Opening Date cannot be earlier than Tender Start Date.");
-        document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+    if (startDate && closingDate && closingDate < startDate) {
+        alert("Tender Closing Date cannot be earlier than Tender Start Date.");
+        document.getElementById("tenderUpload_TenderClosingDate").value = "";
+        return;
     }
 
-    if (openingDate && closingDate && closingDate < openingDate) {
-        alert("Tender Closing Date cannot be earlier than Tender Opening Date.");
-        document.getElementById("tenderUpload_TenderClosingDate").value = "";
+    if (closingDate && openingDate && openingDate < closingDate) {
+        alert("Tender Opening Date cannot be earlier than Tender Closing Date.");
+        document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+        return;
     }
 
     const extendedDateInput = document.getElementById("tenderUpload_TenderCorrigendums_ExtendedDate");
@@ -423,6 +425,12 @@ function validateDates() {
         if (closingDate && extendedDate && extendedDate < closingDate) {
             alert("Extended Date cannot be earlier than Tender Closing Date.");
             extendedDateInput.value = "";
+            return;
+        }
+        if (openingDate && extendedDate && openingDate < extendedDate) {
+            alert("Tender Opening Date cannot be earlier than Corrigendum Extended Date.");
+            document.getElementById("tenderUpload_TenderOpeningDate").value = "";
+            return;
         }
     }
 }
@@ -509,16 +517,21 @@ $(document).ready(function () {
     $('#corrigendumTable').on('click', '.delete-btn', function () {
         const id = $(this).data('id');
         if (confirm('Are you sure you want to delete this corrigendum?')) {
+            const token = $('input[name="__RequestVerificationToken"]').val();
             $.ajax({
-                url: '/bidder/Admin/TenderUpload/Manage?handler=DeleteCorrigendum',
+                url: '?handler=DeleteCorrigendum&id=' + id,
                 type: 'POST',
-                data: { id: id },
+                data: { 
+                    id: id,
+                    __RequestVerificationToken: token
+                },
                 headers: {
-                    "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    "RequestVerificationToken": token,
+                    "XSRF-TOKEN": token
                 },
                 success: function (res) {
                     if (res && res.success) {
-                        alert('Deleted successfully!');
+                        alert(res.message || 'Corrigendum deleted successfully.');
                         triggerCheckTender();
                     } else {
                         alert(res.message || 'Failed to delete.');
@@ -561,5 +574,8 @@ $(document).ready(function () {
     $("input[name='addCorrigendum']").on("change", function () {
         const show = $(this).val() === "yes";
         $("#corrigendumFields").toggle(show);
+        if (show && getActiveCorrigendumRowCount() === 0) {
+            addCorrigendumDocRow();
+        }
     });
 });

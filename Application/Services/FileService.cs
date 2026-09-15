@@ -656,5 +656,227 @@ namespace Application.Services
 
             return (true, string.Empty);
         }
+
+        public (bool IsValid, string ErrorMessage) ValidateBidDocument(IFormFile file, string docType)
+        {
+            if (file == null || file.Length == 0)
+                return (false, "File is empty or not provided.");
+
+            const long maxFileSize = 30 * 1024 * 1024;
+            if (file.Length > maxFileSize)
+                return (false, $"File '{file.FileName}' exceeds the maximum allowed size of 30 MB.");
+
+            string ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            bool isPriceBid = string.Equals(docType, "Price Bid", StringComparison.OrdinalIgnoreCase);
+
+            if (isPriceBid)
+            {
+                if (ext != ".pdf" && ext != ".xlsx" && ext != ".xls" && ext != ".xlx")
+                {
+                    return (false, $"For Price Bid, only password-protected .pdf, .xls, and .xlsx files are allowed. Given file has extension '{ext}'.");
+                }
+
+                if (ext == ".pdf")
+                {
+                    return ValidatePasswordProtectedPdf(file);
+                }
+                else
+                {
+                    return ValidatePasswordProtectedExcel(file, ext);
+                }
+            }
+            else
+            {
+                var allowedExts = new[] { ".zip", ".rar", ".pdf", ".xlsx", ".xls", ".xlx" };
+                if (!allowedExts.Contains(ext))
+                {
+                    return (false, $"File '{file.FileName}' has an unsupported extension '{ext}'. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls.");
+                }
+
+                if (ext == ".zip" || ext == ".rar")
+                {
+                    return ValidateTenderArchive(file, false);
+                }
+                else if (ext == ".pdf")
+                {
+                    return ValidatePdfSignature(file);
+                }
+                else
+                {
+                    return ValidateExcelSignature(file, ext);
+                }
+            }
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidatePasswordProtectedPdf(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            byte[] header = new byte[5];
+            int read = stream.Read(header, 0, header.Length);
+            if (read < 4)
+                return (false, $"File '{file.FileName}' is corrupted or not a valid PDF.");
+
+            string pdfHeader = Encoding.ASCII.GetString(header, 0, read);
+            if (!pdfHeader.StartsWith("%PDF"))
+                return (false, $"File '{file.FileName}' is not a valid PDF file.");
+
+            stream.Position = 0;
+            using var reader = new StreamReader(stream, Encoding.ASCII, true, 8192, true);
+            string fullContent = reader.ReadToEnd();
+
+            bool isPasswordProtected = fullContent.Contains("/Encrypt") ||
+                                       fullContent.Contains("/Standard") ||
+                                       fullContent.Contains("/CFM");
+
+            if (!isPasswordProtected)
+            {
+                return (false, $"Price Bid file '{file.FileName}' is not password protected. Please encrypt your PDF with a password before uploading.");
+            }
+
+            return (true, string.Empty);
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidatePasswordProtectedExcel(IFormFile file, string ext)
+        {
+            using var stream = file.OpenReadStream();
+            byte[] header = new byte[8];
+            int bytesRead = stream.Read(header, 0, header.Length);
+            if (bytesRead < 4)
+                return (false, $"File '{file.FileName}' is corrupted or not a valid Excel file.");
+
+            bool isZip = header[0] == 0x50 && header[1] == 0x4B && header[2] == 0x03 && header[3] == 0x04;
+            bool isOle = bytesRead >= 8 &&
+                         header[0] == 0xD0 && header[1] == 0xCF && header[2] == 0x11 && header[3] == 0xE0 &&
+                         header[4] == 0xA1 && header[5] == 0xB1 && header[6] == 0x1A && header[7] == 0xE1;
+
+            if (!isZip && !isOle)
+            {
+                return (false, $"File '{file.FileName}' is not a valid Excel document (.xls, .xlsx).");
+            }
+
+            // Case 1: .xlsx / .xlx saved with password to open is converted into an OLE Compound Document containing EncryptedPackage
+            if ((ext == ".xlsx" || ext == ".xlx") && isOle)
+            {
+                stream.Position = 0;
+                using var reader = new StreamReader(stream, Encoding.ASCII, true, 8192, true);
+                string content = reader.ReadToEnd();
+                if (content.Contains("EncryptedPackage") || content.Contains("EncryptionInfo"))
+                {
+                    return (true, string.Empty);
+                }
+                return (true, string.Empty);
+            }
+
+            // Case 2: .xls (Excel 97-2003 binary format)
+            if (ext == ".xls" && isOle)
+            {
+                stream.Position = 0;
+                using var reader = new StreamReader(stream, Encoding.ASCII, true, 8192, true);
+                string content = reader.ReadToEnd();
+                if (content.Contains("EncryptedPackage") || content.Contains("EncryptionInfo") || content.Contains("FILEPASS"))
+                {
+                    return (true, string.Empty);
+                }
+
+                stream.Position = 0;
+                byte[] buffer = new byte[Math.Min(stream.Length, 65536)];
+                int readLen = stream.Read(buffer, 0, buffer.Length);
+                for (int i = 0; i < readLen - 4; i++)
+                {
+                    if (buffer[i] == 0x2F && buffer[i + 1] == 0x00)
+                    {
+                        return (true, string.Empty);
+                    }
+                }
+
+                return (false, $"Price Bid Excel file '{file.FileName}' is not password protected. Please encrypt your Excel file with a password before uploading.");
+            }
+
+            // Case 3: .xlsx file as Zip archive -> check workbook / sheet protection
+            if (isZip)
+            {
+                try
+                {
+                    stream.Position = 0;
+                    using var archive = new ZipArchive(stream, ZipArchiveMode.Read, true);
+
+                    bool hasEncryptedZipEntry = archive.Entries.Any(e =>
+                        (e.GetType().GetProperty("BitFlag")?.GetValue(e) is ushort flag && (flag & 1) != 0));
+                    if (hasEncryptedZipEntry)
+                    {
+                        return (true, string.Empty);
+                    }
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (entry.FullName.StartsWith("xl/worksheets/sheet", StringComparison.OrdinalIgnoreCase) ||
+                            entry.FullName.Equals("xl/workbook.xml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using var entryStream = entry.Open();
+                            using var entryReader = new StreamReader(entryStream);
+                            string xml = entryReader.ReadToEnd();
+                            if (xml.Contains("<sheetProtection") || xml.Contains("<workbookProtection") || xml.Contains("password=") || xml.Contains("algorithmName="))
+                            {
+                                return (true, string.Empty);
+                            }
+                        }
+                    }
+                }
+                catch (InvalidDataException)
+                {
+                    return (true, string.Empty);
+                }
+                catch
+                {
+                    // Continue
+                }
+
+                try
+                {
+                    stream.Position = 0;
+                    using var wb = new ClosedXML.Excel.XLWorkbook(stream);
+                    if (wb.IsProtected || wb.Worksheets.Any(ws => ws.IsProtected))
+                    {
+                        return (true, string.Empty);
+                    }
+                }
+                catch
+                {
+                    if (isOle) return (true, string.Empty);
+                }
+
+                return (false, $"Price Bid Excel file '{file.FileName}' is not password protected. Please encrypt your Excel file with a password before uploading.");
+            }
+
+            return (false, $"Price Bid file '{file.FileName}' is not password protected. Please encrypt your Excel file with a password before uploading.");
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidatePdfSignature(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            byte[] header = new byte[5];
+            int read = stream.Read(header, 0, header.Length);
+            if (read < 4 || !Encoding.ASCII.GetString(header, 0, read).StartsWith("%PDF"))
+                return (false, $"File '{file.FileName}' is not a valid PDF file.");
+            return (true, string.Empty);
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidateExcelSignature(IFormFile file, string ext)
+        {
+            using var stream = file.OpenReadStream();
+            byte[] header = new byte[8];
+            int read = stream.Read(header, 0, header.Length);
+            if (read < 4)
+                return (false, $"File '{file.FileName}' is corrupted.");
+
+            bool isZip = header[0] == 0x50 && header[1] == 0x4B && header[2] == 0x03 && header[3] == 0x04;
+            bool isOle = read >= 8 &&
+                         header[0] == 0xD0 && header[1] == 0xCF && header[2] == 0x11 && header[3] == 0xE0;
+
+            if (!isZip && !isOle)
+                return (false, $"File '{file.FileName}' is not a valid Excel file.");
+
+            return (true, string.Empty);
+        }
     }
 }

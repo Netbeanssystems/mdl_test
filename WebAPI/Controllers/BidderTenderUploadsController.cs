@@ -50,6 +50,7 @@ namespace WebAPI.Controllers
             return Ok(categories);
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             if (id <= 0) return BadRequest("Input not valid or null");
@@ -105,6 +106,7 @@ namespace WebAPI.Controllers
             return Ok(model);
         }
         [HttpGet("{tenderNo}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByTenderNo([FromRoute] string tenderNo)
         {
             if (string.IsNullOrEmpty(tenderNo)) return BadRequest("Input not valid or null");

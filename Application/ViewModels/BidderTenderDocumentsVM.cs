@@ -1,4 +1,6 @@
-﻿namespace Application.ViewModels
+using System;
+
+namespace Application.ViewModels
 {
     public class BidderTenderDocumentsVM : BaseVM
     {
@@ -11,5 +13,8 @@
         public string DocType { get; set; }
         public string Remarks { get; set; }
         public string TenderDocDecrypted { get; set; }
+        public DateTime? TenderOpeningDate { get; set; }
+        public bool IsOpen { get; set; }
     }
 }
+

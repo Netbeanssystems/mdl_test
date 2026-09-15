@@ -28,6 +28,7 @@ namespace Application.ServiceInterfaces
         //Added later from HPCL to be refactored
         bool CheckValidFile(IFormFile file);
         (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file, bool isPriceBid = false);
+        (bool IsValid, string ErrorMessage) ValidateBidDocument(IFormFile file, string docType);
         bool CheckFiles(IFormFile file, string AllowedExtentions);
         //Added later from HPCL to be refactored
         Task<string> SaveImageAsync(string path, IFormFile file);

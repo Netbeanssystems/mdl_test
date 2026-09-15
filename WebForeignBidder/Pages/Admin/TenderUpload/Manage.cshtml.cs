@@ -647,10 +647,16 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
 
         public async Task<IActionResult> OnPostDeleteCorrigendum(int id)
         {
+            if (id <= 0 && int.TryParse(Request.Query["id"], out var queryId)) id = queryId;
+            if (id <= 0 && int.TryParse(Request.Form["id"], out var formId)) id = formId;
             if (id <= 0) return new JsonResult(new { success = false, message = "Invalid ID" });
             var result = await _httpClient.PostAsync($"BidderTenderUploads/DeleteCorrigendum/{id}", true, id).ConfigureAwait(false);
             if (result == "unauthorized") return new JsonResult(new { success = false, message = "Unauthorized" });
-            return new JsonResult(new { success = true });
+            if (string.IsNullOrEmpty(result) || result.Contains("failed", StringComparison.OrdinalIgnoreCase) || result.Contains("BadRequest", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JsonResult(new { success = false, message = result ?? "Failed to delete corrigendum." });
+            }
+            return new JsonResult(new { success = true, message = "Corrigendum deleted successfully." });
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+using Application.Dtos;
 using Application.Extensions;
 using Application.Helpers;
 using Application.ServiceInterfaces;
@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Mail;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -79,8 +80,7 @@ namespace WebForeignBidder.Pages.Account
                 return Page();
             }
             var callbackUrl = Url.Page(
-                //"/Account/ResetPassword",
-                "/bidder",
+                "/Account/ResetPassword",
                 pageHandler: null,
                 values: new { forgotPasswordVm.Code, forgotPasswordVm.Id },
                 protocol: Request.Scheme);
@@ -101,29 +101,54 @@ namespace WebForeignBidder.Pages.Account
 
             var body = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
-            using (MailMessage mail = new MailMessage())
+            try
             {
-                mail.From = new MailAddress(_config["SMTPFrom"]);
-                mail.To.Add(new MailAddress(forgotPasswordVm.Email));
-                var bccAddresses = _config["SMTPBcc"].Split(';');
-                foreach (var bcc in bccAddresses)
+                if (_config["Environment"]?.ToString() == "Live")
                 {
-                    mail.Bcc.Add(new MailAddress(bcc));
-                }
-                mail.IsBodyHtml = true;
-                mail.Subject = "Reset Password Link for Bidder Module";
-                mail.Body = body;
+                    using (MailMessage mail = new MailMessage())
+                    {
+                        mail.From = new MailAddress(_config["SMTPFrom"]);
+                        mail.To.Add(new MailAddress(forgotPasswordVm.Email));
+                        var bccAddresses = _config["SMTPBcc"]?.Split(';');
+                        if (bccAddresses != null)
+                        {
+                            foreach (var bcc in bccAddresses)
+                            {
+                                if (!string.IsNullOrWhiteSpace(bcc))
+                                    mail.Bcc.Add(new MailAddress(bcc));
+                            }
+                        }
+                        mail.IsBodyHtml = true;
+                        mail.Subject = "Reset Password Link for Bidder Module";
+                        mail.Body = body;
 
-                using (SmtpClient smtp = new SmtpClient())
-                {
-                    smtp.Host = _config["SMTPHost"];
-                    smtp.Send(mail);
+                        using (SmtpClient smtp = new SmtpClient())
+                        {
+                            smtp.Host = _config["SMTPHost"];
+                            smtp.Send(mail);
+                        }
+                    }
                 }
+                else
+                {
+                    var EmailVm = new EmailVM
+                    {
+                        ToAddresses = new List<string> { forgotPasswordVm.Email },
+                        BccAddresses = _config["SMTPBcc"]?.Split(';').Where(x => !string.IsNullOrWhiteSpace(x)).ToList(),
+                        Subject = "Reset Password Link for Bidder Module",
+                        Body = body
+                    };
+                    await _emailService.SendEmailAsync(EmailVm).ConfigureAwait(false);
+                }
+
+                _notyf.Success("Please check your email to reset your password");
+                return LocalRedirect("/bidder");
             }
-
-
-            _notyf.Success("Please check your email to reset your password");
-            return LocalRedirect("/bidder/Account/Login");
+            catch (Exception ex)
+            {
+                _notyf.Error($"Failed to send email: {ex.Message}");
+                return Page();
+            }
         }
         public async Task<IActionResult> OnGetValidatecapcha(string CaptchaCode)
         {

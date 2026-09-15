@@ -50,7 +50,8 @@ function addDocRow() {
                 </select>
             </td>
             <td>
-                <input type="file" class="form-control-file doc-file" accept=".zip,.rar" required />
+                <input type="file" class="form-control-file doc-file" accept=".zip,.rar,.pdf,.xlsx,.xls" required />
+                <small class="form-text text-muted file-hint">Allowed: .zip, .rar, .pdf, .xlsx, .xls</small>
             </td>
             <td>
                 <input type="text" class="form-control form-control-sm doc-remark" placeholder="Optional remarks..." maxlength="500" />
@@ -82,6 +83,57 @@ $(document).on('click', '.btn-remove-row', function () {
     }
     $(this).closest('tr').remove();
     updateRowIndices();
+});
+
+$(document).on('change', '.doc-type', function () {
+    const selectedType = $(this).val();
+    const row = $(this).closest('tr');
+    const fileInput = row.find('.doc-file');
+    const hint = row.find('.file-hint');
+
+    if (selectedType === 'Price Bid') {
+        fileInput.attr('accept', '.pdf,.xlsx,.xls,.xlx');
+        hint.html('<span class="text-danger font-weight-bold">Price Bid: Only password-protected .pdf, .xls, .xlsx allowed</span>');
+        if (fileInput[0].files && fileInput[0].files.length > 0) {
+            const ext = fileInput[0].files[0].name.split('.').pop().toLowerCase();
+            if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
+                fileInput.val('');
+                alert("For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed. Please select a valid file.");
+            }
+        }
+    } else {
+        fileInput.attr('accept', '.zip,.rar,.pdf,.xlsx,.xls');
+        hint.text('Allowed: .zip, .rar, .pdf, .xlsx, .xls');
+    }
+});
+
+$(document).on('change', '.doc-file', function () {
+    const row = $(this).closest('tr');
+    const docType = row.find('.doc-type').val();
+    const file = this.files && this.files[0];
+    if (!file) return;
+
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (docType === 'Price Bid') {
+        if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
+            alert("For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed.");
+            $(this).val('');
+            return;
+        }
+    } else {
+        const allowed = ['zip', 'rar', 'pdf', 'xls', 'xlsx'];
+        if (!allowed.includes(ext)) {
+            alert("Invalid file format. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls");
+            $(this).val('');
+            return;
+        }
+    }
+
+    if (file.size > 30 * 1024 * 1024) {
+        alert("File size exceeds the 30 MB limit.");
+        $(this).val('');
+        return;
+    }
 });
 
 function loadUploadedHistory(tenderNo) {
@@ -220,17 +272,27 @@ function submitAllDocuments() {
             return false;
         }
         if (!fileInput.files || fileInput.files.length === 0) {
-            alert(`Row ${idx + 1}: Please select a .zip or .rar archive file.`);
+            alert(`Row ${idx + 1}: Please select a document file.`);
             isValid = false;
             return false;
         }
 
         const file = fileInput.files[0];
         const ext = file.name.split('.').pop().toLowerCase();
-        if (ext !== 'zip' && ext !== 'rar') {
-            alert(`Row ${idx + 1}: Invalid file format. Only .zip and .rar archives are allowed.`);
-            isValid = false;
-            return false;
+
+        if (type === 'Price Bid') {
+            if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
+                alert(`Row ${idx + 1}: For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed.`);
+                isValid = false;
+                return false;
+            }
+        } else {
+            const allowed = ['zip', 'rar', 'pdf', 'xls', 'xlsx'];
+            if (!allowed.includes(ext)) {
+                alert(`Row ${idx + 1}: Invalid file format. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls`);
+                isValid = false;
+                return false;
+            }
         }
 
         if (file.size > 30 * 1024 * 1024) {

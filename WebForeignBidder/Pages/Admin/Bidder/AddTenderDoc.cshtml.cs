@@ -73,12 +73,14 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 ? JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(tendersResult)
                 : new List<BidderTenderUploadsVM>();
 
-            // Filter tenders by UID and TenderStartDate
+            var now = DateTime.Now;
+            // Filter tenders by UID, TenderStartDate, and effective Closing Date (not expired)
             var filteredTenders = tenders
-     .Where(t => !string.IsNullOrEmpty(t.ForeignBidderId) &&
-                 t.ForeignBidderId.Split(',').Any(u => u.Trim().Equals(uid, StringComparison.OrdinalIgnoreCase)) &&
-                 (!t.TenderStartDate.HasValue || t.TenderStartDate.Value <= DateTime.Now))
-     .ToList();
+                .Where(t => !string.IsNullOrEmpty(t.ForeignBidderId) &&
+                            t.ForeignBidderId.Split(',').Any(u => u.Trim().Equals(uid, StringComparison.OrdinalIgnoreCase)) &&
+                            (!t.TenderStartDate.HasValue || t.TenderStartDate.Value <= now) &&
+                            IsTenderNotExpired(t, now))
+                .ToList();
 
             if (filteredTenders.Count == 0)
             {
@@ -145,6 +147,27 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 var projectsVM = !string.IsNullOrEmpty(projectsResult) ? JsonConvert.DeserializeObject<BidderTenderUploadsVM>(projectsResult) : null;
                 if (projectsVM == null) return new JsonResult(new { success = false, message = "Tender project details not found." });
 
+                // Ensure corrigendums are loaded even if GetByTenderNo cached/didn't include them
+                if (projectsVM.TenderCorrigendums == null || !projectsVM.TenderCorrigendums.Any())
+                {
+                    var tendersResult = await _httpClient.GetAsync("BidderTenderUploads/Get", true).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(tendersResult) && tendersResult != "unauthorized")
+                    {
+                        var allTenders = JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(tendersResult);
+                        var matchingTender = allTenders?.FirstOrDefault(x => string.Equals(x.TenderNo?.Trim(), tenderNo.Trim(), StringComparison.OrdinalIgnoreCase));
+                        if (matchingTender?.TenderCorrigendums != null && matchingTender.TenderCorrigendums.Any())
+                        {
+                            projectsVM.TenderCorrigendums = matchingTender.TenderCorrigendums;
+                            projectsVM.LatestExtendedDate = matchingTender.LatestExtendedDate;
+                        }
+                    }
+                }
+
+                if (!IsTenderNotExpired(projectsVM, DateTime.Now))
+                {
+                    return new JsonResult(new { success = false, message = "The tender closing date or corrigendum extended date has passed. Submissions are no longer accepted." });
+                }
+
                 var docTitles = Request.Form["DocTitles"].ToList();
                 var docTypes = Request.Form["DocTypes"].ToList();
                 var remarksList = Request.Form["Remarks"].ToList();
@@ -161,9 +184,7 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                     string docType = (docTypes != null && i < docTypes.Count) ? docTypes[i] : "Technical";
                     string remark = (remarksList != null && i < remarksList.Count && !string.IsNullOrWhiteSpace(remarksList[i])) ? remarksList[i].Trim() : "NA";
 
-                    bool isPriceBid = string.Equals(docType, "Price Bid", StringComparison.OrdinalIgnoreCase);
-
-                    var (isValid, errorMessage) = _fileService.ValidateTenderArchive(file, isPriceBid);
+                    var (isValid, errorMessage) = _fileService.ValidateBidDocument(file, docType);
                     if (!isValid)
                     {
                         return new JsonResult(new { success = false, message = $"Row {i + 1} ({file.FileName}): {errorMessage}" });
@@ -192,6 +213,27 @@ namespace WebForeignBidder.Pages.Admin.Bidder
             {
                 return new JsonResult(new { success = false, message = "Error processing upload: " + ex.Message });
             }
+        }
+
+        private static bool IsTenderNotExpired(BidderTenderUploadsVM t, DateTime now)
+        {
+            if (t == null) return false;
+
+            DateTime? latestExtendedDate = t.LatestExtendedDate;
+            if ((!latestExtendedDate.HasValue || latestExtendedDate.Value == default) && t.TenderCorrigendums != null && t.TenderCorrigendums.Any())
+            {
+                latestExtendedDate = t.TenderCorrigendums
+                    .Where(c => c.ExtendedDate.HasValue)
+                    .Select(c => c.ExtendedDate.Value)
+                    .DefaultIfEmpty()
+                    .Max();
+            }
+
+            DateTime effectiveClosingDate = (latestExtendedDate.HasValue && latestExtendedDate.Value != default)
+                ? latestExtendedDate.Value
+                : t.TenderClosingDate;
+
+            return effectiveClosingDate >= now;
         }
     }
 }

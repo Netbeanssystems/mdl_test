@@ -76,14 +76,14 @@
                                 <span asp-validation-for="tenderUpload.TenderStartDate" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="tenderUpload.TenderOpeningDate" class="col-form-label">Tender Opening Date<span class="required">*</span></label>
-                                <input asp-for="tenderUpload.TenderOpeningDate" class="form-control" onchange="validateDates()" placeholder="Tender Opening Date" />
-                                <span asp-validation-for="tenderUpload.TenderOpeningDate" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
                                 <label asp-for="tenderUpload.TenderClosingDate" class="col-form-label">Tender Closing Date<span class="required">*</span></label>
                                 <input asp-for="tenderUpload.TenderClosingDate" class="form-control" onchange="validateDates()" placeholder="Tender Closing Date" />
                                 <span asp-validation-for="tenderUpload.TenderClosingDate" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="tenderUpload.TenderOpeningDate" class="col-form-label">Tender Opening Date<span class="required">*</span></label>
+                                <input asp-for="tenderUpload.TenderOpeningDate" class="form-control" onchange="validateDates()" placeholder="Tender Opening Date" />
+                                <span asp-validation-for="tenderUpload.TenderOpeningDate" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
@@ -119,6 +119,7 @@
                             </div>
 
                             <div id="corrigendumFields" style="display: none;margin-top: 10px;">
+                                <input type="hidden" asp-for="tenderUpload.TenderCorrigendums.Id" id="tenderUpload_TenderCorrigendums_Id" />
                                 <div class="form-group">
                                     <label asp-for="tenderUpload.TenderCorrigendums.ExtendedDate" class="col-form-label">Extended Date<span class="required">*</span></label>
                                     <input asp-for="tenderUpload.TenderCorrigendums.ExtendedDate" onchange="validateDates()" class="form-control" placeholder="Tender Closing Date" />
@@ -148,10 +149,10 @@
                                             <!-- Rows dynamically added via JavaScript -->
                                         </tbody>
                                     </table>
-                                    <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddCorrigendumDocRow">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddCorrigendumDocRow">
                                         <i class="fa fa-plus"></i> Add Row
                                     </button>
-                                    <span id="corrigendumDocCountInfo" class="badge badge-info ml-2">Rows: 0 / 8</span> -->
+                                    <span id="corrigendumDocCountInfo" class="badge badge-info ml-2">Rows: 0 / 8</span>
                                     <span id="corrigendumDocValidationError" class="text-danger d-block mt-1"></span>
                                 </div>
                             </div>

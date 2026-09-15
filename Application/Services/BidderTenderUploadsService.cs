@@ -141,6 +141,26 @@ namespace Application.Services
                 }
             }
 
+            // Handle DeletedCorrigendumDocIds (Soft Delete Corrigendums)
+            if (!string.IsNullOrEmpty(modelDto.DeletedCorrigendumDocIds))
+            {
+                var deleteCorrigendumIds = modelDto.DeletedCorrigendumDocIds.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(id => int.TryParse(id.Trim(), out var parsed) ? parsed : 0)
+                    .Where(id => id > 0).ToList();
+
+                foreach (var delCorId in deleteCorrigendumIds)
+                {
+                    var existingCor = await _unitOfWork.BidderCorrigendumRepo.GetFirstOrDefaultAsync(c => c.Id == delCorId).ConfigureAwait(false);
+                    if (existingCor != null)
+                    {
+                        existingCor.IsActive = false;
+                        existingCor.ModifiedDate = DateTime.Now;
+                        existingCor.ModifiedBy = !string.IsNullOrWhiteSpace(modelDto.ModifiedBy) ? modelDto.ModifiedBy : "MDL";
+                        _unitOfWork.BidderCorrigendumRepo.Update(existingCor);
+                    }
+                }
+            }
+
             // Update Corrigendum if present
             if (modelDto.TenderCorrigendums != null && (!string.IsNullOrEmpty(modelDto.TenderCorrigendums.CorrigendumDescription) || !string.IsNullOrEmpty(modelDto.TenderCorrigendums.CorrigendumDoc) || !string.IsNullOrEmpty(modelDto.TenderCorrigendums.HashedFileName)))
             {
@@ -190,9 +210,10 @@ namespace Application.Services
             var item = await _unitOfWork.BidderCorrigendumRepo.GetFirstOrDefaultAsync(c => c.Id == id).ConfigureAwait(false);
             if (item == null) return false;
             item.IsActive = false;
+            item.ModifiedDate = DateTime.Now;
             _unitOfWork.BidderCorrigendumRepo.Update(item);
-            var rowsChanged = await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
-            return rowsChanged > 0;
+            await _unitOfWork.SaveChangesAsync().ConfigureAwait(false);
+            return true;
         }
         public async Task<BidderTenderUploadsVM> CheckTender(BidderTenderUploadsDTO modelDto)
         {
@@ -210,7 +231,19 @@ namespace Application.Services
             if (string.IsNullOrEmpty(tenderNo)) return null;
             var model = await _unitOfWork.BidderTenderUploadRepo.GetFirstOrDefaultAsync(c => c.TenderNo == tenderNo);
             if (model == null) return null;
-            return _mapper.Map<BidderTenderUploadsVM>(model);
+            var tenderVM = _mapper.Map<BidderTenderUploadsVM>(model);
+            if (tenderVM != null)
+            {
+                var corrigendum = await _unitOfWork.BidderCorrigendumRepo.GetListAsync(c => c.TenderId == model.Id.ToString() && c.IsActive).ConfigureAwait(false);
+                if (corrigendum != null && corrigendum.Any())
+                {
+                    var corrigendumDtos = _mapper.Map<List<BidderTenderCorrigendumVM>>(corrigendum);
+                    tenderVM.TenderCorrigendums = corrigendumDtos.OrderByDescending(x => x.Id).ToList();
+                    var latest = tenderVM.TenderCorrigendums.Where(c => c.ExtendedDate.HasValue).Select(c => c.ExtendedDate.Value).DefaultIfEmpty().Max();
+                    if (latest != default) tenderVM.LatestExtendedDate = latest;
+                }
+            }
+            return tenderVM;
         }
     }
 }

@@ -126,6 +126,16 @@ namespace WebForeignBidder
         [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment hostingEnvironment)
         {
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/")
+                {
+                    context.Response.Redirect("/bidder");
+                    return;
+                }
+                await next();
+            });
+            app.UsePathBase("/bidder");
             app.UseNotyf();
             app.UseRewriter(new RewriteOptions()
                 .AddRedirectToHttps(StatusCodes.Status301MovedPermanently));

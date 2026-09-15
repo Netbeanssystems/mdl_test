@@ -103,7 +103,7 @@ namespace WebAPI
         [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // app.UsePathBase("/api");
+            app.UsePathBase("/api");
 
             //http to https redirection
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps(StatusCodes.Status301MovedPermanently));

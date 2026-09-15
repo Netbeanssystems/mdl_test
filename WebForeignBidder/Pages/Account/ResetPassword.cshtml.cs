@@ -59,7 +59,7 @@ namespace WebForeignBidder.Pages.Account
                 return Page();
             }
             _notyf.Information($"{result}");
-            return LocalRedirect("/Account/Login");
+            return LocalRedirect("/bidder");
         }
         public async Task<IActionResult> OnGetValidatecapcha(string CaptchaCode)
         {

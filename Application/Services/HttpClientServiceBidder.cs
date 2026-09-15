@@ -696,7 +696,7 @@ namespace Application.Services
         }
         private async Task<string> GetRefreshedToken(string refreshtoken)
         {
-            var response = await _httpClient.GetAsync($"Auth/RefreshToken/{refreshtoken}").ConfigureAwait(false);
+            var response = await _httpClient.GetAsync($"/api/Auth/RefreshToken/{refreshtoken}").ConfigureAwait(false);
             if (!response.IsSuccessStatusCode || response.StatusCode != HttpStatusCode.OK)
                 return null;
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -705,14 +705,22 @@ namespace Application.Services
         {
             //add AuthHeader
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newTokenVm.AccessToken);
+
+            string domain = _config["Domain"];
+            if (string.IsNullOrWhiteSpace(domain) || domain.Contains("localhost"))
+            {
+                domain = null;
+            }
+            bool isSecure = _httpContextAccessor.HttpContext?.Request.IsHttps ?? false;
+
             //store new AccessToken into the cookie
             var cookieOptions = new CookieOptions
             {
-                Domain = _config["Domain"],
-                Path = _config["CookiePath"],
-                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry"])),
+                Domain = domain,
+                Path = _config["CookiePath"] ?? "/",
+                Expires = DateTimeOffset.UtcNow.AddMinutes(Convert.ToInt32(_config["CookieExpiry"] ?? "60")),
                 HttpOnly = true,
-                Secure = true,
+                Secure = isSecure,
                 SameSite = SameSiteMode.Lax,
                 IsEssential = true
             };
@@ -727,13 +735,20 @@ namespace Application.Services
             //remove the refresh token cookie from response
             _httpContextAccessor.HttpContext?.Response.Cookies.Delete(_config["RefreshToken"]);
 
+            string domain = _config["Domain"];
+            if (string.IsNullOrWhiteSpace(domain) || domain.Contains("localhost"))
+            {
+                domain = null;
+            }
+            bool isSecure = _httpContextAccessor.HttpContext?.Request.IsHttps ?? false;
+
             var options = new CookieOptions
             {
-                Domain = _config["Domain"],
-                Path = _config["CookiePath"],
+                Domain = domain,
+                Path = _config["CookiePath"] ?? "/",
                 Expires = DateTime.Now.AddDays(-1),
                 HttpOnly = true,
-                Secure = true,
+                Secure = isSecure,
             };
             //delete the token cookie from client (browser)
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(_config["Session"], "session", options);
@@ -806,7 +821,7 @@ namespace Application.Services
                         }
                     }
                 }
-                return result;
+                return null;
             }
             if (response.IsSuccessStatusCode && response.StatusCode == HttpStatusCode.OK)
                 return result;
@@ -815,7 +830,7 @@ namespace Application.Services
             {
                 _notyf.Error(result);
             }
-            return result;
+            return null;
         }
 
         //Disposer
