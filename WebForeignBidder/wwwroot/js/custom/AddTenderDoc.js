@@ -50,8 +50,8 @@ function addDocRow() {
                 </select>
             </td>
             <td>
-                <input type="file" class="form-control-file doc-file" accept=".zip,.rar,.pdf,.xlsx,.xls" required />
-                <small class="form-text text-muted file-hint">Allowed: .zip, .rar, .pdf, .xlsx, .xls</small>
+                <input type="file" class="form-control-file doc-file" accept=".zip,.rar,.pdf,.xlsx,.xls,.csv" required />
+                <small class="form-text text-muted file-hint">Allowed: .pdf, .xlsx, .xls, .csv, .zip, .rar (Single dot only)</small>
             </td>
             <td>
                 <input type="text" class="form-control form-control-sm doc-remark" placeholder="Optional remarks..." maxlength="500" />
@@ -85,6 +85,55 @@ $(document).on('click', '.btn-remove-row', function () {
     updateRowIndices();
 });
 
+function validateBidFileInput(fileInput, docType) {
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return { isValid: true };
+    const file = fileInput.files[0];
+    const fileName = file.name || "";
+
+    // Security Check 1: Multiple dots restriction
+    const dotCount = (fileName.match(/\./g) || []).length;
+    if (dotCount === 0) {
+        return { isValid: false, message: `File "${fileName}" has no extension. Please select a valid file.` };
+    }
+    if (dotCount > 1) {
+        return { isValid: false, message: `File "${fileName}" has multiple dots in its name. Multiple dot extensions (e.g. file.pdf.exe or test..pdf) are strictly prohibited for security reasons. Please rename your file to use a single extension.` };
+    }
+
+    // Security Check 2: Dangerous characters or path traversal
+    if (/[\/\\:*?"<>|]/.test(fileName) || fileName.includes("..")) {
+        return { isValid: false, message: `File "${fileName}" contains invalid characters or path traversal sequences.` };
+    }
+
+    // Security Check 3: Block dangerous executable/script extensions
+    const dangerousExts = ['.exe', '.dll', '.bat', '.cmd', '.sh', '.vbs', '.ps1', '.js', '.jse', '.wsf', '.wsh', '.msc', '.msi', '.msp', '.com', '.scr', '.hta', '.cpl', '.jar', '.reg', '.inf', '.pif', '.jsp', '.asp', '.aspx', '.php', '.py', '.rb', '.cgi'];
+    const lowerName = fileName.toLowerCase();
+    for (let d of dangerousExts) {
+        if (lowerName.endsWith(d)) {
+            return { isValid: false, message: `File "${fileName}" has a prohibited executable or script extension (${d}).` };
+        }
+    }
+
+    const ext = fileName.split('.').pop().toLowerCase();
+
+    if (docType === 'Price Bid') {
+        const allowedPriceBid = ['pdf', 'xls', 'xlsx', 'xlx'];
+        if (!allowedPriceBid.includes(ext)) {
+            return { isValid: false, message: `For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed. Selected file "${fileName}" is not permitted.` };
+        }
+    } else {
+        const allowedGeneral = ['zip', 'rar', 'pdf', 'xlsx', 'xls', 'csv'];
+        if (!allowedGeneral.includes(ext)) {
+            return { isValid: false, message: `Invalid file format for "${fileName}". Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar.` };
+        }
+    }
+
+    if (file.size > 30 * 1024 * 1024) {
+        return { isValid: false, message: `File "${fileName}" exceeds the 30 MB limit.` };
+    }
+
+    return { isValid: true };
+}
+
 $(document).on('change', '.doc-type', function () {
     const selectedType = $(this).val();
     const row = $(this).closest('tr');
@@ -93,46 +142,28 @@ $(document).on('change', '.doc-type', function () {
 
     if (selectedType === 'Price Bid') {
         fileInput.attr('accept', '.pdf,.xlsx,.xls,.xlx');
-        hint.html('<span class="text-danger font-weight-bold">Price Bid: Only password-protected .pdf, .xls, .xlsx allowed</span>');
-        if (fileInput[0].files && fileInput[0].files.length > 0) {
-            const ext = fileInput[0].files[0].name.split('.').pop().toLowerCase();
-            if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
-                fileInput.val('');
-                alert("For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed. Please select a valid file.");
-            }
-        }
+        hint.html('<span class="text-danger font-weight-bold">Price Bid: Only password-protected .pdf, .xls, .xlsx allowed (Single dot only)</span>');
     } else {
-        fileInput.attr('accept', '.zip,.rar,.pdf,.xlsx,.xls');
-        hint.text('Allowed: .zip, .rar, .pdf, .xlsx, .xls');
+        fileInput.attr('accept', '.zip,.rar,.pdf,.xlsx,.xls,.csv');
+        hint.text('Allowed: .pdf, .xlsx, .xls, .csv, .zip, .rar (Single dot only)');
+    }
+
+    if (fileInput[0] && fileInput[0].files && fileInput[0].files.length > 0) {
+        const validation = validateBidFileInput(fileInput[0], selectedType);
+        if (!validation.isValid) {
+            fileInput.val('');
+            alert(validation.message);
+        }
     }
 });
 
 $(document).on('change', '.doc-file', function () {
     const row = $(this).closest('tr');
     const docType = row.find('.doc-type').val();
-    const file = this.files && this.files[0];
-    if (!file) return;
-
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (docType === 'Price Bid') {
-        if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
-            alert("For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed.");
-            $(this).val('');
-            return;
-        }
-    } else {
-        const allowed = ['zip', 'rar', 'pdf', 'xls', 'xlsx'];
-        if (!allowed.includes(ext)) {
-            alert("Invalid file format. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls");
-            $(this).val('');
-            return;
-        }
-    }
-
-    if (file.size > 30 * 1024 * 1024) {
-        alert("File size exceeds the 30 MB limit.");
+    const validation = validateBidFileInput(this, docType);
+    if (!validation.isValid) {
+        alert(validation.message);
         $(this).val('');
-        return;
     }
 });
 
@@ -277,29 +308,14 @@ function submitAllDocuments() {
             return false;
         }
 
-        const file = fileInput.files[0];
-        const ext = file.name.split('.').pop().toLowerCase();
-
-        if (type === 'Price Bid') {
-            if (ext !== 'pdf' && ext !== 'xls' && ext !== 'xlsx' && ext !== 'xlx') {
-                alert(`Row ${idx + 1}: For Price Bid, only password-protected .pdf, .xls, or .xlsx files are allowed.`);
-                isValid = false;
-                return false;
-            }
-        } else {
-            const allowed = ['zip', 'rar', 'pdf', 'xls', 'xlsx'];
-            if (!allowed.includes(ext)) {
-                alert(`Row ${idx + 1}: Invalid file format. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls`);
-                isValid = false;
-                return false;
-            }
-        }
-
-        if (file.size > 30 * 1024 * 1024) {
-            alert(`Row ${idx + 1}: File size exceeds 30 MB.`);
+        const validation = validateBidFileInput(fileInput, type);
+        if (!validation.isValid) {
+            alert(`Row ${idx + 1}: ${validation.message}`);
             isValid = false;
             return false;
         }
+
+        const file = fileInput.files[0];
 
         formData.append("DocTitles", title);
         formData.append("DocTypes", type);

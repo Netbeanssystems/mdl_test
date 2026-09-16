@@ -62,7 +62,10 @@
                                     <td>
                                         @if (item.TenderDocuments != null && item.TenderDocuments.Count > 0)
                                         {
-                                            <div class="mb-2 font-weight-bold text-dark">Tender Documents:</div>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="font-weight-bold text-dark">Tender Documents:</span>
+                                              
+                                            </div>
                                             <table class="table table-sm table-bordered mb-3 bg-white">
                                                 <thead class="thead-light">
                                                     <tr>
@@ -75,14 +78,21 @@
                                                     @{ int tDocSr = 1; }
                                                     @foreach (var doc in item.TenderDocuments)
                                                     {
-                                                        var docDisplayName = !string.IsNullOrEmpty(doc.OriginalFileName) ? doc.OriginalFileName : $"Document {tDocSr}";
+                                                        var docFileName = !string.IsNullOrEmpty(doc.EncryptedFileName) ? doc.EncryptedFileName : doc.OriginalFileName;
+                                                        var docDisplayName = !string.IsNullOrEmpty(doc.OriginalFileName) ? doc.OriginalFileName : $"Document_{tDocSr}";
                                                         <tr>
                                                             <td class="text-center font-weight-bold">@(tDocSr++)</td>
                                                             <td>@docDisplayName</td>
                                                             <td class="text-center">
-                                                                <a href="javascript:void(0);" class="btn btn-sm btn-outline-success genfile" data-id="@item.EncryptedId">
-                                                                    <i class="fa fa-download"></i> Download Zip
-                                                                </a>
+                                                                <button type="button" 
+                                                                        class="btn btn-sm btn-outline-success download-direct-file" 
+                                                                        data-tender="@item.TenderNo" 
+                                                                        data-project="@item.ProjectId" 
+                                                                        data-file="@docFileName" 
+                                                                        data-name="@docDisplayName"
+                                                                        title="Download @docDisplayName">
+                                                                    <i class="fa fa-download"></i> Download
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     }
@@ -91,6 +101,8 @@
                                         }
                                         else if (!string.IsNullOrEmpty(item.TenderDocDecrypted))
                                         {
+                                            var singleFileName = item.TenderDoc;
+                                            var singleDisplayName = !string.IsNullOrEmpty(item.TenderDocDecrypted) ? item.TenderDocDecrypted : "Tender_Document";
                                             <table class="table table-sm table-bordered mb-3 bg-white">
                                                 <thead class="thead-light">
                                                     <tr>
@@ -102,11 +114,17 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="text-center font-weight-bold">1</td>
-                                                        <td>@item.TenderDocDecrypted</td>
+                                                        <td>@singleDisplayName</td>
                                                         <td class="text-center">
-                                                            <a class="btn btn-sm btn-outline-success genfile" data-id="@item.EncryptedId">
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-outline-success download-direct-file" 
+                                                                    data-tender="@item.TenderNo" 
+                                                                    data-project="@item.ProjectId" 
+                                                                    data-file="@singleFileName" 
+                                                                    data-name="@singleDisplayName"
+                                                                    title="Download @singleDisplayName">
                                                                 <i class="fa fa-download"></i> Download
-                                                            </a>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -128,18 +146,54 @@
                                                     @{ int cDocSr = 1; }
                                                     @foreach (var cor in item.TenderCorrigendums)
                                                     {
-                                                        var corFileName = !string.IsNullOrEmpty(cor.HashedFileName) ? cor.HashedFileName : cor.CorrigendumDoc;
-                                                        var corDisplayName = !string.IsNullOrEmpty(cor.OriginalFileName) ? cor.OriginalFileName : cor.CorrigendumDocDecrypted;
-                                                        if (string.IsNullOrEmpty(corDisplayName)) { corDisplayName = $"Corrigendum Doc {cDocSr}"; }
-                                                        <tr>
-                                                            <td class="text-center font-weight-bold">@(cDocSr++)</td>
-                                                            <td>@corDisplayName</td>
-                                                            <td class="text-center">
-                                                                <a target="_blank" href="/bidder/BidderTenders/@item.ProjectId/@item.TenderNo/@corFileName" class="btn btn-sm btn-outline-primary">
-                                                                    <i class="fa fa-download"></i> Download
-                                                                </a>
-                                                            </td>
-                                                        </tr>
+                                                        var corFileNames = (!string.IsNullOrEmpty(cor.HashedFileName) ? cor.HashedFileName : cor.CorrigendumDoc)?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList() ?? new List<string>();
+                                                        var corDisplayNames = (!string.IsNullOrEmpty(cor.OriginalFileName) ? cor.OriginalFileName : cor.CorrigendumDocDecrypted)?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList() ?? new List<string>();
+
+                                                        if (corFileNames.Count > 0)
+                                                        {
+                                                            for (int cIndex = 0; cIndex < corFileNames.Count; cIndex++)
+                                                            {
+                                                                var corFile = corFileNames[cIndex];
+                                                                var corName = (cIndex < corDisplayNames.Count && !string.IsNullOrWhiteSpace(corDisplayNames[cIndex]))
+                                                                    ? corDisplayNames[cIndex]
+                                                                    : $"Corrigendum Doc {cDocSr}";
+                                                                <tr>
+                                                                    <td class="text-center font-weight-bold">@(cDocSr++)</td>
+                                                                    <td>@corName</td>
+                                                                    <td class="text-center">
+                                                                        <button type="button" 
+                                                                                class="btn btn-sm btn-outline-primary download-direct-file" 
+                                                                                data-tender="@item.TenderNo" 
+                                                                                data-project="@item.ProjectId" 
+                                                                                data-file="@corFile" 
+                                                                                data-name="@corName"
+                                                                                title="Download @corName">
+                                                                            <i class="fa fa-download"></i> Download
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                        else if (!string.IsNullOrEmpty(cor.CorrigendumDocDecrypted))
+                                                        {
+                                                            var corFile = !string.IsNullOrEmpty(cor.HashedFileName) ? cor.HashedFileName : cor.CorrigendumDoc;
+                                                            var corName = !string.IsNullOrEmpty(cor.OriginalFileName) ? cor.OriginalFileName : cor.CorrigendumDocDecrypted;
+                                                            <tr>
+                                                                <td class="text-center font-weight-bold">@(cDocSr++)</td>
+                                                                <td>@corName</td>
+                                                                <td class="text-center">
+                                                                    <button type="button" 
+                                                                            class="btn btn-sm btn-outline-primary download-direct-file" 
+                                                                            data-tender="@item.TenderNo" 
+                                                                            data-project="@item.ProjectId" 
+                                                                            data-file="@corFile" 
+                                                                            data-name="@corName"
+                                                                            title="Download @corName">
+                                                                        <i class="fa fa-download"></i> Download
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        }
                                                     }
                                                 </tbody>
                                             </table>
@@ -148,8 +202,15 @@
                                     @if (Model.IsAdminOrExecutive)
                                     {
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-success download-bidders-csv mb-1" data-id="@item.EncryptedId">
-                                                 Download CSV
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-success download-bidders-csv mb-1" 
+                                                    data-id="@item.EncryptedId"
+                                                    data-rawid="@item.Id"
+                                                    data-tender="@item.TenderNo"
+                                                    data-desc="@item.TenderDescription"
+                                                    data-bidders="@item.ForeignBidderId"
+                                                    title="Download Allowed Bidders as CSV">
+                                                 <i class="fa fa-download mr-1"></i> Download CSV
                                             </button>
                                             <!-- <a href="/Admin/Bidder/ListOfUploadedDocs?tenderNo=@item.TenderNo" class="btn btn-sm btn-outline-info d-block">
                                                  <i class="fa fa-folder-open"></i> View Uploaded Docs
@@ -183,35 +244,41 @@
         </div>
     </div>
 </section>
-@Html.AntiForgeryToken();
+@Html.AntiForgeryToken()
 @section Scripts
 {
     <script type="text/javascript" asp-append-version="true">
-        $('.genfile').on('click', function (e) {
-            e.preventDefault(); // Prevent default link behavior
+        $(document).on('click', '.download-direct-file', function (e) {
+            e.preventDefault();
 
-            var Id = $(this).data('id');
+            var tenderNo = $(this).data('tender');
+            var projectId = $(this).data('project');
+            var fileName = $(this).data('file');
+            var displayName = $(this).data('name');
+            var $btn = $(this);
+            var origHtml = $btn.html();
 
-            console.log("Button clicked, Id: ", Id); // Debugging statement
-
-            var clickedButton = $(this);
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Downloading...');
 
             $.ajax({
                 type: 'POST',
-                url: "?handler=DownloadGenFile", // Ensure the URL is correct
+                url: "?handler=DownloadFileAjax",
                 beforeSend: function (xhr) {
-                    console.log("Setting XSRF-TOKEN header"); // Debugging statement
                     xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
-                data: { Id: Id },
+                data: {
+                    tenderNo: tenderNo,
+                    projectId: projectId,
+                    fileName: fileName,
+                    displayName: displayName
+                },
                 success: function (data) {
+                    $btn.prop('disabled', false).html(origHtml);
                     if (data != null && data.success !== false) {
                         var filename = data.filename;
                         var bytes = Base64ToBytes(data.encdata);
-                        // Convert Byte Array to BLOB.
                         var blob = new Blob([bytes], { type: "application/octet-stream" });
 
-                        // Check the Browser type and download the File.
                         var isIE = false || !!document.documentMode;
                         if (isIE) {
                             window.navigator.msSaveBlob(blob, filename);
@@ -223,15 +290,68 @@
                             a.attr("href", link);
                             $("body").append(a);
                             a[0].click();
-                            $("body").remove(a);
+                            a.remove();
+                            setTimeout(function () { url.revokeObjectURL(link); }, 1000);
                         }
                     } else {
-                        alert('Invalid details or file not found !');
+                        var errMsg = (data && data.message) ? data.message : 'Invalid details or file not found !';
+                        alert(errMsg);
                     }
-
                 },
                 error: function (xhr, status, error) {
+                    $btn.prop('disabled', false).html(origHtml);
                     console.error('Download failed: ' + error);
+                    alert('An error occurred while downloading the document.');
+                }
+            });
+        });
+
+        $(document).on('click', '.download-tender-zip, .genfile', function (e) {
+            e.preventDefault();
+
+            var Id = $(this).data('id');
+            var $btn = $(this);
+            var origHtml = $btn.html();
+
+            $btn.addClass('disabled').html('<i class="fa fa-spinner fa-spin"></i> Downloading...');
+
+            $.ajax({
+                type: 'POST',
+                url: "?handler=DownloadGenFile",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: { Id: Id },
+                success: function (data) {
+                    $btn.removeClass('disabled').html(origHtml);
+                    if (data != null && data.success !== false) {
+                        var filename = data.filename;
+                        var bytes = Base64ToBytes(data.encdata);
+                        var blob = new Blob([bytes], { type: "application/octet-stream" });
+
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, filename);
+                        } else {
+                            var url = window.URL || window.webkitURL;
+                            var link = url.createObjectURL(blob);
+                            var a = $("<a />");
+                            a.attr("download", filename);
+                            a.attr("href", link);
+                            $("body").append(a);
+                            a[0].click();
+                            a.remove();
+                            setTimeout(function () { url.revokeObjectURL(link); }, 1000);
+                        }
+                    } else {
+                        var errMsg = (data && data.message) ? data.message : 'Invalid details or file not found !';
+                        alert(errMsg);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $btn.removeClass('disabled').html(origHtml);
+                    console.error('Download failed: ' + error);
+                    alert('An error occurred while preparing the download.');
                 }
             });
         });
@@ -239,14 +359,30 @@
         $(document).on('click', '.download-bidders-csv', function (e) {
             e.preventDefault();
             var Id = $(this).attr('data-id');
+            var rawId = $(this).data('rawid');
+            var tenderNo = $(this).data('tender');
+            var tenderDesc = $(this).data('desc');
+            var bidders = $(this).data('bidders');
+            var $btn = $(this);
+            var origHtml = $btn.html();
+
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Downloading...');
+
             $.ajax({
                 type: 'POST',
                 url: "?handler=DownloadBiddersCsv",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
-                data: { Id: Id },
+                data: { 
+                    Id: Id,
+                    rawId: rawId,
+                    tenderNo: tenderNo,
+                    tenderDesc: tenderDesc,
+                    bidders: bidders
+                },
                 success: function (data) {
+                    $btn.prop('disabled', false).html(origHtml);
                     if (data != null && data.success !== false) {
                         var filename = data.filename;
                         var bytes = Base64ToBytes(data.encdata);
@@ -264,22 +400,22 @@
                             $("body").append(a);
                             a[0].click();
                             a.remove();
+                            setTimeout(function () { url.revokeObjectURL(link); }, 1000);
                         }
                     } else {
                         alert('Failed to download CSV: ' + (data ? data.message : 'Unknown error'));
                     }
                 },
                 error: function (xhr, status, error) {
+                    $btn.prop('disabled', false).html(origHtml);
                     console.error('Download failed: ' + error);
+                    alert('An error occurred while downloading the CSV.');
                 }
             });
         });
 
         $('#tblDataTable').DataTable();
 
-        $(document).ready(function () {
-            // Add Validations here
-        });
         function Base64ToBytes(base64) {
             var binary_string = window.atob(base64);
             var len = binary_string.length;
@@ -289,8 +425,5 @@
             }
             return bytes;
         }
-        $(document).ready(function () {
-            // Add Validations here
-        });
     </script>
 }

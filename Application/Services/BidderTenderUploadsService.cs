@@ -96,6 +96,20 @@ namespace Application.Services
             var category = await _unitOfWork.BidderTenderUploadRepo.Get(id).ConfigureAwait(false);
             if (category == null) return null;
             var categoryDto = _mapper.Map<BidderTenderUploadsDTO>(category);
+
+            var docs = await _unitOfWork.BidderTenderUploadDocumentsRepo.GetListAsync(d => d.TenderId == id && d.IsActive).ConfigureAwait(false);
+            if (docs != null && docs.Any())
+            {
+                categoryDto.TenderDocuments = _mapper.Map<List<BidderTenderUploadDocumentsDTO>>(docs);
+            }
+
+            var corrigendum = await _unitOfWork.BidderCorrigendumRepo.GetListAsync(c => c.TenderId == id.ToString() && c.IsActive).ConfigureAwait(false);
+            if (corrigendum != null && corrigendum.Any())
+            {
+                var latestCor = corrigendum.OrderByDescending(x => x.Id).FirstOrDefault();
+                categoryDto.TenderCorrigendums = _mapper.Map<BidderTenderCorrigendumDto>(latestCor);
+            }
+
             return categoryDto;
         }
         public async Task<BidderTenderUploadsDTO> Update(BidderTenderUploadsDTO modelDto)

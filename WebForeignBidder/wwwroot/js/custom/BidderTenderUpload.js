@@ -282,8 +282,8 @@ function addTenderDocRow(docName = '', isExisting = false, existingDocId = 0, en
                     <input type="text" name="tenderUpload.UploadDocNames" class="form-control form-control-sm doc-name-input" placeholder="Enter Document Name" value="${docName}" required />
                 </td>
                 <td>
-                    <input type="file" name="tenderUpload.UploadDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar" required onchange="validateArchiveFileInput(this)" />
-                    <small class="text-muted">.zip or .rar (max 30 MB)</small>
+                    <input type="file" name="tenderUpload.UploadDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar,.pdf,.xlsx,.xls,.csv" required onchange="validateArchiveFileInput(this)" />
+                    <small class="text-muted">.pdf, .xlsx, .xls, .csv, .zip, .rar (max 30 MB)</small>
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn btn-sm btn-danger btn-remove-doc-row" data-row="${rowId}">
@@ -360,8 +360,8 @@ function addCorrigendumDocRow(docName = '', isExisting = false, existingDocId = 
                     <input type="text" name="tenderUpload.UploadCorrigendumDocNames" class="form-control form-control-sm doc-name-input" placeholder="Enter Document Name" value="${docName}" />
                 </td>
                 <td>
-                    <input type="file" name="tenderUpload.UploadCorrigendumDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar" onchange="validateArchiveFileInput(this)" />
-                    <small class="text-muted">.zip or .rar (max 30 MB)</small>
+                    <input type="file" name="tenderUpload.UploadCorrigendumDocFiles" class="form-control form-control-sm doc-file-input" accept=".zip,.rar,.pdf,.xlsx,.xls,.csv" onchange="validateArchiveFileInput(this)" />
+                    <small class="text-muted">.pdf, .xlsx, .xls, .csv, .zip, .rar (max 30 MB)</small>
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn btn-sm btn-danger btn-remove-corrigendum-doc-row" data-row="${rowId}">
@@ -377,13 +377,35 @@ function addCorrigendumDocRow(docName = '', isExisting = false, existingDocId = 
 }
 
 function validateArchiveFileInput(input) {
-    if (!input.files || input.files.length === 0) return;
+    if (!input.files || input.files.length === 0) return true;
     const file = input.files[0];
     const fileName = file.name;
-    const ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 
-    if (ext !== '.zip' && ext !== '.rar') {
-        alert(`Invalid format for '${fileName}'. Only .zip and .rar formats are allowed.`);
+    // Check for multiple dots in filename
+    const dotCount = (fileName.match(/\./g) || []).length;
+    if (dotCount === 0) {
+        alert(`File '${fileName}' is missing an extension.`);
+        input.value = '';
+        return false;
+    }
+    if (dotCount > 1) {
+        alert(`File '${fileName}' has an invalid name. Multiple dots in file name are strictly prohibited for security reasons.`);
+        input.value = '';
+        return false;
+    }
+
+    // Check for dangerous extensions
+    const ext = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+    const dangerousExtensions = ['.exe', '.dll', '.bat', '.cmd', '.sh', '.vbs', '.ps1', '.js', '.jsp', '.asp', '.aspx', '.php', '.cgi', '.msi', '.scr', '.com', '.pif', '.hta', '.jar', '.reg'];
+    if (dangerousExtensions.includes(ext)) {
+        alert(`File '${fileName}' has a prohibited extension '${ext}'. Executable and script files are not allowed.`);
+        input.value = '';
+        return false;
+    }
+
+    const allowedExtensions = ['.pdf', '.xlsx', '.xls', '.csv', '.zip', '.rar'];
+    if (!allowedExtensions.includes(ext)) {
+        alert(`Invalid format for '${fileName}'. Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar.`);
         input.value = '';
         return false;
     }
@@ -502,6 +524,21 @@ $(document).ready(function () {
         const activeRows = getActiveRowCount();
         if (activeRows === 0) {
             alert('Please add at least one document row.');
+            return;
+        }
+
+        // Validate all file inputs before opening modal
+        let fileInputsValid = true;
+        $('.doc-file-input').each(function () {
+            if (this.files && this.files.length > 0) {
+                if (!validateArchiveFileInput(this)) {
+                    fileInputsValid = false;
+                    return false;
+                }
+            }
+        });
+
+        if (!fileInputsValid) {
             return;
         }
 

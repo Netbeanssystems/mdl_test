@@ -569,18 +569,141 @@ namespace Application.Services
             return filenames;
         }
 
+        public (bool IsValid, string ErrorMessage) ValidateFileNameSecurity(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                return (false, "File name cannot be empty.");
+
+            fileName = fileName.Trim();
+
+            // 1. Check for path traversal or directory separators
+            if (fileName.Contains("..") || fileName.Contains('/') || fileName.Contains('\\'))
+                return (false, $"File name '{fileName}' contains invalid path traversal characters.");
+
+            // 2. Check for invalid characters
+            if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                return (false, $"File name '{fileName}' contains invalid characters.");
+
+            // 3. Check for multiple dots: filename must have EXACTLY ONE dot
+            int dotCount = fileName.Count(c => c == '.');
+            if (dotCount == 0)
+                return (false, $"File name '{fileName}' is missing an extension.");
+            if (dotCount > 1)
+                return (false, $"File name '{fileName}' is invalid. Multiple dots in file name are strictly prohibited for security reasons.");
+
+            // 4. File name cannot start with a dot (hidden file / extension only)
+            if (fileName.StartsWith("."))
+                return (false, $"File name '{fileName}' must have a valid file name before the extension.");
+
+            // 5. Length check
+            if (fileName.Length > 150)
+                return (false, $"File name '{fileName}' exceeds the maximum allowed length of 150 characters.");
+
+            // 6. Check base name for Windows reserved device names
+            string baseName = Path.GetFileNameWithoutExtension(fileName).ToUpperInvariant();
+            var reservedNames = new[] { "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9" };
+            if (reservedNames.Contains(baseName))
+                return (false, $"File name '{fileName}' uses a reserved system name.");
+
+            // 7. Check for dangerous / executable extensions
+            string ext = Path.GetExtension(fileName).ToLowerInvariant();
+            var dangerousExtensions = new[]
+            {
+                ".exe", ".dll", ".bat", ".cmd", ".sh", ".vbs", ".ps1", ".js", ".jsp", ".asp", ".aspx",
+                ".php", ".cgi", ".msi", ".scr", ".com", ".pif", ".hta", ".jar", ".reg", ".wsf", ".vbe",
+                ".bin", ".apk", ".deb", ".rpm", ".iso", ".img", ".sys", ".drv", ".cpl", ".inf", ".ins"
+            };
+            if (dangerousExtensions.Contains(ext))
+                return (false, $"File '{fileName}' has a dangerous extension '{ext}' that is not allowed.");
+
+            return (true, string.Empty);
+        }
+
+        private (bool IsValid, string ErrorMessage) ValidateCsvFile(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            if (stream.Length < 1)
+                return (false, $"File '{file.FileName}' is empty.");
+
+            byte[] header = new byte[8];
+            int read = stream.Read(header, 0, header.Length);
+
+            // Check if file is secretly a binary executable or archive disguised as CSV
+            // MZ (0x4D, 0x5A) -> DOS/PE/Windows executable
+            if (read >= 2 && header[0] == 0x4D && header[1] == 0x5A)
+                return (false, $"File '{file.FileName}' is not a valid CSV file (executable header detected).");
+
+            // ELF (0x7F, 'E', 'L', 'F') -> Linux executable
+            if (read >= 4 && header[0] == 0x7F && header[1] == 0x45 && header[2] == 0x4C && header[3] == 0x46)
+                return (false, $"File '{file.FileName}' is not a valid CSV file (executable header detected).");
+
+            // PK (0x50, 0x4B, 0x03, 0x04) -> Zip
+            if (read >= 4 && header[0] == 0x50 && header[1] == 0x4B && header[2] == 0x03 && header[3] == 0x04)
+                return (false, $"File '{file.FileName}' is a ZIP archive, not a CSV file.");
+
+            // OLE (0xD0, 0xCF, 0x11, 0xE0) -> OLE Compound / Excel binary
+            if (read >= 4 && header[0] == 0xD0 && header[1] == 0xCF && header[2] == 0x11 && header[3] == 0xE0)
+                return (false, $"File '{file.FileName}' is a binary document, not a CSV file.");
+
+            // Read text content sample (first 64KB) to verify plain text and check for malicious script tags or formula execution injection
+            stream.Position = 0;
+            using var reader = new StreamReader(stream, Encoding.UTF8, true, 4096, true);
+            char[] buffer = new char[Math.Min(stream.Length, 65536)];
+            int charsRead = reader.Read(buffer, 0, buffer.Length);
+            string contentSample = new string(buffer, 0, charsRead);
+
+            // Check for embedded script execution
+            var lowerSample = contentSample.ToLowerInvariant();
+            if (lowerSample.Contains("<script") || lowerSample.Contains("javascript:") || lowerSample.Contains("vbscript:"))
+            {
+                return (false, $"File '{file.FileName}' contains potentially malicious script content.");
+            }
+
+            // Check for CSV Formula Injection / DDE commands
+            var dangerousFormulaPrefixes = new[] { "=cmd|", "=cmd'", "@cmd|", "-cmd|", "+cmd|", "=dde(", "@dde(", "-dde(", "+dde(" };
+            foreach (var prefix in dangerousFormulaPrefixes)
+            {
+                if (lowerSample.Contains(prefix))
+                {
+                    return (false, $"File '{file.FileName}' contains potentially malicious formula execution commands ({prefix}).");
+                }
+            }
+
+            return (true, string.Empty);
+        }
+
         public (bool IsValid, string ErrorMessage) ValidateTenderArchive(IFormFile file, bool isPriceBid = false)
         {
             if (file == null || file.Length == 0)
                 return (false, "File is empty or not provided.");
+
+            var nameCheck = ValidateFileNameSecurity(file.FileName);
+            if (!nameCheck.IsValid)
+                return (false, nameCheck.ErrorMessage);
 
             const long maxFileSize = 30 * 1024 * 1024;
             if (file.Length > maxFileSize)
                 return (false, $"File '{file.FileName}' exceeds the maximum allowed size of 30 MB.");
 
             string ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (ext != ".zip" && ext != ".rar")
-                return (false, $"File '{file.FileName}' has an invalid extension '{ext}'. Only .zip and .rar formats are allowed.");
+            var allowedExts = new[] { ".zip", ".rar", ".pdf", ".xlsx", ".xls", ".csv" };
+            if (!allowedExts.Contains(ext))
+                return (false, $"File '{file.FileName}' has an unsupported extension '{ext}'. Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar.");
+
+            if (ext == ".pdf")
+            {
+                return ValidatePdfSignature(file);
+            }
+
+            if (ext == ".xlsx" || ext == ".xls")
+            {
+                return ValidateExcelSignature(file, ext);
+            }
+
+            if (ext == ".csv")
+            {
+                return ValidateCsvFile(file);
+            }
 
             byte[] header = new byte[7];
             using (var stream = file.OpenReadStream())
@@ -614,18 +737,38 @@ namespace Application.Services
                         if (fileEntries.Count == 0)
                             return (false, $"Archive '{file.FileName}' does not contain any files.");
 
+                        long totalUncompressedSize = 0;
                         foreach (var entry in fileEntries)
                         {
+                            totalUncompressedSize += entry.Length;
+                            if (totalUncompressedSize > 150 * 1024 * 1024)
+                            {
+                                return (false, $"Archive '{file.FileName}' exceeds the maximum allowed uncompressed size.");
+                            }
+
+                            var entryNameCheck = ValidateFileNameSecurity(entry.Name);
+                            if (!entryNameCheck.IsValid)
+                            {
+                                return (false, $"Archive '{file.FileName}' contains invalid file '{entry.Name}': {entryNameCheck.ErrorMessage}");
+                            }
+
                             string innerExt = Path.GetExtension(entry.Name)?.ToLowerInvariant();
                             if (!allowedInnerExtensions.Contains(innerExt))
                             {
                                 return (false, $"Archive '{file.FileName}' contains invalid file '{entry.FullName}'. Only .pdf, .xlsx, .xls, and .csv files are allowed inside the archive.");
                             }
+
+                            using var entryStream = entry.Open();
+                            byte[] entryHeader = new byte[4];
+                            int entryRead = entryStream.Read(entryHeader, 0, entryHeader.Length);
+                            if (entryRead >= 2 && entryHeader[0] == 0x4D && entryHeader[1] == 0x5A)
+                            {
+                                return (false, $"Archive '{file.FileName}' contains executable content in '{entry.Name}'.");
+                            }
                         }
 
                         if (isPriceBid)
                         {
-                            // Check if any zip entry is encrypted via BitFlag (bit 0 set)
                             bool isArchivePasswordProtected = fileEntries.Any(e => (e.GetType().GetProperty("BitFlag")?.GetValue(e) is ushort flag && (flag & 1) != 0));
                             if (!isArchivePasswordProtected)
                             {
@@ -636,7 +779,6 @@ namespace Application.Services
                 }
                 catch (InvalidDataException) when (isPriceBid)
                 {
-                    // Encrypted ZIP entry throws InvalidDataException when trying to read without password, which means it is password protected
                     return (true, string.Empty);
                 }
                 catch (Exception ex)
@@ -646,7 +788,6 @@ namespace Application.Services
             }
             else if (ext == ".rar" && isPriceBid)
             {
-                // For RAR archive, check header encryption flags
                 bool isRarPasswordProtected = (header[0] == 0x52 && header[1] == 0x61 && header[2] == 0x72 && (header[6] & 0x80) != 0);
                 if (!isRarPasswordProtected)
                 {
@@ -661,6 +802,10 @@ namespace Application.Services
         {
             if (file == null || file.Length == 0)
                 return (false, "File is empty or not provided.");
+
+            var nameCheck = ValidateFileNameSecurity(file.FileName);
+            if (!nameCheck.IsValid)
+                return (false, nameCheck.ErrorMessage);
 
             const long maxFileSize = 30 * 1024 * 1024;
             if (file.Length > maxFileSize)
@@ -687,10 +832,10 @@ namespace Application.Services
             }
             else
             {
-                var allowedExts = new[] { ".zip", ".rar", ".pdf", ".xlsx", ".xls", ".xlx" };
+                var allowedExts = new[] { ".zip", ".rar", ".pdf", ".xlsx", ".xls", ".xlx", ".csv" };
                 if (!allowedExts.Contains(ext))
                 {
-                    return (false, $"File '{file.FileName}' has an unsupported extension '{ext}'. Allowed formats: .zip, .rar, .pdf, .xlsx, .xls.");
+                    return (false, $"File '{file.FileName}' has an unsupported extension '{ext}'. Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar.");
                 }
 
                 if (ext == ".zip" || ext == ".rar")
@@ -700,6 +845,10 @@ namespace Application.Services
                 else if (ext == ".pdf")
                 {
                     return ValidatePdfSignature(file);
+                }
+                else if (ext == ".csv")
+                {
+                    return ValidateCsvFile(file);
                 }
                 else
                 {

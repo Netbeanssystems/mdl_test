@@ -87,8 +87,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-form-label font-weight-bold">Upload Tender related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
-                                <small class="form-text text-muted mb-2">Note: .zip/.rar having ONLY valid .pdf, .xlsx and .xls file format will be allowed. Max total rows : 8 (Means max size: 240 MB).</small>
+                                <label class="col-form-label font-weight-bold">Upload Tender related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .pdf, .xlsx, .xls, .csv, .zip, .rar)<span class="required">*</span></label>
+                                <small class="form-text text-muted mb-2">Note: Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar. For archives (.zip/.rar), inner files must be valid .pdf, .xlsx, .xls, or .csv. Files with multiple dots in filename are strictly prohibited. Max total rows: 8.</small>
 
                                 <input type="hidden" asp-for="tenderUpload.DeletedDocIds" id="tenderUpload_DeletedDocIds" />
 
@@ -97,7 +97,7 @@
                                         <tr>
                                             <th style="width: 70px;" class="text-center">Sr No.</th>
                                             <th>Document Name</th>
-                                            <th>File Upload (.zip / .rar)</th>
+                                            <th>File Upload (.pdf / .xlsx / .xls / .csv / .zip / .rar)</th>
                                             <th style="width: 100px;" class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -131,8 +131,8 @@
                                     <span asp-validation-for="tenderUpload.TenderCorrigendums.CorrigendumDescription" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-form-label font-weight-bold">Upload Corrigendum related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .zip/.rar)<span class="required">*</span></label>
-                                    <small class="form-text text-muted mb-2">Note: .zip/.rar having ONLY valid .pdf, .xlsx and .xls file format will be allowed. Max total rows : 8 (Means max size: 240 MB).</small>
+                                    <label class="col-form-label font-weight-bold">Upload Corrigendum related Documents (Maximum file size allowed 30 MB for each row, formats allowed: .pdf, .xlsx, .xls, .csv, .zip, .rar)<span class="required">*</span></label>
+                                    <small class="form-text text-muted mb-2">Note: Allowed formats: .pdf, .xlsx, .xls, .csv, .zip, .rar. For archives (.zip/.rar), inner files must be valid .pdf, .xlsx, .xls, or .csv. Files with multiple dots in filename are strictly prohibited. Max total rows: 8.</small>
 
                                     <input type="hidden" asp-for="tenderUpload.DeletedCorrigendumDocIds" id="tenderUpload_DeletedCorrigendumDocIds" />
 
@@ -141,7 +141,7 @@
                                             <tr>
                                                 <th style="width: 70px;" class="text-center">Sr No.</th>
                                                 <th>Document Name</th>
-                                                <th>File Upload (.zip / .rar)</th>
+                                                <th>File Upload (.pdf / .xlsx / .xls / .csv / .zip / .rar)</th>
                                                 <th style="width: 100px;" class="text-center">Action</th>
                                             </tr>
                                         </thead>
