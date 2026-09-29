@@ -8,14 +8,17 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h3 class="card-title font-weight-bold mb-0">List Of Uploaded Documents</h3>
-            <div class="card-tools">
-                <a href="@(Model.OnlyOpenedFilter ? $"?tenderNo={Model.TenderNoFilter}&onlyOpened=false" : $"?tenderNo={Model.TenderNoFilter}&onlyOpened=true")" 
-                   class="btn btn-sm @(Model.OnlyOpenedFilter ? "btn-info" : "btn-outline-secondary") mr-2"
-                   title="Toggle between showing all tenders and only opened tenders">
-                    <i class="fa @(Model.OnlyOpenedFilter ? "fa-check-square" : "fa-filter") mr-1"></i>
-                    @(Model.OnlyOpenedFilter ? "Showing: Opened Only (Click for All)" : "Show Only Opened Tenders")
-                </a>
-            </div>
+            @if (Model.IsAdminOrExecutive)
+            {
+                <div class="card-tools">
+                    <a href="@(Model.OnlyOpenedFilter ? $"?tenderNo={Model.TenderNoFilter}&onlyOpened=false" : $"?tenderNo={Model.TenderNoFilter}&onlyOpened=true")" 
+                       class="btn btn-sm @(Model.OnlyOpenedFilter ? "btn-info" : "btn-outline-secondary") mr-2"
+                       title="Toggle between showing all tenders and only opened tenders">
+                        <i class="fa @(Model.OnlyOpenedFilter ? "fa-check-square" : "fa-filter") mr-1"></i>
+                        @(Model.OnlyOpenedFilter ? "Showing: Opened Only (Click for All)" : "Show Only Opened Tenders")
+                    </a>
+                </div>
+            }
         </div>
         <div class="card-body">
             @if (Model.ModelVms?.Count > 0)
@@ -31,9 +34,9 @@
                                 <th>Uploaded Date andTime </th>
                                 <th>Remarks</th>
                                 <th>Document type</th>
-                                <th>Status</th>
                                 @if (Model.IsAdminOrExecutive)
                                 {
+                                    <th>Status</th>
                                     <th>Uploaded by</th>
                                 }
                             </tr>
@@ -68,9 +71,9 @@
                                     <td>@item.CreatedDate</td>
                                     <td>@item.Remarks</td>
                                     <td>@item.DocType</td>
-                                    <td>@item.IsActive</td>
                                     @if (Model.IsAdminOrExecutive)
                                     {
+                                        <td>@item.IsActive</td>
                                         <td>@item.CreatedBy</td>
                                     }
                                 </tr>

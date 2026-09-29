@@ -145,7 +145,8 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                     catch { }
                 }
 
-                item.IsOpen = item.TenderOpeningDate.HasValue && now >= item.TenderOpeningDate.Value;
+                // Bidders can always download their own uploaded files; Admins/Executives are subject to the Opening Date lock
+                item.IsOpen = isBidder || (item.TenderOpeningDate.HasValue && now >= item.TenderOpeningDate.Value);
             }
 
             if (OnlyOpenedFilter)
@@ -176,37 +177,52 @@ namespace WebForeignBidder.Pages.Admin.Bidder
                 return new JsonResult(new { success = false, message = "Document not found." });
             }
 
-            // Verify if Tender Opening Date has passed
-            if (!string.IsNullOrEmpty(GenUpload.TenderNo))
+            bool isSuperAdmin = User.IsInRole("SuperAdmin") || User.IsInRole("BidderSuperAdmin") || (!string.IsNullOrEmpty(uid) && uid.Contains("SuperAdmin", StringComparison.OrdinalIgnoreCase));
+            bool isCommExec = User.IsInRole("CommercialExecutive") || User.IsInRole("HOD") || (!string.IsNullOrEmpty(uid) && (uid.Contains("CommercialExecutive", StringComparison.OrdinalIgnoreCase) || uid.Contains("HOD", StringComparison.OrdinalIgnoreCase)));
+            bool isBidder = User.IsInRole("Bidder") || User.IsInRole("ForeignBidder") || (!isSuperAdmin && !isCommExec);
+
+            if (isBidder)
             {
-                BidderTenderUploadsVM tender = null;
-                var tenderRes = await _httpClient.GetAsync($"BidderTenderUploads/GetByTenderNo?tenderNo={GenUpload.TenderNo.Trim()}", true).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(tenderRes) && tenderRes != "unauthorized" && tenderRes.TrimStart().StartsWith("{"))
+                // Bidder can only download their own uploaded documents, but without opening date restriction
+                if (!string.Equals(GenUpload.CreatedBy?.Trim(), uid?.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
-                    try { tender = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(tenderRes); } catch { }
+                    return new JsonResult(new { success = false, message = "Unauthorized: You can only download your own uploaded documents." });
                 }
-
-                if (tender == null)
+            }
+            else
+            {
+                // Verify if Tender Opening Date has passed for Admin/Commercial Executive
+                if (!string.IsNullOrEmpty(GenUpload.TenderNo))
                 {
-                    var allTendersRes = await _httpClient.GetAsync("BidderTenderUploads/Get", true).ConfigureAwait(false);
-                    if (!string.IsNullOrEmpty(allTendersRes) && allTendersRes != "unauthorized")
+                    BidderTenderUploadsVM tender = null;
+                    var tenderRes = await _httpClient.GetAsync($"BidderTenderUploads/GetByTenderNo?tenderNo={GenUpload.TenderNo.Trim()}", true).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(tenderRes) && tenderRes != "unauthorized" && tenderRes.TrimStart().StartsWith("{"))
                     {
-                        try
-                        {
-                            var allTenders = JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(allTendersRes);
-                            tender = allTenders?.FirstOrDefault(x => string.Equals(x.TenderNo?.Trim(), GenUpload.TenderNo.Trim(), StringComparison.OrdinalIgnoreCase));
-                        }
-                        catch { }
+                        try { tender = JsonConvert.DeserializeObject<BidderTenderUploadsVM>(tenderRes); } catch { }
                     }
-                }
 
-                if (tender != null && tender.TenderOpeningDate != default && DateTime.Now < tender.TenderOpeningDate)
-                {
-                    return new JsonResult(new
+                    if (tender == null)
                     {
-                        success = false,
-                        message = $"Tender opening date ({tender.TenderOpeningDate:dd-MM-yyyy HH:mm:ss}) has not passed yet. Documents cannot be downloaded before the opening date."
-                    });
+                        var allTendersRes = await _httpClient.GetAsync("BidderTenderUploads/Get", true).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(allTendersRes) && allTendersRes != "unauthorized")
+                        {
+                            try
+                            {
+                                var allTenders = JsonConvert.DeserializeObject<List<BidderTenderUploadsVM>>(allTendersRes);
+                                tender = allTenders?.FirstOrDefault(x => string.Equals(x.TenderNo?.Trim(), GenUpload.TenderNo.Trim(), StringComparison.OrdinalIgnoreCase));
+                            }
+                            catch { }
+                        }
+                    }
+
+                    if (tender != null && tender.TenderOpeningDate != default && DateTime.Now < tender.TenderOpeningDate)
+                    {
+                        return new JsonResult(new
+                        {
+                            success = false,
+                            message = $"Tender opening date ({tender.TenderOpeningDate:dd-MM-yyyy HH:mm:ss}) has not passed yet. Documents cannot be downloaded before the opening date."
+                        });
+                    }
                 }
             }
 
