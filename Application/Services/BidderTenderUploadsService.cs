@@ -116,9 +116,31 @@ namespace Application.Services
         {
             if (modelDto == null) return null;
 
-            // Map and update main Tender entity
-            var tenderEntity = _mapper.Map<BidderTenderUploads>(modelDto);
-            _unitOfWork.BidderTenderUploadRepo.Update(tenderEntity);
+            // Fetch and update main Tender entity (preserving original CreatedBy and CreatedDate)
+            var existingTender = await _unitOfWork.BidderTenderUploadRepo
+                .GetFirstOrDefaultAsync(c => c.Id == modelDto.Id)
+                .ConfigureAwait(false);
+
+            if (existingTender == null) return null;
+
+            existingTender.ProjectId = modelDto.ProjectId;
+            existingTender.YardId = modelDto.YardId;
+            existingTender.TenderNo = modelDto.TenderNo;
+            existingTender.TenderDescription = modelDto.TenderDescription;
+            existingTender.ForeignBidderId = modelDto.ForeignBidderId;
+            existingTender.TenderStartDate = modelDto.TenderStartDate;
+            existingTender.TenderOpeningDate = modelDto.TenderOpeningDate;
+            existingTender.TenderClosingDate = modelDto.TenderClosingDate;
+            if (!string.IsNullOrEmpty(modelDto.TenderDoc))
+            {
+                existingTender.TenderDoc = modelDto.TenderDoc;
+            }
+            existingTender.ModifiedBy = !string.IsNullOrWhiteSpace(modelDto.ModifiedBy) ? modelDto.ModifiedBy : "MDL";
+            existingTender.ModifiedDate = modelDto.ModifiedDate ?? DateTime.Now;
+            existingTender.IP = modelDto.IP;
+            existingTender.IsActive = modelDto.IsActive;
+
+            _unitOfWork.BidderTenderUploadRepo.Update(existingTender);
 
             // Handle Tender Documents additions
             if (modelDto.TenderDocuments != null && modelDto.TenderDocuments.Any())
@@ -129,7 +151,7 @@ namespace Application.Services
                     {
                         var docEntity = _mapper.Map<BidderTenderUploadDocuments>(doc);
                         docEntity.TenderId = modelDto.Id;
-                        docEntity.CreatedBy = modelDto.ModifiedBy ?? "MDL";
+                        docEntity.CreatedBy = !string.IsNullOrWhiteSpace(doc.CreatedBy) ? doc.CreatedBy : (!string.IsNullOrWhiteSpace(modelDto.ModifiedBy) ? modelDto.ModifiedBy : "MDL");
                         docEntity.CreatedDate = DateTime.Now;
                         docEntity.IsActive = true;
                         _unitOfWork.BidderTenderUploadDocumentsRepo.Create(docEntity);
@@ -146,7 +168,9 @@ namespace Application.Services
 
                 foreach (var delId in deleteIds)
                 {
-                    var existingDoc = await _unitOfWork.BidderTenderUploadDocumentsRepo.Get(delId).ConfigureAwait(false);
+                    var existingDoc = await _unitOfWork.BidderTenderUploadDocumentsRepo
+                        .GetFirstOrDefaultAsync(d => d.Id == delId)
+                        .ConfigureAwait(false);
                     if (existingDoc != null)
                     {
                         existingDoc.IsActive = false;

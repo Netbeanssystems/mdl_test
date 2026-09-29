@@ -31,6 +31,12 @@ namespace Infrastructure.Repositories
                 TenderOpeningDate = c.TenderOpeningDate,
                 TenderClosingDate = c.TenderClosingDate,
                 TenderDoc = c.TenderDoc,
+                CreatedBy = c.CreatedBy,
+                CreatedDate = c.CreatedDate,
+                ModifiedBy = c.ModifiedBy,
+                ModifiedDate = c.ModifiedDate,
+                IsActive = c.IsActive,
+                IP = c.IP,
                 TenderCorrigendums = DbContext.BidderTenderCorrigendum
                     .Where(b => b.TenderId == c.Id.ToString() && b.IsActive)
                     .ToList(),

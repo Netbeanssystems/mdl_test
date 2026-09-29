@@ -381,6 +381,10 @@ namespace WebForeignBidder.Pages.Admin.TenderUpload
                 }
                 else // Update existing record
                 {
+                    if (string.IsNullOrWhiteSpace(tenderUpload.CreatedBy))
+                    {
+                        tenderUpload.CreatedBy = User.Identity.Name;
+                    }
                     tenderUpload.ModifiedBy = User.Identity.Name;
                     tenderUpload.ModifiedDate = DateTime.Now;
                     tenderUpload.IP = clientIp;
