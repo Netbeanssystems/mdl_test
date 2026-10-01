@@ -1,0 +1,28 @@
+﻿@model Application.Dtos.ContractHindiDTO
+
+<div class="pdfBox" >
+    @if (!string.IsNullOrEmpty(Model.html))
+    {
+        @Html.Raw(Model.html);
+    }
+    else
+    {
+        <div class="pdfBox" style="text-align:center;">
+            <span>No Record Found</span>
+        </div>
+    }
+</div> 
+
+@* <div class="pdfBox">
+    @if (Model != null && !string.IsNullOrEmpty(Model.html))
+    {
+        @Html.Raw(Model.html)
+    }
+    else
+    {
+        <div class="noRecordBox" style="text-align:center;">
+            <span>No Record Found</span>
+        </div>
+    }
+</div> *@
+

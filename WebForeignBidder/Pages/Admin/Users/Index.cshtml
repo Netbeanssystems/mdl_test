@@ -1,0 +1,91 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Users</h3>
+            <a class="float-right" asp-page="Manage">
+                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="lstRoles" class="col-form-label">Role</label>
+                        <select id="lstRoles" class="form-control" asp-items="ViewBag.Roles">
+                            <option value="All">All</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="divUsersList">
+                <partial name="_UsersListPartial" model="@Model.Users" />
+            </div>
+        </div>
+    </div>
+</section>
+<form method="post" asp-page-handler="SendCreds">
+    <partial name="_EmailModalPartial" model="Model.user" />
+</form>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        function DrawDataTable() {
+            $('#tblDataTable').DataTable({
+                initComplete: function () {
+                    var r = $('#tblDataTable tfoot tr');
+                    r.find('th').each(function () {
+                        if ($(this).hasClass('search')) {
+                            $(this).css('padding', 5);
+                            var title = $(this).text();
+                            $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                        } else {
+                            $(this).html('');
+                        }
+                    });
+                    $('#tblDataTable thead').prepend(r);
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear',
+                            function () {
+                                if (that.search() !== this.value) {
+                                    that
+                                        .search(this.value)
+                                        .draw();
+                                }
+                            });
+                    });
+                }
+            });
+        }
+
+        $("#lstRoles").on("change",
+            function () {
+                var role = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    url: "?",
+                    data: { role: role },
+                    success: function (data) {
+                        if (data !== "") {
+                            $("#divUsersList").html('').html(data);
+                            DrawDataTable();
+                        } else {
+                            $("#divUsersList").html('');
+                            DrawDataTable();
+                        }
+                    }
+                });
+            });
+        DrawDataTable();
+
+        $('#emailModal').on('show.bs.modal', function (event) {
+            $('#Id').val($(event.relatedTarget).data('id'));
+            $('#Email').val($(event.relatedTarget).data('email'));
+        });
+    </script>
+}

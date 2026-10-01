@@ -1,0 +1,343 @@
+﻿@page
+@using System.Net
+@model WebBank.Pages.Admin.Document.AdminIndexModel
+@{
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title float-left font-weight-bold">List of Documents</h1>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @* Section 1: OPEN Windows - Show COUNT only *@
+            @if (Model.IsAnyWindowOpen)
+            {
+                var openDocs = ViewData["OpenWindowDocs"] as List<Application.ViewModels.DocumentsVM>;
+                var openWindows = ViewData["OpenURLsTimingList"] as List<Application.ViewModels.URLsTimingVM>;
+                
+                @if (openWindows != null && openWindows.Any())
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Upload window(s) are currently OPEN. Showing document count for open windows.
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-lock-open"></i> Currently Open Upload Windows</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Sr. No</th>
+                                            <th class="search">Upload Window Description</th>
+                                            <th class="text-center">From Date</th>
+                                            <th class="text-center">To Date</th>
+                                            <th class="text-center">Document Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var openIndex = 0;
+                                        }
+                                        @foreach (var window in openWindows)
+                                        {
+                                            openIndex++;
+                                            var docCount = openDocs?.Where(x => x.URLsTimingId == window.Id).Count() ?? 0;
+                                            <tr>
+                                                <td class="text-center">@openIndex</td>
+                                                <td>@window.Description</td>
+                                                <td class="text-center">@window.FromTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="text-center">@window.ToTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td class="text-center"><span class="badge badge-success">@docCount</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> Closed Upload Windows Documents
+            </div>
+            
+            <form method="get" class="mb-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label>From Date</label>
+                            <input type="date" name="fromDate" id="fromDate" class="form-control"
+                                   asp-for="SelectedFromDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label>To Date</label>
+                            <input type="date" name="toDate" id="toDate" class="form-control"
+                                   asp-for="SelectedToDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <button type="submit" class="btn btn-primary">Apply Date</button>
+                    </div>
+
+                    <div class="col-md-1 text-center">
+                        <h5 class="font-weight-bold mb-2">OR</h5>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label>Filter by Upload Window</label>
+                            <select name="urlsTimingId" class="form-control" onchange="this.form.submit()">
+                                <option value="">-- All Closed Windows --</option>
+                                @if (Model.ClosedDocuments != null)
+                                {
+                                    var currentTime = DateTime.Now;
+                                    var groupedWindows = Model.ClosedDocuments
+                                        .Where(item => !(item.FromTime <= currentTime && item.ToTime >= currentTime) &&
+                                                       !string.IsNullOrEmpty(item.Description))
+                                        .GroupBy(item => item.Description.Trim())
+                                        .ToList();
+
+                                    @foreach (var group in groupedWindows)
+                                    {
+                                        var singleUrlTimingId = group.First().Id;
+                                        var idValueString = singleUrlTimingId.ToString();
+                                        
+                                        if (Model.SelectedURLsTimingIdString == idValueString)
+                                        {
+                                            <option value="@idValueString" selected="selected">@group.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@idValueString">@group.Key</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            @if (Model.ModelVms != null && Model.ModelVms.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No</th>
+                                <th class="search">Bank Name</th>
+                                <th class="search">Branch Name</th>
+                                <th class="search">Upload Window</th>
+                                <th>Document</th>
+                                <th class="search">Uploaded By</th>
+                                <th class="search">Uploaded Date and Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int srNo = 1;
+                            }
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td class="text-center">@srNo</td>
+                                    <td>@item.BankName</td>
+                                    <td>@item.BranchName</td>
+                                    <td>@(item.URLsTiming?.Description ?? "N/A")</td>
+                                    <td>
+                                        <a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)"
+                                               class="lnk-download-track"
+                                               data-docname="@item.DocumentNameDecrypted">
+                                            @Html.Encode(item.DocumentNameDecrypted)
+                                        </a>
+                                    </td>
+                                    <td>@item.CreatedBy</td>
+                                    <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                                srNo++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Apply filters above to view documents from closed upload windows.
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    @Html.AntiForgeryToken()
+
+    <script type="text/javascript" asp-append-version="true">
+        $(document).ready(function () {
+            
+        // ==========================================
+        // 1. DYNAMIC TIMESTAMP HELPER
+        // ==========================================
+        function getDownloadTimestamp() {
+        var now = new Date();
+        var day = String(now.getDate()).padStart(2, '0');
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var year = now.getFullYear();
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = String(now.getMinutes()).padStart(2, '0');
+        return "Exported On: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+        }
+
+        // ==========================================
+        // 2. JWT IDENTITY PARSER HELPERS
+        // ==========================================
+        function getUsernameFromToken() {
+        try {
+        const token = localStorage.getItem("JwtTokenTokenKey") || sessionStorage.getItem("JwtTokenTokenKey");
+        if (!token) return null;
+
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const decoded = JSON.parse(jsonPayload);
+        return decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || decoded["nam"] || null;
+        } catch (e) {
+        console.error("Failed to parse identity metrics from client token:", e);
+        return null;
+        }
+        }
+
+        // ==========================================
+        // 3. FILE DOWNLOAD MONITORING & LOGGING
+        // ==========================================
+        $('.lnk-download-track').on('click', function () {
+        const documentName = $(this).attr('data-docname');
+
+        let username = '@(User.Identity?.Name ?? "")';
+        if (!username || username === "") {
+        username = getUsernameFromToken() || "Unknown Admin";
+        }
+
+        // If cross-origin port issues occur locally, add 'https://localhost:44323' right before the string path
+        const apiTargetUrl = '/api/Documents/LogDownload';
+
+        $.ajax({
+        url: apiTargetUrl,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+        documentName: documentName,
+        downloadedBy: username
+        }),
+        xhrFields: {
+        withCredentials: true
+        },
+        headers: {
+        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+        },
+        success: function() {
+        console.log("Download audit entry successfully logged.");
+        },
+        error: function(err) {
+        console.error("Audit log synchronization pipeline failed:", err);
+        }
+        });
+        });
+
+        // ==========================================
+        // 4. DATATABLE CONFIGURATION WITH EXPORT HEADERS
+        // ==========================================
+        $('#tblDataTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+        {
+        extend: 'excelHtml5',
+        text: '<i class="fas fa-file-excel"></i> Excel',
+        className: 'btn btn-sm btn-success',
+        // Bulletproof Solution: Merges title text and dynamic timestamp using native spreadsheet tab separators (\t)
+        title: function () {
+        return 'List of Documents Report\t\t\t\t\t' + getDownloadTimestamp();
+        },
+        exportOptions: {
+        columns: ':visible:not(.noExport)' // Syncs cleanly with Show/Hide column configurations
+        }
+        },
+        {
+        extend: 'pdfHtml5',
+        text: '<i class="fas fa-file-pdf"></i> PDF',
+        className: 'btn btn-sm btn-danger',
+        title: 'List of Documents Report',
+        exportOptions: {
+        columns: ':visible:not(.noExport)'
+        },
+        customize: function (doc) {
+        var timestamp = getDownloadTimestamp();
+                            
+        // Prepends live right-aligned layout element safely onto page header definitions
+        doc.content.splice(0, 0, {
+        text: timestamp,
+        alignment: 'right',
+        fontSize: 9,
+        margin: [0, 0, 0, 15]
+        });
+
+        if (doc.styles && doc.styles.tableHeader) {
+        doc.styles.tableHeader.fillColor = '#343a40';
+        doc.styles.tableHeader.color = 'white';
+        doc.styles.tableHeader.alignment = 'center';
+        }
+        }
+        },
+        {
+        extend: 'colvis',
+        text: '<i class="fas fa-columns"></i> Show/Hide Columns',
+        className: 'btn btn-sm btn-secondary'
+        }
+        ]
+        });
+        });
+    </script>
+
+    <script type="text/javascript" asp-append-version="true">
+        $('form').keypress((e) => {
+        if (e.which === 13) {
+        return true;
+        }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) { e.preventDefault(); });
+                input.addEventListener('copy', function (e) { e.preventDefault(); });
+                input.addEventListener('cut', function (e) { e.preventDefault(); });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const today = new Date().toISOString().split('T')[0];
+            $('#fromDate, #toDate').attr('max', today);
+
+            $('#fromDate').change(function () {
+                $('#toDate').attr('min', $(this).val());
+            });
+        });
+    </script>
+}

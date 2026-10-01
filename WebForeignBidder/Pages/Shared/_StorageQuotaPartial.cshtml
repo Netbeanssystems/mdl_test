@@ -1,0 +1,53 @@
+﻿@using Domain.Models
+@model List<ProjectResponse>
+
+@if (Model?.Count > 0)
+{
+    <div class="table-responsive">
+        <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center noExport noSort">Sr No.</th>
+                    <th class="search">Project</th>
+                    <th class="search">Storage Quota</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Select((value, index) => new { value, index }))
+                {
+                    var fillId = $"storageFill_{item.index}";
+                    var textId = $"storageText_{item.index}";
+                    var totalQuotaMB = item.value.TotalQuota * 1024; // Convert GB to MB in C#
+                    <tr>
+                        <td class="text-center">@(item.index + 1)</td>
+                        <td>@item.value.ProjectName</td>
+                        <td>
+                            <div class="storage-slider-container">
+                                <div class="storage-slider">
+                                    <div class="storage-slider-fill" id="@fillId"></div>
+                                </div>
+                                <div class="storage-text" id="@textId">Loading...</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            updateStorage('@fillId', '@textId', @item.value.OccupiedQuota, @totalQuotaMB);
+                        });
+                    </script>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="text-center noExport noSort">Sr No.</th>
+                    <th class="search">Project</th>
+                    <th class="search">Storage Quota</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+else
+{
+    <p>No records have been added yet. Click 'Create New' to start adding.</p>
+}

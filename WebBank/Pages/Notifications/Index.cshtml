@@ -1,0 +1,112 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Notifications</h3>
+            <a class="float-right" asp-page="Manage">
+                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.Notifications?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Icon Class</th>
+                                <th class="search">Title</th>
+                                @*<th class="search">Notification Text</th>
+                                    <th class="search">Roles</th>
+                                    <th class="search">Notification For</th>*@
+                                <th class="search">Created On</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                @*<th class="text-center noExport noSort">View</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Notifications.OrderByDescending(x => x.CreatedDate))
+                            {
+                                <tr>
+                                    <td class="text-center">@(!string.IsNullOrEmpty(item.Icon)? Html.Raw($"<i class=\"{item.Icon}\"></i>") : Html.Raw(""))</td>
+                                    <td>@item.Title</td>
+                                    @*<td>@item.Text</td>
+                                        <td>@item.Roles</td>
+                                        <td>@item.Users</td>*@
+                                    <td>@($"{item.CreatedDate:dd-MM-yyyy hh:mm tt}")</td>
+                                    <td class="text-center"><i class="@(item.IsActive?"fa fa-check-circle text-success":"fa fa-minus")"></i></td>
+                                    <td class="text-center">
+                                        <a asp-page="Manage" asp-route-id="@item.Id">
+                                            <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
+                                        </a>
+                                        <a asp-page="View" asp-route-id="@item.Id">
+                                            <i class="fa fa-eye text-dark" data-toggle="tooltip" data-placement="top" title="View Details"></i>
+                                        </a>
+                                        @*<a asp-page="Details" asp-route-nid="@item.Id">
+                                                <i class="fa fa-search text-dark" data-toggle="tooltip" data-placement="top" title="Details"></i>
+                                            </a>*@
+                                    </td>
+                                    @*<td class="text-center">
+                                        </td>*@
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Icon Class</th>
+                                <th class="search">Title</th>
+                                @*<th class="search">Notification Text</th>
+                                    <th class="search">Roles</th>
+                                    <th class="search">Notification For</th>*@
+                                <th class="search">Created On</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                @*<th class="text-center noExport noSort">View</th>*@
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblDataTable').DataTable({
+            initComplete: function () {
+                var r = $('#tblDataTable tfoot tr');
+                r.find('th').each(function () {
+                    if ($(this).hasClass('search')) {
+                        $(this).css('padding', 5);
+                        var title = $(this).text();
+                        $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                    } else {
+                        $(this).html('');
+                    }
+                });
+                $('#tblDataTable thead').prepend(r);
+                this.api().columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change clear',
+                        function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                });
+            }
+        });
+    </script>
+}

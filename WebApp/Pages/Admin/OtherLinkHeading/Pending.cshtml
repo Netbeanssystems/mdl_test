@@ -1,0 +1,101 @@
+﻿@page
+@model WebApp.Pages.Admin.OtherLinkHeading.PendingModel
+@{
+    ViewData["Title"] = "Pending";
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Pending For Approval</h3>
+            <div class="form-group form-row">
+                <label class="col-md-3 col-lg-2 col-form-lable" style="text-align:right">Status Type</label>
+                <div class="col-md-3 col-lg-3">
+                    <select id="selectstatus" class="form-control">
+                        <option selected>Pending</option>
+                        <option>Approved</option>
+                        <option>Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body" id="pendingdata">
+            <partial name="_ProductTable" model="@Model.PetrolPriceBuildupListVm" />
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('ul.nav li').each(function () {
+            var anchorTag = $(this).find('a.nav-link');
+            var para = anchorTag.find('p');
+            if (para.text() === "External Rating") {
+                anchorTag.addClass('active');
+            }
+        });
+
+        //drowdatatable function
+        function DrawDataTable() {
+            $('#tblTempNewProjects').DataTable({
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    }],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "rowReorder": {
+                    "selector": 'td:nth-child(2)'
+                },
+                "responsive": true,
+                dom: "<'row'<'col-sm-6'l><'col-sm-6 text-right'<'d-inline-block'f><'d-inline-block'B>>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-4'i><'col-sm-8'p>>",
+                buttons: [
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-sm btn-primary ml-2',
+                        text:
+                            '<i class="fa fa-file-excel" data-toggle="tooltip" data-placement="top" title="Download Excel"></i>',
+                        exportOptions: {
+                            columns: 'th:not(.noExport)'
+                        },
+                        title: null
+                    }
+                ],
+                "order": [[0, "desc"]],
+                "drawCallback": function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        }
+
+
+        // Dropdown selected value
+        $("#selectstatus").on("change",
+            function () {
+                var status = $("#selectstatus option:selected").text();
+                if (status != '') {
+                    $.ajax({
+                        type: "GET",
+                        url: "?",
+                        data: { status: status },
+                        success: function (ListProduct) {
+                            $("#pendingdata").html('').html(ListProduct);
+                            DrawDataTable();
+                        }
+                    });
+                }
+            });
+        $(document).ready(function () {
+            DrawDataTable();
+        });
+    </script>
+}}

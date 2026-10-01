@@ -1,0 +1,50 @@
+﻿@model List<MenusVM>
+<ul class="nav nav-pills nav-sidebar flex-column nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+    <li class="nav-item">
+        <a asp-page="/Index" class="nav-link">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>Dashboard@*<span class="right badge badge-danger">New</span>*@</p>
+        </a>
+    </li>
+    @if (User.Identity.IsAuthenticated && Model?.Count > 0)
+    {
+        @foreach (var mm in Model)
+        {
+            @if (mm.IsActive)
+            {
+                if (mm.ParentId == null)
+                {
+                    @if (mm.Children == null || mm.Children.Count == 0)
+                    {
+                        <li class="nav-item">
+                            <a asp-page="@mm.PageUrl" class="nav-link">
+                                <i class="@mm.IconClass"></i>
+                                <p>@mm.MenuText</p>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="@mm.IconClass"></i>
+                                <p>@mm.MenuText <i class="fas fa-angle-left right"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @foreach (var sm in mm.Children.OrderBy(x=>x.MenuText).ToList())
+                                {
+                                    <li class="nav-item">
+                                        <a asp-page="@sm.PageUrl" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>@sm.MenuText</p>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                }
+            }
+        }
+    }
+</ul>

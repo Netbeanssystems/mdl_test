@@ -1,0 +1,194 @@
+﻿@page "{id}"
+@model WebApp.Pages.Admin.PhotoGallery.ApproveModel
+@{
+    ViewData["Title"] = "PhotoGallery Approve";
+}
+
+
+@section Styles
+    {
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title float-left">Approve Content</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-page-handler="Approve" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="Tempvideo.Id" />
+                            <input type="hidden" asp-for="Tempvideo.ActionDate" />
+                            <input type="hidden" asp-for="Tempvideo.RowId" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishHeading" />
+                            <input type="hidden" asp-for="Tempvideo.HindiHeading" />
+                            <input type="hidden" asp-for="Tempvideo.ShowEnglishImage" />
+                            <input type="hidden" asp-for="Tempvideo.ShowHindiImage" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishThumbnail" />
+                            <input type="hidden" asp-for="Tempvideo.HindThumbnail" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishDescp" />
+                            <input type="hidden" asp-for="Tempvideo.HindiDescp" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishImage" />
+                            <input type="hidden" asp-for="Tempvideo.HindiImage" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishText" />
+                            <input type="hidden" asp-for="Tempvideo.HindiText" />
+                            <input type="hidden" asp-for="Tempvideo.EnglishAttachment" />
+                            <input type="hidden" asp-for="Tempvideo.HindiAttachment" />
+                            <input type="hidden" asp-for="Tempvideo.Priority" />
+                            <div class="form-group form-row">
+                                <label class="col-md-3 col-lg-2 col-form-label">Pending For</label>
+                                <div class="col-md-9 col-lg-10">
+                                    <input asp-for="Tempvideo.Action" class="form-control" readonly="readonly" />
+                                    <span asp-validation-for="Tempvideo.Action" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group form-row">
+                                <label class="col-md-3 col-lg-2 col-form-label">Requested On</label>
+                                <div class="col-md-9 col-lg-10">
+                                    <input value="@($"{Model.Tempvideo.ActionDate.AddHours(5.5):dd/MM/yyyy hh:mm tt}")" class="form-control" readonly="readonly" />
+                                    <span asp-validation-for="Tempvideo.ActionDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group form-row">
+                                <label class="col-md-3 col-lg-2 col-form-label">Requested By</label>
+                                <div class="col-md-4 col-lg-5">
+                                    <input asp-for="Tempvideo.RoleName" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-md-5 col-lg-5">
+                                    <input asp-for="Tempvideo.UserName" class="form-control" readonly="readonly" />
+                                </div>
+                                <span asp-validation-for="Tempvideo.RoleName" class="text-danger"></span>
+                                <span asp-validation-for="Tempvideo.UserName" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group form-row">
+                                <label asp-for="Tempvideo.EventId" class="w-100 mb-0">Event<span class="required">*</span></label>
+                                <select asp-for="Tempvideo.EventId" asp-items="ViewBag.events" class="browser-default custom-select" id="ddlPriorty" class="w-100 mb-0">
+                                    <option value="0">--Select One--</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-row">
+                                <label asp-for="Tempvideo.EnglishHeading" class="col-md-3 col-lg-2" style="margin-top: 6px;">English Heading<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="Tempvideo.EnglishHeading" id="txtenglishname" class="form-control" placeholder="English Name" autocomplete="on" />
+                                    <span asp-validation-for="Tempvideo.EnglishHeading" class="text-danger"></span>
+                                    <br />
+                                </div>
+                                <label asp-for="Tempvideo.HindiHeading" class="col-md-3 col-lg-2" style="margin-top: 6px;">&nbsp;&nbsp;  Hindi Heading<span class="required">*</span></label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input asp-for="Tempvideo.HindiHeading" class="form-control" placeholder="Hindi Name" autocomplete="on" />
+                                    <span asp-validation-for="Tempvideo.HindiHeading" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group form-row">
+                                <div class="col-md-10">
+                                    <span class="FD">English Description</span><span class="required">*</span>
+                                    <textarea class="form-control" asp-for="Tempvideo.EnglishDescp" cols="30" rows="3" id="EnglishContentDesc"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-row">
+                                <div class="col-md-10">
+                                    <span class="FD">Hindi Description</span><span class="required">*</span>
+                                    <textarea class="form-control" asp-for="Tempvideo.HindiDescp" cols="30" rows="3" id="HindiContentDesc"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 col-lg-5" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                                <div class="row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">File<span class="required">*</span></label>
+                                    <div class="col-md-5 col-lg-5"><span class="FD"></span><a href="~/img/UploadedFiles/EventPhotos/EnglishPhoto/@Model.Tempvideo.EnglishAttachment" target="_blank" class="btn btn-success">English file</a></div>
+                                    <div class="col-md-5 col-lg-5"><span class="FD"></span><a href="~/img/UploadedFiles/EventPhotos/HindiPhoto/@Model.Tempvideo.HindiAttachment" target="_blank" class="btn btn-success">Hindi file</a></div>
+                                    <br />
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group row">
+                                <div class="col-md-9 offset-md-3 col-lg-10 offset-lg-2">
+                                    <div class="custom-control custom-checkbox">
+                                        <input asp-for="Tempvideo.Active" class="custom-control-input" checked>
+                                        <label asp-for="Tempvideo.Active" class="custom-control-label">Show</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group offset-md-3 offset-lg-2">
+                                <div class="btn-group">
+                                    <button type="submit"  class="btn btn-success"><i class="fa fa-save"></i> Approve</button>
+                                    <button type="submit" asp-page-handler="Reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+                                    <a class="btn btn-secondary" asp-page="Pending"><i class="fa fa-arrow-left"></i> Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@section Scripts
+    {
+    <script src="~/plugins/summernote/summernote-bs4.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" asp-append-version="true">
+        //Initialize wysihtml
+        $("#EnglishContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $("#HindiContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $(document).ready(function () {
+            //< !--Allow only alphanumeric-- >
+
+            $('#txtenglishname').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-&']+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            //$('#txthindiname').on('keypress', function (e) {
+            //    var regex = new RegExp("^[a-zA-Z0-9(),./-&']+$");
+            //    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            //    if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+            //        event.preventDefault();
+            //        return false;
+            //    }
+            //});
+
+            $('#txtEnglishCategory').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-&']+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#txtHindiCategory').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-&']+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

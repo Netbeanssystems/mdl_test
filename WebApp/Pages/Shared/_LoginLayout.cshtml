@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in</title>
+    <link rel="icon" href="/favicon.ico" type="image/ico" />
+
+    <link href="~/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/plugins/alt-theme/css/adminlte.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/styles.min.css" rel="stylesheet" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" asp-append-version="true" rel="stylesheet" integrity="sha256-g0UQeCdhSYQjGkygQeEH2hIgDcT2QOBgmaMr5CaCFw0=" crossorigin="anonymous">
+   @* <script type="text/javascript">
+        window.location.hash = "no-back-button";
+
+        // Again because Google Chrome doesn't insert
+        // the first hash into the history
+        window.location.hash = "Again-No-back-button";
+
+        window.onhashchange = function () {
+            window.location.hash = "no-back-button";
+        }
+
+        window.addEventListener("pageshow", function (event) {
+            var historyTraversal = event.persisted ||
+                (typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 1);
+            if (historyTraversal) {
+                // Handle page restore.
+                window.location.reload();
+            }
+        });
+    </script>*@
+    <script>
+        var perfEntries = performance.getEntriesByType("navigation");
+
+        if (perfEntries[0].type === "back_forward") {
+            location.reload();
+        }
+    </script>
+</head>
+<body class="hold-transition">
+    <partial name="_ClientAlertPartial" />
+    <div class="mt-5">
+        <div class="col-sm-12">
+            <div class="login-logo text-center">
+                <img src="~/img/logo.png" alt="MDL" asp-append-version="true" />
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    @*<script src="~/plugins/jquery/jquery.min.js" asp-append-version="true"></script>*@
+    <script src="~/plugins/jquery/jquery-3.7.0.min.js" asp-append-version="true"></script>
+    @*<script src="~/plugins/jquery-ui/jquery-ui.min.js" asp-append-version="true"></script>*@
+    <script src="~/plugins/jquery-ui/jquery-ui-1.13.2.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+    <script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/datatables/Datatables-1.13.4/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="~/plugins/alt-theme/js/adminlte.min.js" asp-append-version="true"></script>
+    <script src="~/js/scripts.min.js" asp-append-version="true"></script>
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,38 @@
+﻿@model List<Application.Dtos.NewsDTO>
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration config
+
+@if (Model?.Count > 0)
+{
+    @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+    {
+        @foreach (var mm in Model.OrderBy(a => a.Priority))
+        {
+            @if (mm.Show)
+            {
+                <li>
+                    <ul class="newsList">
+                        <li>@Html.Raw(mm.EnglishContentDesc)</li>
+                    </ul>
+                </li>
+            }
+        }
+    }
+    else
+    {
+        @foreach (var mm in Model.OrderBy(a => a.Priority))
+        {
+            @if (mm.Show)
+            {
+                <li>
+                    <ul class="newsList">
+                        <li>@Html.Raw(mm.HindiContentDesc)</li>
+                    </ul>
+                </li>
+            }
+        }
+    }
+   
+}
+ 

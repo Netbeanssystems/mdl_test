@@ -1,0 +1,68 @@
+﻿@model List<Application.Dtos.RetireCareerDTO>
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration config
+
+<table id="tbl-career" class="table table-bordered table-striped">
+    <thead style="background-color: #192c64;color: white;">
+        <tr>
+            <th>Sr.No.</th>
+            <th class="search">DATE OF POSTING</th>
+            <th class="search">NOTIFICATION</th>
+            <th>LINK</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+        }
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @{
+                            i++;
+                        }
+                        @i
+                    </td>
+                    <td>
+                        @Html.Raw(item.DatePosting)
+                    </td>
+                    <td>
+                        @Html.Raw(item.Notification)
+                    </td>
+                    <td>
+
+                       
+                            <a href="@config["FileBaseUrl"]/writereaddata/ex-employees/@item.FileName" target="_blank">
+                                <img src="/assets/images/pdf.png" title="Click here to view or download">
+                                 CLICK HERE FOR MORE DETAILS
+                            </a>
+                      
+
+                    </td>
+                </tr>
+
+            }
+        }
+
+    </tbody>
+    @*<tfoot>
+        <tr>
+            <th>Sr.No.</th>
+            <th class="search">DATE OF POSTING</th>
+            <th class="search">NOTIFICATION</th>
+            <th>LINK</th>
+        </tr>
+    </tfoot>*@
+</table>
+@{
+
+    @if (Model.Count > 0)
+    {
+        <span style="float: right; color: #00008B;">Last Updated Date:@Model.FirstOrDefault().Added_on.ToString("dd/MM/yyyy hh:mm tt")</span>
+
+    }
+}

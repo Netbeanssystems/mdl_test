@@ -1,0 +1,101 @@
+﻿@page
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration _config;
+@model ProfileModel
+@{
+    ViewData["Title"] = "Manage Profile";
+}
+@*<section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profile</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+                        <li class="breadcrumb-item active">User Profile</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>*@
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-3 offset-md-3">
+                <div class="card">
+                    <h1 class="card-header">Manage Profile</h1>
+                    <div class="card-body">
+                        <p><strong>Note: <span class="text-danger">*</span>denotes mandatory fields</strong></p>
+                        <form method="post" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="UserProfileDto.ProfileImage" />
+                            <div class="form-group text-center" style="display:none;">
+                                <input type="file" id="UserImage" name="UserImage" onchange="PreviewImage(this, '@_config["BaseUrl"]', '@Request.Path')" style="display: none;">
+                                <label for="UserImage" style="cursor: pointer; position: relative;" data-toggle="tooltip" data-placement="top" title="Choose Image">
+                                    <img id="imgPreview" class="profile-user-img img-fluid img-circle"
+                                         src="@($"{_config["BaseUrl"]}/img/users/{Model.UserProfileDto.ProfileImage}")"
+                                         onerror=@($"src='{_config["BaseUrl"]}/img/users/default_user100.png'")
+                                         alt="Profile Image"
+                                         asp-append-version="true">
+                                    <span style="position: absolute; top: 0; right: 0;"><i class="far fa-edit"></i></span>
+                                </label>
+                                <div class="col-12 text-center">
+                                    <button type="button" class="btn btn-primary" id="btnUserImage" onclick="UploadFile('#UserImage', '@Request.Path')" data-toggle="tooltip" data-placement="top" title="Upload Image" disabled="disabled"><i class="fa fa-upload"></i></button>
+                                    <button type="button" class="btn btn-danger" id="delUserImage" onclick="DeleteFile('#UserImage', '@_config["BaseUrl"]')" data-toggle="tooltip" data-placement="top" title="Delete Image"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserProfileDto.Name" class="col-form-label">Name<span class="text-danger">*</span></label>
+                                <input asp-for="UserProfileDto.Name" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" placeholder="Name">
+                                <span asp-validation-for="UserProfileDto.Name" class="text-danger"></span>
+                            </div>
+                           <div class="form-group">
+                                <label asp-for="UserProfileDto.Email" class="col-form-label">Email<span class="text-danger">*</span></label>
+    <input asp-for="UserProfileDto.Email" 
+          
+           class="form-control" 
+           placeholder="Email">
+    <span asp-validation-for="UserProfileDto.Email" class="text-danger"></span>
+</div>
+                            <div class="form-group">
+                                <label asp-for="UserProfileDto.PhoneNumber" class="col-form-label">Phone<span class="text-danger">*</span></label>
+                                <input asp-for="UserProfileDto.PhoneNumber" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" placeholder="Phone">
+                                <span asp-validation-for="UserProfileDto.PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="/Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+    <script src="~/js/custom/UserProfile.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('copy', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('cut', function (e) {
+                    e.preventDefault();
+                });
+            });
+        });
+    </script>
+}

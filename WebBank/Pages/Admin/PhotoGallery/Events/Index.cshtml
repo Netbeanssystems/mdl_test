@@ -1,0 +1,100 @@
+﻿@page
+@model WebBank.Pages.Admin.PhotoGallery.Events.IndexModel
+@{
+    ViewData["Title"] = "Event Master";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="float-left card-title font-weight-bold">Events</h3>
+
+            <div class="btn-group btn-group-sm float-right">
+                <a class="text-dark mr-4" asp-page="/Admin/PhotoGallery/Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back To Event Gallery"></i></a>
+                @*@if (Model.permissions["CanCreate"])
+                {*@
+                <a asp-page="/Admin/PhotoGallery/Events/Edit">
+                    <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+                </a>
+                <div class="clearfix"></div>
+                @*}*@
+            </div>
+
+        </div>
+        <div class="card-body">
+            @if (Model.Events?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Event Name</th>
+                                <th class="search">Event Date</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Events)
+                            {
+                                <tr>
+                                    <td>@item.EventName</td>
+                                    <td>@item.EventDate.ToString("dd-MM-yyyy")</td>
+                                    <td class="text-center"><i class="@(item.IsActive?"fa fa-check-circle text-success":"fa fa-minus")"></i></td>
+                                    <td class="text-center">
+                                        @if (Model.permissions["CanEdit"])
+                                        {
+                                            <a asp-page="EditNew" asp-route-id="@item.Id">
+                                                <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="search">Event Name</th>
+                                <th class="search">Event Date</th>
+                                <th class="text-center noExport noSort">Active</th>
+                                <th class="text-center noExport noSort">Edit</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblDataTable').DataTable({
+            initComplete: function () {
+                var r = $('#tblDataTable tfoot tr');
+                r.find('th').each(function () {
+                    if ($(this).hasClass('search')) {
+                        $(this).css('padding', 5);
+                        var title = $(this).text();
+                        $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                    } else {
+                        $(this).html('');
+                    }
+                });
+                $('#tblDataTable thead').prepend(r);
+                this.api().columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change clear',
+                        function () {
+                            if (that.search() !== this.value) {
+                                that.search(this.value).draw();
+                            }
+                        });
+                });
+            }
+        });
+    </script>
+}

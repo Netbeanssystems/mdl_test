@@ -1,0 +1,106 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot');
+  src:  url('../fonts/icomoon.eot') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf') format('truetype'),
+    url('../fonts/icomoon.woff') format('woff'),
+    url('../fonts/icomoon.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-icons1:before {
+  content: "\e999";
+}
+.icon-icons2:before {
+  content: "\e99a";
+}
+.icon-icons3:before {
+  content: "\e99b";
+}
+.icon-icons4:before {
+  content: "\e99c";
+}
+.icon-icons5 .path1:before {
+  content: "\e99d";
+  color: rgb(1, 1, 1);
+}
+.icon-icons5 .path2:before {
+  content: "\e99e";
+  margin-left: -1em;
+  color: rgb(2, 2, 2);
+}
+.icon-icons5 .path3:before {
+  content: "\e99f";
+  margin-left: -1em;
+  color: rgb(12, 13, 13);
+}
+.icon-icons5 .path4:before {
+  content: "\e9a0";
+  margin-left: -1em;
+  color: rgb(1, 1, 1);
+}
+.icon-icons5 .path5:before {
+  content: "\e9a1";
+  margin-left: -1em;
+  color: rgb(1, 2, 2);
+}
+.icon-icons5 .path6:before {
+  content: "\e9a2";
+  margin-left: -1em;
+  color: rgb(7, 8, 8);
+}
+.icon-icons5 .path7:before {
+  content: "\e9a3";
+  margin-left: -1em;
+  color: rgb(7, 7, 7);
+}
+.icon-icons6:before {
+  content: "\e9a4";
+}
+.icon-icons7:before {
+  content: "\e9a5";
+}
+.icon-icons8:before {
+  content: "\e9a6";
+}
+.icon-icons9:before {
+  content: "\e9a7";
+}
+.icon-icons10:before {
+  content: "\e9a8";
+}
+.icon-icons11:before {
+  content: "\e9a9";
+}
+.icon-icons12:before {
+  content: "\e9aa";
+}
+.icon-icons13:before {
+  content: "\e9ab";
+}
+.icon-icons14:before {
+  content: "\e9ac";
+}
+.icon-icons15:before {
+  content: "\e9ad";
+}
+.icon-icons16:before {
+  content: "\e9ae";
+}

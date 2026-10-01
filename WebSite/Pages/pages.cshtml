@@ -1,0 +1,677 @@
+﻿@page "/{lang}/Pages/{OtherLinkHeading}"
+@using Microsoft.AspNetCore.Http
+@model WebSite.Pages.pagesModel
+@{
+    Layout = "_InternalPagesLayout";
+}
+@*<script src="https://kit.fontawesome.com/4b9ba14b0f.js" crossorigin="anonymous"></script>*@
+<script src="https://kit.fontawesome.com/4b9ba14b0f.js" integrity="sha384-mmTDSIYkBlPVfobeXwV6sb5FV+F5sMw7Q1beX2eQrnHq6KHigK6ouO6rZ0/nCYbs" crossorigin="anonymous"></script>
+ 
+
+@{
+    if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        @section meta
+        {
+        @if (Model.Menus?.Title != null)
+            {
+                <title>@Model.Menus.Title</title>
+            }
+            @if (Model.Menus?.Description != null)
+            {
+                <meta name="description" content="@Model.Menus.Description">
+            }
+            @if (Model.Menus?.Keyword != null)
+            {
+                <meta name="keywords" content="@Model.Menus.Keyword">
+            }
+    }
+    }
+    else
+    {
+        @section meta
+        {
+        @if (Model.Menus?.HindiTitle != null)
+            {
+                <title>@Html.Raw(@Model.Menus.HindiTitle)</title>
+            }
+            @if (Model.Menus?.DescriptionHindi != null)
+            {
+                <meta name="description" content="@Html.Raw(Model.Menus.DescriptionHindi)">
+            }
+            @if (Model.Menus?.KeywordHindi   != null)
+            {
+                <meta name="keywords" content="@Html.Raw(@Model.Menus.KeywordHindi)">
+            }
+    }
+    }
+}
+
+@if (Model.ModelVM != null)
+{
+    ViewData["Title"] = Model.ModelVM.Heading;
+    <partial name="_Description" model="Model.ModelVM" />
+}
+else
+{
+}
+
+<!-- Modal -->
+<div class="modal fade" id="FooterEnquiryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Enquiry Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" class="form-container">
+                <div class="modal-body">
+                    <span style="font-size:medium;">   <b> NOTE :</b> All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',', [, ], {, }, +, -, _ ) etc. are not allowed. By any way you try to save it will be removed and then saved.</span>
+                    <br />
+                    <label asp-for="@Model.contactusform.FirstName" for="contactusform_FirstName"><b>First Name</b></label>
+                    <input onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.FirstName" placeholder="Enter First Name" required="">
+                    <span asp-validation-for="@Model.contactusform.FirstName" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.LastName" for="contactusform_LastName"><b>Last Name</b></label>
+                    <input onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.LastName" placeholder="Enter Last Name" required="">
+                    <span asp-validation-for="@Model.contactusform.LastName" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.CompanyName" for="contactusform_CompanyName"><b>Company</b></label>
+                    <input onkeypress="return myKeyPress(event)" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.CompanyName" placeholder="Enter Company Name" required="">
+                    <span asp-validation-for="@Model.contactusform.CompanyName" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.CountryName" for="contactusform_CountryName"><b>Country</b></label>
+                    <input asp-for="@Model.contactusform.CountryName" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" placeholder="Enter Country Name" required="">
+                    <span asp-validation-for="@Model.contactusform.CountryName" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.InterestedIn" for="cars"><b>Interested In:</b></label>
+                    <select id="cars" asp-for="@Model.contactusform.InterestedIn" class="browser-default custom-select">
+                        <option value="New Vessel">New Vessel</option>
+                        <option value="Services">Services</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="@Model.contactusform.InterestedIn" class="text-danger"></span>
+                    <br><br>
+
+                    <label asp-for="@Model.contactusform.EmailId" for="contactusform_EmailId"><b>Email</b></label>
+                    @* <input type="email" placeholder="Enter Email" oninput="this.value = this.value.replace(/[^A-Za-z0-9@@. ]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="@Model.contactusform.EmailId" required=""> *@
+                    <input type="email" placeholder="Enter Email" asp-for="@Model.contactusform.EmailId" required>
+                    <span asp-validation-for="@Model.contactusform.EmailId" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.Contact" for="contactusform_Contact"><b>Contact No.</b></label>
+                    <input asp-for="@Model.contactusform.Contact" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" type="text" placeholder="Enter Contact No." required="">
+                    <span asp-validation-for="@Model.contactusform.Contact" class="text-danger"></span>
+                    <br>
+                    <label asp-for="@Model.contactusform.Message" for="contactusform_Message"><b>Your Enquiry</b></label>
+                    <textarea class="form-control" rows="3" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="@Model.contactusform.Message" placeholder="Message" required=""></textarea>
+                    <span asp-validation-for="@Model.contactusform.Message" class="text-danger"></span>
+
+                </div>
+                <div class="modal-footer form-container">
+                    <button type="submit" class="btn">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+
+        $.validator.setDefaults({
+            onkeyup: false
+        })
+
+
+        $('.read-more').popover({
+            container: 'body'
+        });
+        var timelineTextHeight = $('.timeline-text p').height();
+
+        $('#timelineMobileSlider').find('li').each(function () {
+            if (($(this).find('.timeline-text p').height()) > 60) {
+                $(this).find('.timeline-text').addClass('timeline-ellipsis');
+            }
+        });
+        $('#walkDownSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1366,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        dots: false,
+                        infinite: true,
+                        autoplay: true,
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+        $('.slickPlayBtn').on('click', function (e) {
+            e.preventDefault();
+            if ($(this).hasClass("pause")) { // add class where you want to add class active for process
+                $(this).removeClass("pause");
+                $('#headerImageSlider').slick('slickPause');
+                $(this).addClass("play");
+            } else {
+                $(this).removeClass("play");
+                $(this).addClass("pause");
+                $('#headerImageSlider').slick('slickPlay');
+            }
+        });
+
+        $('#keyperformanceSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 6,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1600,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1366,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        dots: false,
+                        infinite: true,
+                        autoplay: true,
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        arrows: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 475,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: true,
+                        dots: true
+                    }
+                }
+            ]
+        });
+    </script>
+
+    <script>
+        $(".readmore-btn").on("click", function () {
+            $(".paragraph-readmore").slideToggle();
+            if ($(this).text() == "Read More") {
+                $(this).text("Read Less")
+            } else {
+                $(this).text("Read More");
+            }
+        })
+        $('#initiativeSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1366,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        dots: false,
+                        infinite: true,
+                        autoplay: true,
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+        $('#initiativeSlider').slickLightbox({
+            itemSelector: 'a',
+            navigateByKeyboard: true,
+            infinite: false,
+            closeOnBackdropClick: true,
+            caption: 'caption'
+        });
+
+        $('#leaderSpeaksSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1366,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        dots: false,
+                        infinite: true,
+                        autoplay: true,
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+    </script>
+
+    <script>
+        $('#walkDownSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            responsive: [
+                {
+                    breakpoint: 1366,
+                    settings: {
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        dots: false,
+                        infinite: true,
+                        autoplay: true,
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+    </script>
+
+    <script>
+        $('#headerImageSlider').slick({
+            dots: true,
+            infinite: true,
+            arrows: true,
+            autoplay: true,
+            speed: 300,
+            slidesToShow: 1,
+            adaptiveHeight: true,
+            pauseOnFocus: false,
+            pauseOnHover: false,
+            responsive: [
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        dots: true,
+                        arrows: true,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: true,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+        $('.slickPlayBtn').on('click', function (e) {
+            e.preventDefault();
+            if ($(this).hasClass("pause")) { // add class where you want to add class active for process
+                $(this).removeClass("pause");
+                $('#headerImageSlider').slick('slickPause');
+                $(this).addClass("play");
+            } else {
+                $(this).removeClass("play");
+                $(this).addClass("pause");
+                $('#headerImageSlider').slick('slickPlay');
+            }
+
+        });
+
+        $('#serviceTypeSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: true,
+            speed: 300,
+            slidesToShow: 3,
+            adaptiveHeight: true,
+            responsive: [
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        dots: true,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+
+
+
+
+        $('#quickAccessSlider').slick({
+            dots: false,
+            infinite: false,
+            arrows: false,
+            speed: 300,
+            slidesToShow: 6,
+            adaptiveHeight: true,
+            responsive: [
+                {
+                    breakpoint: 1200,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                        dots: true,
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                        dots: true,
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 5,
+                        slidesToScroll: 1,
+                        dots: true,
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+    </script>
+}
+
+@*<script src="/Assets/js/bootstrap.min.js" asp-append-version="true"></script>*@
+<script src="/Assets/js/bootstrap-5.2.3.min.js" asp-append-version="true"></script>
+<script>
+    const imageGrid = document.querySelector(".image-grid");
+    const links = imageGrid.querySelectorAll("a");
+    const imgs = imageGrid.querySelectorAll("img");
+    const lightboxModal = document.getElementById("lightbox-modal");
+    const bsModal = new bootstrap.Modal(lightboxModal);
+    const modalBody = document.querySelector(".modal-body .container-fluid");
+
+    for (const link of links) {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const currentImg = link.querySelector("img");
+            const lightboxCarousel = document.getElementById("lightboxCarousel");
+            if (lightboxCarousel) {
+                const parentCol = link.parentElement.parentElement;
+                const index = [...parentCol.parentElement.children].indexOf(parentCol);
+                const bsCarousel = new bootstrap.Carousel(lightboxCarousel);
+                bsCarousel.to(index);
+            } else {
+                createCarousel(currentImg);
+            }
+            bsModal.show();
+        });
+    }
+
+    function createCarousel(img) {
+        const markup = `
+                                    <div id="lightboxCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
+                                      <div class="carousel-inner">
+                                        ${createSlides(img)}
+                                      </div>
+                                      <button class="carousel-control-prev" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="prev">
+                                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                       <span class="visually-hidden">Previous</span>
+                                      </button>
+                                      <button class="carousel-control-next" type="button" data-bs-target="#lightboxCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                      </button>
+                                    </div>
+                                    `;
+
+        modalBody.innerHTML = markup;
+    }
+
+    function createSlides(img) {
+        let markup = "";
+        var currentImgSrc = img.getAttribute("src");
+        currentImgSrc = "'" + currentImgSrc + "'";
+
+        for (const img of imgs) {
+            var imgSrc = img.getAttribute("src");
+            imgSrc = "'" + imgSrc + "'";
+            var imgAlt = img.getAttribute("alt");
+            imgAlt = "'" + imgAlt + "'";
+
+            const imgCaption = img.getAttribute("data-caption");
+
+            markup += `
+                                    <div class="carousel-item${currentImgSrc === imgSrc ? " active" : ""}">
+                                          <img src=${imgSrc} alt=${imgAlt}>
+                                      ${imgCaption ? createCaption(imgCaption) : ""}
+                                    </div>
+                                    `;
+        }
+
+        return markup;
+    }
+
+    function createCaption(caption) {
+        return `<div class="carousel-caption">
+                                     <p class="m-0">${caption}</p>
+                                    </div>`;
+    }
+</script>

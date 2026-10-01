@@ -1,0 +1,96 @@
+﻿@model Application.Dtos.NotificationDTO
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration config
+
+<div class="table-responsive w-100">
+    <table id="tbl-ind-notification" class="table table-bordered table-striped w-100" style="width: 100% !important;">
+        <thead style="background-color: #192c64; color: white;">
+            <tr>
+                <th style="width: 6%;">क्रमांक</th>
+                <th class="search" style="width: 20%;">निविदा संख्या</th>
+                <th style="width: 44%;">कार्य विवरण</th>
+                <th class="search" style="width: 15%;">निविदा तिथि</th>
+                <th class="search" style="width: 15%;">निविदा समापन तिथि एवं समय</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+            }
+            @if (Model != null && Model.ind != null)
+            {
+                @foreach (var item in Model.ind)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                i++;
+                            }
+                            @i
+                        </td>
+                        <td>
+                            @Html.Raw(item.EOINo)
+                            @if (!string.IsNullOrEmpty(item.TenderNumberMoreInfo))
+                            {
+                                <br />
+                                <span class="text-danger">@Html.Raw(item.TenderNumberMoreInfo)</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.Raw(item.DescriptionHindi)
+                            @if (!string.IsNullOrEmpty(item.Updated_Work_Description))
+                            {
+                                <br />
+                                <span class="text-danger">@Html.Raw(item.Updated_Work_Description)</span>
+                            }
+
+                            @if (Model.docs != null)
+                            {
+                                @foreach (var d in Model.docs)
+                                {
+                                    @if (d.Tender_id == item.Tender_Id.ToString())
+                                    {
+                                        var isEnglish = Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English";
+                                        var tooltipText = isEnglish ? "Click here to view or download" : "देखने / डाउनलोड करने के लिए यहाँ क्लिक करें";
+
+                                        <div class="mt-1">
+                                            <a href="@config["FileBaseUrl"]/writereaddata/tenders/@d.Document_PDF" target="_blank">
+                                                <i class="fa fa-file-pdf-o text-dark" data-toggle="tooltip" data-placement="top" title="@tooltipText"></i>
+                                                @d.Document_Name
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.EOIDate
+                        </td>
+                        <td>
+                            @item.EOICloseDate
+                            @if (!string.IsNullOrEmpty(item.TenderClosingTimeHindi))
+                            {
+                                <span> @item.TenderClosingTimeHindi</span>
+                            }
+                            @if (!string.IsNullOrEmpty(item.UpdatedTenderClosingDate))
+                            {
+                                <br />
+                                <span class="text-danger">@Html.Raw(item.UpdatedTenderClosingDate)</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (Model?.ind != null && Model.ind.Count > 0)
+{
+    <div class="d-flex justify-content-end mt-2">
+        <span style="color: #00008B;">
+            <strong>अंतिम अद्यतन तिथि:</strong> @Model.ind.FirstOrDefault()?.Added_on
+        </span>
+    </div>
+}

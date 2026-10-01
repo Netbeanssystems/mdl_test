@@ -1,0 +1,168 @@
+﻿@page "{id?}"
+@model ManageModel
+@{
+    ViewData["Title"] = "Manage Notification";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 offset-lg-2 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        @if (!Model.IsNew)
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Edit Notification</h3>
+                            <div class="btn-group btn-group-sm float-right">
+                                @if (Model.Notification.IsActive)
+                                {
+                                    <a href="#" class="text-dark mr-3" data-toggle="modal" data-target="#confirmationModal" title="Delete"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                }
+                                <a class="text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                        else
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Create Notification</h3>
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="Notification.Id" />
+                                <input type="hidden" asp-for="Notification.CreatedDate" />
+                                <input type="hidden" asp-for="Notification.CreatedBy" />
+                            }
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Notification.Title" class="col-form-label">Notification Title<span class="required">*</span></label>
+                                        <input asp-for="Notification.Title" class="form-control" placeholder="Notification Title" />
+                                        <span asp-validation-for="Notification.Title" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Notification.Icon" class="col-form-label">Icon</label>
+                                        <span class="ml-3"><i id="faPreview" class="@(Model.IsNew ? "far fa-bell" : Model.Notification.Icon)"></i></span>
+                                        <input asp-for="Notification.Icon" class="form-control" placeholder="Icon" value="@(Model.IsNew ? "far fa-bell" : Model.Notification.Icon)" />
+                                        <span asp-validation-for="Notification.Icon" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Roles" class="col-form-label">Roles<span class="required">*</span></label>
+                                        <div class="custom-control custom-checkbox custom-control-inline ml-3">
+                                            <input type="checkbox" id="chkAllRoles" class="custom-control-input" onchange="CheckUncheck('chkAllRoles', 'Roles')">
+                                            <label for="chkAllRoles" class="custom-control-label">select all</label>
+                                        </div>
+                                        <select asp-for="Roles" class="form-control" asp-items="ViewBag.Roles" multiple="multiple" size="12"></select>
+                                        <span asp-validation-for="Roles" class="text-danger-sm"></span>
+                                        <span class="information">Press and hold ctrl to select multiple</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input asp-for="Notification.IsActive" class="custom-control-input" checked="@Model.IsNew">
+                                            <label asp-for="Notification.IsActive" class="custom-control-label">Active</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Text" class="col-form-label">Notification Text<span class="required">*</span></label>
+                                        <input asp-for="Text" class="form-control" placeholder="Notification Text" />
+                                        <span asp-validation-for="Text" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="TargetUrl" class="col-form-label">Notification Target Url</label>
+                                        <input asp-for="TargetUrl" class="form-control" placeholder="Notification Target Url" />
+                                        <span asp-validation-for="TargetUrl" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Users" class="col-form-label">Users<span class="required">*</span></label>
+                                        <div class="custom-control custom-checkbox custom-control-inline ml-3">
+                                            <input type="checkbox" id="chkAllUsers" class="custom-control-input" onchange="CheckUncheck('chkAllUsers', 'Users')">
+                                            <label for="chkAllUsers" class="custom-control-label">select all</label>
+                                        </div>
+                                        @if (!Model.IsNew)
+                                        {
+                                            <select asp-for="Users" class="form-control" asp-items="ViewBag.Users" multiple="multiple" size="12"></select>
+                                        }
+                                        else
+                                        {
+                                            <select asp-for="Users" class="form-control" multiple="multiple" size="12"></select>
+                                        }
+                                        <span asp-validation-for="Users" class="text-danger"></span>
+                                        <span class="information">Press and hold ctrl to select multiple</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if (!Model.IsNew && Model.Notification.IsActive)
+            {
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" asp-for="Notification.Id" />
+                    <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                </form>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script type="text/javascript">
+        $('#Notification_Icon').change(function() {
+            var faclass = $('#Notification_Icon').val();
+            $('#faPreview').removeClass().addClass(faclass);
+        });
+        function getUsersByRoles() {
+            var roles = $("#Roles").val();
+            if (roles != '') {
+                var url = `?handler=UsersByRoles&roles=${roles}`;
+                $.getJSON(url,
+                    (data) => {
+                        if (data != null) {
+                            var options = '';
+                            $("#Users").empty();
+                            //$('#Users option').prop("selected", false);
+                            $.each(data,
+                                function(i, item) {
+                                    options += `<option value="${item.role}-${item.userName}" selected>${item.userName}</option>`;
+                                    //$("#Users option[value='" + item.userName + "']").prop("selected", "selected");
+                                });
+                            $("#Users").html(options);
+                        } else {
+                            $("#divClientAlert").addClass("alert-danger");
+                            $("#divClientAlert > p.m-0").text("Users not found");
+                            $("#divClientAlert").show();
+                            SetTimeOut($("#divClientAlert"));
+                        }
+                    });
+            } else {
+                $("#divClientAlert").addClass("alert-danger");
+                $("#divClientAlert > p.m-0").text("Please select a role first");
+                $("#divClientAlert").show();
+                SetTimeOut($("#divClientAlert"));
+            }
+        }
+        $("#Roles").change(function() {
+            getUsersByRoles();
+        });
+        function CheckUncheck(chkid, lstid) {
+            var checked = $('#' + chkid + ':checked').length > 0;
+            $('#' + lstid + ' option').prop("selected", checked);
+            if (chkid === 'chkAllRoles') {
+                getUsersByRoles();
+            }
+        }
+    </script>
+}

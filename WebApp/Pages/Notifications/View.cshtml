@@ -1,0 +1,85 @@
+﻿@page "{id}"
+@model ViewModel
+@{
+    ViewData["Title"] = "Notification Details";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title float-left font-weight-bold">Notification Details</h3>
+                <a class="text-dark float-right" asp-page="Index">
+                    <i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i>
+                </a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="bg-gradient-light w-25">Notification</th>
+                                <td colspan="6">
+                                    @(!string.IsNullOrEmpty(Model.Notifications.Icon) ? Html.Raw($"<i class=\"{Model.Notifications.Icon}\"></i>") : Html.Raw("")) @Model.Notifications.Title <i class="@(Model.Notifications.IsActive?"fa fa-check-circle text-success":"fa fa-minus")"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="bg-gradient-light w-25">Created By</th>
+                                <td colspan="6">@Model.Notifications.CreatedBy (@($"{Model.Notifications.CreatedDate:dd-MM-yyyy hh:mm tt}"))</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="bg-gradient-light w-25">Modified By</th>
+                                <td colspan="6">@Model.Notifications.ModifiedBy @($"{Model.Notifications.ModifiedDate:dd-MM-yyyy hh:mm tt}")</td>
+                            </tr>
+                            @if (Model.Notifications.NotificationDetails?.Count > 0)
+                            {
+                                <tr>
+                                    <th scope="row" class="bg-gradient-light w-25">Notification Details</th>
+                                    <th class="text-center">S.No.</th>
+                                    <th>Message</th>
+                                    <th>For Role</th>
+                                    <th>For User</th>
+                                    <th>View Page</th>
+                                    <th>Active</th>
+                                    <th>Action</th>
+                                </tr>
+                                for (var i = 0; i < Model.Notifications.NotificationDetails.Count; i++)
+                                {
+                                    <tr>
+                                        <th scope="row" class="bg-gradient-light w-25"></th>
+                                        <td class="text-center">@(i+1)</td>
+                                        <td>@Model.Notifications.NotificationDetails[i].Text</td>
+                                        <td>@Model.Notifications.NotificationDetails[i].RoleName</td>
+                                        <td>@Model.Notifications.NotificationDetails[i].UserName</td>
+                                        <td>
+                                            <a href="@Model.Notifications.NotificationDetails[i].TargetUrl" target="_blank">Visit</a>
+                                        </td>
+                                        <td class="text-center"><i class="@(Model.Notifications.NotificationDetails[i].IsActive?"fa fa-check-circle text-success":"fa fa-minus")"></i></td>
+                                        <td class="text-center">
+                                            @if (Model.Notifications.NotificationDetails[i].IsActive)
+                                            {
+                                                <a data-id="@Model.Notifications.NotificationDetails[i].Id" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                            }
+                                        </td>
+                                        @*<td>@($"{Model.Notifications.NotificationDetails[i].StartDate:dd-MMM-yyyy}")</td>
+                                            <td>@($"{Model.Notifications.NotificationDetails[i].EndDate:dd-MMM-yyyy}")</td>*@
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="post" asp-page-handler="Delete">
+        <partial name="_DeleteModalPartial" />
+    </form>
+</section>
+@section Scripts{
+    <script type="text/javascript">
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            $('#Id').val($(event.relatedTarget).data('id'));
+        });
+    </script>
+}

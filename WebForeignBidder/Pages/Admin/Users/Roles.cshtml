@@ -1,0 +1,87 @@
+﻿@page "{id}"
+@model RolesModel
+@{
+    ViewData["Title"] = "User Roles";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">User Roles</h3>
+            <a class="float-right" asp-page="Index">
+                <i class="fa fa-arrow-left text-dark" data-toggle="tooltip" data-placement="top" title="Back"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.UrVm != null)
+            {
+                @foreach (var ur in Model.UrVm.userRoles)
+                {
+                    <p class="badge-pill badge-primary d-inline-block">@ur</p>
+                }
+                <hr/>
+                <div class="row">
+                    <div class="col-md-6">
+                        @if (Model.UrVm.remainingRoles.Count > 0)
+                        {
+                            <form asp-page-handler="AddToRole" method="post">
+                                <div class="form-group">
+                                    <label asp-for="UrVm.userRole" class="col-form-label">Add to</label>
+                                    <select asp-for="UrVm.userRole" class="form-control">
+                                        @foreach (var rol in Model.UrVm.remainingRoles)
+                                        {
+                                            <option value="@rol">@rol</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" asp-for="UrVm.userId" value="@Model.UrVm.userId" />
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-user-plus"></i> Add</button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <h4>No role(s) left.</h4>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @if (Model.UrVm.userRoles.Count > 0)
+                        {
+                            <form asp-page-handler="RemoveFromRole" method="post">
+                                <div class="form-group">
+                                    <label asp-for="UrVm.userRole" class="col-form-label">Remove from</label>
+                                    <select asp-for="UrVm.userRole" class="form-control">
+                                        @foreach (var rol in Model.UrVm.userRoles)
+                                        {
+                                            <option value="@rol">@rol</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" asp-for="UrVm.userId" value="@Model.UrVm.userId" />
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-user-minus"></i> Remove</button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <h4>No role(s) left.</h4>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <h3>
+                    <span class="float-left">User Roles</span>
+                    <span class="float-right">
+                        <a class="btn btn-sm btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                    </span>
+                    <span class="clearfix"></span>
+                </h3>
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>

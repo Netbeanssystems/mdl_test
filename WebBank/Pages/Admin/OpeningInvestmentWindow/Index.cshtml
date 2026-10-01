@@ -1,0 +1,309 @@
+﻿@page
+@model WebBank.Pages.Admin.OpeningInvestmentWindow.IndexModel
+@{
+    ViewData["Title"] = "Manage Investment Windows";
+}
+
+<section class="content pt-4">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <!-- Header layout accommodating Title, Save Trigger, and Search Input -->
+            <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h3 class="card-title font-weight-bold text-dark mb-0">
+                    Closed Investment Window
+                </h3>
+                <input type="hidden" id="current-username" value="@User.Identity.Name" />
+                <div class="d-flex align-items-center gap-2 flex-wrap" style="gap: 10px;">
+                    <!-- Batch Processing Action Button -->
+                    <button type="button" id="btnSaveChanges" class="btn btn-sm btn-success font-weight-bold shadow-sm" disabled>
+                        <i class="fas fa-save mr-1"></i> Save Changes
+                    </button>
+                    
+                    <div class="search-box-container" style="max-width: 300px; width: 220px;">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0 text-muted font-weight-bold">Search:</span>
+                            </div>
+                            <input type="text" id="txtSearchWindows" class="form-control border-left-0" placeholder="Filter windows..." autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body bg-light">
+                @if (Model.ClosedWindowsVM != null && Model.ClosedWindowsVM.Any())
+                {
+                    <div class="table-responsive shadow-sm rounded">
+                        <table class="table table-sm table-hover table-bordered bg-white mb-0" id="tblInvestmentWindows">
+                            <thead class="thead-light">
+                                <tr style="user-select: none;-webkit-user-select: none;">
+                                    <th class="text-center cursor-pointer" style="width: 80px;" title="Double click to sort" data-type="number">ID <i class="fas fa-sort text-muted ml-1 small"></i></th>
+                                    <th class="cursor-pointer" title="Double click to sort" data-type="string">Window Description <i class="fas fa-sort text-muted ml-1 small"></i></th>
+                                    <th class="text-center cursor-pointer" title="Double click to sort" data-type="string">Window Opened By <i class="fas fa-sort text-muted ml-1 small"></i></th>
+                                    <th class="text-center cursor-pointer" title="Double click to sort" data-type="date">Window Opening Date <i class="fas fa-sort text-muted ml-1 small"></i></th>
+                                    <th class="text-center" style="width: 140px;">IsShow</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var index = 0;
+                                }
+                                @foreach (var window in Model.ClosedWindowsVM)
+                                {
+                                    index++;
+                                    <tr>
+                                        <td class="text-center font-weight-bold align-middle" data-sort-val="@index">@index</td>
+                                        <td class="align-middle">@window.Description</td>
+                                        <td class="text-center align-middle text-muted">@window.CreatedBy</td>
+                                        <td class="text-center align-middle text-muted" data-sort-val="@window.CreatedDate.ToString("yyyy-MM-ddTHH:mm:ss")">
+                                            @window.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="custom-control custom-switch">
+                                                <!-- Added track-original attribute to pinpoint states shifted by runtime execution -->
+                                                <input type="checkbox" class="custom-control-input chk-window-visibility"
+                                                       id="switch_@window.Id"
+                                                       data-id="@window.Id"
+                                                       data-original="@(window.IsShow ? "true" : "false")"
+                                                @(window.IsShow ? "checked" : "") />
+                                                <label class="custom-control-label cursor-pointer" for="switch_@window.Id"></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 border bg-white rounded">
+                        <i class="fas fa-folder-open text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">No investment window tracks were recovered from the database infrastructure.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reusable Bootstrap Confirmation Modal for Batch Submission -->
+<div class="modal fade" id="confirmVisibilityModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title font-weight-bold" id="confirmModalLabel">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Save Visibility Modifications
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnModalCloseCross">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-dark font-weight-normal py-4">
+                Are you sure you want to update visibility modifications for <span id="lblChangeCount" class="font-weight-bold text-underline">0</span> targeted item tracks simultaneously?
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary shadow-sm" data-dismiss="modal" id="btnCancelVisibility">Cancel</button>
+                <button type="button" class="btn btn-warning font-weight-bold shadow-sm" id="btnConfirmVisibility">
+                    <i class="fas fa-check mr-1"></i> Confirm and Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Html.AntiForgeryToken()
+
+    <script type="text/javascript" asp-append-version="true">
+        $(document).ready(function () {
+            
+        // Evaluates modifications across rows to manage Save Button availability
+        function checkUnsavedChanges() {
+        let changeCount = 0;
+                
+        $('.chk-window-visibility').each(function () {
+        const isChecked = $(this).is(':checked');
+        const originalState = $(this).attr('data-original') === 'true';
+                    
+        if (isChecked !== originalState) {
+        changeCount++;
+        }
+        });
+                
+        if (changeCount > 0) {
+        $('#btnSaveChanges').prop('disabled', false);
+        } else {
+        $('#btnSaveChanges').prop('disabled', true);
+        }
+        return changeCount;
+        }
+
+        // Real-time evaluation on individual toggle interaction
+        $('.chk-window-visibility').on('change', function () {
+        checkUnsavedChanges();
+        });
+
+        // Trigger structural collection compilation on main update click
+        $('#btnSaveChanges').click(function () {
+        const totalChanges = checkUnsavedChanges();
+        if (totalChanges <= 0) return;
+                
+        $('#lblChangeCount').text(totalChanges);
+        $('#confirmVisibilityModal').modal('show');
+        });
+
+        // Execution of batch PUT payload
+        $('#btnConfirmVisibility').click(function () {
+        const payload = [];
+
+        $('.chk-window-visibility').each(function () {
+        const isChecked = $(this).is(':checked');
+        const originalState = $(this).attr('data-original') === 'true';
+                    
+        // Track only nodes that shifted status boundaries
+        if (isChecked !== originalState) {
+        payload.push({
+        id: parseInt($(this).attr('data-id')),
+        isShow: isChecked
+        });
+        }
+        });
+
+        if (payload.length === 0) return;
+
+        const confirmBtn = $(this);
+        const originalHtml = confirmBtn.html();
+        confirmBtn.prop('disabled', true).html('<i class="fas fa-circle-notch fa-spin mr-1"></i> Saving updates...');
+        $('#btnCancelVisibility, #btnModalCloseCross, #btnSaveChanges').prop('disabled', true);
+
+        // $.ajax(
+        // {
+        //     url: '/api/Documents/UpdateMultipleVisibility',
+        //     type: 'PUT',
+        //     contentType: 'application/json',
+        //     data: JSON.stringify(payload),
+        //     headers: {
+        //         "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+        //     },
+        //     success: function (response) 
+        //     {
+        //         $('#confirmVisibilityModal').modal('hide');
+        //         location.reload();
+        //     },
+        //     error: function (xhr) {
+        //  //   Expose the raw internal server error message details
+        //     alert("Error Status: " + xhr.status + "\nMessage: " + xhr.responseText);
+        //     console.error("Full Error Context Payload:", xhr);
+        // }
+        // });
+                // 1. Capture the username directly from the hidden HTML field
+        var currentUserName = $("#current-username").val();
+
+        // 2. Restructure your payload to send both the DTO list AND the username
+        var requestPayload = {
+            Dtos: payload,             // This is your original List<ClosedWindowsDTO> array
+            UpdatedBy: currentUserName  // This passes the string "BankAdmin001"
+        };
+
+        // 3. Fire the AJAX call
+        $.ajax({
+            url: '/api/Documents/UpdateMultipleVisibility',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(requestPayload), // 👈 Send the new wrapped payload here
+            headers: {
+                "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                $('#confirmVisibilityModal').modal('hide');
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error Status: " + xhr.status + "\nMessage: " + xhr.responseText);
+                console.error("Full Error Context Payload:", xhr);
+            }
+        });
+
+        });
+        });
+    </script>
+
+    <script type="text/javascript" asp-append-version="true">
+        document.addEventListener("DOMContentLoaded", function () {
+            
+        // ==========================================
+        // 1. LIVE SEARCH LOGIC
+        // ==========================================
+        const searchInput = document.getElementById("txtSearchWindows");
+        const table = document.getElementById("tblInvestmentWindows");
+            
+        if (searchInput && table) {
+        const rows = table.querySelectorAll("tbody tr");
+                
+        searchInput.addEventListener("input", function () {
+        const filter = this.value.toLowerCase().trim();
+                    
+        rows.forEach(row => {
+        const descText = row.cells[1]?.textContent.toLowerCase() || "";
+        const userText = row.cells[2]?.textContent.toLowerCase() || "";
+                        
+        if (descText.includes(filter) || userText.includes(filter)) {
+        row.style.display = "";
+        } else {
+        row.style.display = "none";
+        }
+        });
+        });
+        }
+
+        // ==========================================
+        // 2. DOUBLE-CLICK SORT LOGIC
+        // ==========================================
+        if (table) {
+        const headers = table.querySelectorAll("thead th");
+        const tbody = table.querySelector("tbody");
+        let currentIsAsc = true;
+
+        headers.forEach((header, index) => {
+        if (index === 4) return;
+
+        header.addEventListener("dblclick", function () {
+        const type = this.getAttribute("data-type");
+        const rowsArray = Array.from(tbody.querySelectorAll("tr"));
+                        
+        currentIsAsc = !currentIsAsc;
+
+        rowsArray.sort((rowA, rowB) => {
+        let cellA = rowA.cells[index];
+        let cellB = rowB.cells[index];
+
+        let valA = cellA.hasAttribute("data-sort-val") ? cellA.getAttribute("data-sort-val") : cellA.textContent.trim();
+        let valB = cellB.hasAttribute("data-sort-val") ? cellB.getAttribute("data-sort-val") : cellB.textContent.trim();
+
+        if (type === "number") {
+        return currentIsAsc ? parseFloat(valA) - parseFloat(valB) : parseFloat(valB) - parseFloat(valA);
+        } else if (type === "date") {
+        return currentIsAsc ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+        } else {
+        return currentIsAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+        });
+
+        rowsArray.forEach(row => tbody.appendChild(row));
+
+        headers.forEach(h => {
+        const icon = h.querySelector("i");
+        if (icon) icon.className = "fas fa-sort text-muted ml-1 small";
+        });
+        const currentIcon = this.querySelector("i");
+        if (currentIcon) {
+        currentIcon.className = currentIsAsc ? "fas fa-sort-up text-dark ml-1" : "fas fa-sort-down text-dark ml-1";
+        }
+        });
+        });
+        }
+        });
+    </script>
+}

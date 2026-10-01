@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;CA1416;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>1701;1702;CA1416;</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="wwwroot\js\customs\**" />
+		<Content Remove="wwwroot\js\customs\**" />
+		<EmbeddedResource Remove="wwwroot\js\customs\**" />
+		<None Remove="wwwroot\js\customs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\Assets\fonts\fontawesome-webfont.svg" />
+	  <None Include="wwwroot\Assets\fonts\fontawesome-webfont.woff2" />
+	  <None Include="wwwroot\Assets\fonts\icomoon.svg" />
+	  <None Include="wwwroot\Assets\fonts\lg.svg" />
+	  <None Include="wwwroot\Assets\images\banner5.psd" />
+	  <None Include="wwwroot\Assets\js\aos.js" />
+	  <None Include="wwwroot\Assets\js\bootstrap.min.js" />
+	  <None Include="wwwroot\Assets\js\custom.js" />
+	  <None Include="wwwroot\Assets\js\jquery-1.12.4.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.easy-ticker.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.magnific-popup.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.marquee.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.mCustomScrollbar.concat.min.js" />
+	  <None Include="wwwroot\Assets\js\lg-thumbnail.min.js" />
+	  <None Include="wwwroot\Assets\js\lg-video.min.js" />
+	  <None Include="wwwroot\Assets\js\lightgallery.min.js" />
+	  <None Include="wwwroot\Assets\js\owl.carousel.min.js" />
+	  <None Include="wwwroot\Assets\js\slick.min.js" />
+	  <None Include="wwwroot\css\fonts\slick.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+		<PackageReference Include="UAParser" Version="3.1.47" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.7" Condition="'$(Configuration)' == 'Debug'" />
+		<PackageReference Include="Rotativa.AspNetCore" Version="1.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Application\Application.csproj" />
+	</ItemGroup>
+
+</Project>

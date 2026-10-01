@@ -1,0 +1,149 @@
+﻿@page "/{lang}/Tenders/InfraProj-Notification"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.Tenders.InfraProj_NotificationModel
+@{
+    Layout = "_InternalPagesLayout";
+      @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        ViewData["Title"] = "Infra-Project Notifications";
+    }
+    else
+    {
+
+        ViewData["Title"] = "आईपी ​​अधिसूचनाएं";
+    }
+}
+
+<style>
+    .hero img {
+        width: 100% !important;
+    }
+
+    .highlight {
+        background-color: yellow !important
+    }
+</style>
+<link rel="stylesheet" href="/css/jquery.datatables.min.css" />
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">IP Notifications / EOI</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip"><span><a href="/">Home</a> > <a href="/English/procurement">Procurement</a> > <a href="/English/pages/Tenders">Tenders</a> > <a href="/English/pages/Infra-Projects">Infra Projects</a> > IP Notifications / EOI</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">आईपी ​​अधिसूचनाएं/ईओआई</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip">
+            <span>
+                <a href="/">मुख्य पृष्ठ</a> > <a href="/Hindi/procurement">प्रोक्योरमें</a> > <a href="/Hindi/pages/Tenders">निविदाओं</a> > <a href="/Hindi/pages/Infra-Projects">
+                    इन्फ्रा प्रोजेक्ट्स
+                </a> >आईपी ​​अधिसूचनाएं/ईओआई
+            </span>
+        </div>
+    </div>
+}
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+            @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+            {
+                <h3 class="inner-heading">IP Notifications / EOI</h3>
+            }
+            else
+            {
+                <h3 class="inner-heading">आईपी ​​अधिसूचनाएं/ईओआई</h3>
+            }
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="form-group  text-right">
+                         @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                        {
+                            <button id="btnSave" onclick="GetArchieved();" type="button" class="btn btn-primary">Click here for Archive</button>
+                        }
+                        else
+                        {
+                            <button id="btnSave" onclick="GetArchievedHindi();" type="button" class="btn btn-primary">पुरालेख के लिए यहां क्लिक करें</button>
+                        }
+                    </div>
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English") //AkashS
+                    {
+                        <div id="tbl_partial">
+                            <partial name="_TenderNotificationWithFeePartial" model="@Model.notif" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="tbl_partial">
+                            <partial name="_TenderNotificationWithFeePartialHindi" model="@Model.notif" />
+                        </div>
+                    }
+                   @* <div id="tbl_partial">
+                        <partial name="_TenderNotificationWithFeePartial" model="@Model.notif" />
+                    </div>*@
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+        <script>
+            // Get debar lists on dropdown change
+            function GetArchieved() {
+                //;
+                ShowLoader();
+                 var status = "";
+
+            if ($("#btnSave").text() == "Click here for Archive") {
+                status = "archive";
+                $("#btnSave").text("Back to Current")
+            }
+            else{
+                status = "current";
+                $("#btnSave").text("Click here for Archive")
+            }
+                $.get('../Tenders/InfraProj-Notification?handler=BindSelectdata', { Status: status })
+                    .done(function (data) {
+                        if (data) {
+                            $("#tbl_partial").html('').html(data);
+                            BindDatatable();
+                            HideLoader();
+                        }
+                    });
+            }
+
+        function GetArchievedHindi() {
+            //;
+            ShowLoader();
+            var status = "";
+
+            if ($("#btnSave").text() == "पुरालेख के लिए यहां क्लिक करें") {
+                status = "archive";
+                $("#btnSave").text("वर्तमान पर वापस जाएँ")
+            }
+            else {
+                status = "current";
+                $("#btnSave").text("पुरालेख के लिए यहां क्लिक करें")
+            }
+            $.get('../Tenders/InfraProj-Notification?handler=BindSelectdata', { Status: status })
+                .done(function (data) {
+                    if (data) {
+                        $("#tbl_partial").html('').html(data);
+                        BindDatatable();
+                        HideLoader();
+                    }
+                });
+        }
+            function BindDatatable() {
+                let dataTable = $("#tbl_sbmp_notification").DataTable();
+            }
+            
+            let dataTable = $("#tbl_sbmp_notification").DataTable();
+        </script>
+}

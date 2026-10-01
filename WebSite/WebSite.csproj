@@ -1,0 +1,109 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;CA1416;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>1701;1702;CA1416;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<SatelliteResourceLanguages>en;hi</SatelliteResourceLanguages>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<Compile Remove="wwwroot\js\customs\**" />
+		<Content Remove="wwwroot\js\customs\**" />
+		<EmbeddedResource Remove="wwwroot\js\customs\**" />
+		<None Remove="wwwroot\js\customs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Controllers\CommonController.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <!--<Content Remove="Pages\Forms\Enquiry.cshtml" />-->
+	  <Content Remove="Pages\Forms\EnquiryForm.cshtml" />
+	  <Content Remove="wwwroot\js\Validation.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Pages\Forms\EnquiryForm.cshtml" />
+	  <!--<None Include="Pages\Forms\Enquiry.cshtml" />-->
+	  <None Include="wwwroot\Assets\fonts\fontawesome-webfont.svg" />
+	  <None Include="wwwroot\Assets\fonts\fontawesome-webfont.woff2" />
+	  <None Include="wwwroot\Assets\fonts\icomoon.svg" />
+	  <None Include="wwwroot\Assets\fonts\lg.svg" />
+	  <None Include="wwwroot\Assets\js\aos.js" />
+	  <None Include="wwwroot\Assets\js\bootstrap-5.2.3.min.js" />
+	  <None Include="wwwroot\Assets\js\bootstrap.min.js" />
+	  <None Include="wwwroot\Assets\js\custom.js" />
+	  <None Include="wwwroot\Assets\js\datatables-1.13.1.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery-1.12.4.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.dataTables-1.13.4.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.easy-ticker.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.magnific-popup.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.marquee.min.js" />
+	  <None Include="wwwroot\Assets\js\jquery.mCustomScrollbar.concat.min.js" />
+	  <None Include="wwwroot\Assets\js\lg-thumbnail.min.js" />
+	  <None Include="wwwroot\Assets\js\lg-video.min.js" />
+	  <None Include="wwwroot\Assets\js\lightgallery.min.js" />
+	  <None Include="wwwroot\Assets\js\owl.carousel.min.js" />
+	  <None Include="wwwroot\Assets\js\slick.min.js" />
+	  <None Include="wwwroot\BotResource\Bot.js" />
+	  <None Include="wwwroot\css\fonts\slick.svg" />
+	  <None Include="wwwroot\js\Validation.js" />
+	  <None Include="wwwroot\Sweetalert2\sweetalert-dev.js" />
+	  <None Include="wwwroot\Sweetalert2\sweetalert2.js" />
+	  <None Include="wwwroot\Sweetalert2\table2excel.min.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.12" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.32">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.2" />
+		<PackageReference Include="System.Speech" Version="10.0.2" />
+		<PackageReference Include="UAParser" Version="3.1.47" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.23" Condition="'$(Configuration)' == 'Debug'" />
+		<PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Application\Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup><!--<UpToDateCheckInput Remove="Pages\Forms\Enquiry.cshtml" />-->
+	
+	  <Folder Include="bin\Debug\net6.0\" />
+	
+	  <Folder Include="bin\Release\net6.0\" />
+	
+	  <Folder Include="wwwroot\img\Uploads\VigilanceGallery\" />
+	
+	  <Folder Include="wwwroot\img\Uploads\VigilanceForm\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <!--<_ContentIncludedByDefault Remove="Pages\Forms\Enquiry.cshtml" />-->
+	  <_ContentIncludedByDefault Remove="wwwroot\js\Validation.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\WebApp\WebApp.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,107 @@
+﻿@model Application.Dtos.NotificationDTO
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration config
+
+<div class="table-responsive">
+    <table id="tbl-ind-notification" class="table table-bordered table-striped">
+        <thead style="background-color: #192c64;color: white;">
+            <tr>
+                <th>Sr.No.</th>
+                <th class="search">Tender No</th>
+                <th>Work Description</th>
+                <th class="search">Tender Date</th>
+                <th class="search">Tender Closing date & Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 0;
+            }
+            @if (Model != null)
+            {
+                @foreach (var item in Model.ind)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                i++;
+                            }
+                            @i
+                        </td>
+                        <td>
+                            @Html.Raw(item.EOINo)
+                            @if (item.TenderNumberMoreInfo != null || item.TenderNumberMoreInfo != null)
+                            {
+                                <span class="text-danger">@Html.Raw(item.TenderNumberMoreInfo)</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.Raw(item.Description)
+                            @if (item.Updated_Work_Description != null)
+                            {
+                                <span class="text-danger">@Html.Raw(item.Updated_Work_Description)</span>
+                            }
+                            @if (Model.docs != null)
+                            {
+                                @foreach (var d in Model.docs)
+                                {
+                                    @if (d.Tender_id == item.Tender_Id.ToString())
+                                    {
+                                        @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+                                        {
+                                            <a href="@config["FileBaseUrl"]/writereaddata/tenders/@d.Document_PDF" target="_blank">
+                                                <i class="fa fa-file-pdf-o text-dark" data-toggle="tooltip" data-placement="top" title="Click here to view or download"></i>
+                                                @d.Document_Name
+                                            </a>
+                                            <br />
+                                        }
+                                        else { 
+                                         <a href="@config["FileBaseUrl"]/writereaddata/tenders/@d.Document_PDF" target="_blank">
+                                                <i class="fa fa-file-pdf-o text-dark" data-toggle="tooltip" data-placement="top" title="देखने / डाउनलोड करने के ललए यहाीं क्ललक करें"></i>
+                                                @d.Document_Name
+                                            </a>
+                                            <br />
+                                        }
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>
+                            @item.EOIDate
+                        </td>
+
+                        <td>
+                            @item.EOICloseDate
+                            @if (item.TenderClosingTime != null)
+                            {
+                                <span>@item.TenderClosingTime</span>
+                            }
+                            @if (item.UpdatedTenderClosingDate != null)
+                            {
+                                <br />
+                                <span class="text-danger">@Html.Raw(item.UpdatedTenderClosingDate)</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+       @* <tfoot>
+            <tr>
+                <th>Sr.No.</th>
+                <th class="search">TENDER NO</th>
+                <th>WORK DESCRIPTION</th>
+                <th class="search">TENDER DATE</th>
+                <th class="search">TENDER CLOSING DATE & TIME</th>
+            </tr>
+        </tfoot>*@
+    </table>
+</div>
+@{
+    @if (Model.ind.Count > 0)
+    {
+        <span style="float: right; color: #00008B;">Last Updated Date:@Model.not.FirstOrDefault().Added_on</span>
+    }
+}

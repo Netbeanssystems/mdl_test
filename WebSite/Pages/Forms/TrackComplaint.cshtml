@@ -1,0 +1,119 @@
+﻿@page "/{lang}/Forms/TrackComplaint"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.Forms.TrackComplaintModel
+@{
+    Layout = "_InternalPagesLayout";
+    ViewData["Title"] = "Track Complaint";
+}
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">Track Complaint</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">Home</a> > Track Complaint</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">Track Complaint</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">Home</a> Track Complaint</span></div>
+    </div>
+}
+
+<div class="mid-content">
+    <div class="container">
+        <h5 class="main-head"><b>Track Your Complaint</b></h5>
+        <hr>
+        <p class="pull-right">(<span class="astricks">*</span>) Information Required</p>
+     
+        <div class="row">
+           
+                    <div class="col-md-4">
+                    <label for="inputEmail4" class="form-label">Complaint Tracking No.<span class="astricks">*</span></label>
+                    <input autocomplete="off" id="complainttrackingNo" onkeypress="return myKeyPress(event)" placeholder="Enter The Complaint Tracking No." class="form-control vic">
+
+
+            </div>
+            <div class="col-md-4">
+
+                <label for="inputEmail4" class="form-label">Captcha<span class="astricks">*</span></label>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                                </div>
+                        <button onclick="speakCaptcha()">🔊</button>
+                            <input type="text" id="CaptchaCode" class="form-control" placeholder="Captcha Code" />
+                                <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                                    <div class="input-group-text" tabindex="0">
+                                        <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-4" style="margin-top:22px;">
+                        <button type="submit" class="btn btn-primary">Track</button> 
+                        <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
+                    </div>
+             
+          
+        </div>
+    </div>
+    
+
+</div>
+
+@*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+@*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+<script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+<script>
+    $("#img-captcha,#captchaRefresh").click(function () {
+        resetCaptchaImage();
+        // setTimeout(() => speakCaptcha(), 300);
+    });
+    function resetCaptchaImage() {
+        var d = new Date();
+        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+    }
+
+    
+
+    
+    $.validator.setDefaults({
+        onkeyup: false
+    })
+
+  
+
+
+
+    $("#btn_reset").click(function () {
+        $("#complainttrackingNo").val("");
+        
+        $("#CaptchaCode").val("");
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    });
+
+    $('#CaptchaCode').on('blur', function () {
+            var capcha = $(this).val();
+            if (capcha.length > 0) {
+                $.get("/English/Forms/Vigilance?handler=Validatecapcha", { CaptchaCode: capcha })
+                    .done(function (data) {
+
+                        if (data != capcha) {
+                            $("#captchavalid").html("Please Enter Valid Captcha")
+                        $("#CaptchaCode").val("");
+                            resetCaptchaImage();
+                        }
+                    });
+            }
+        });
+
+        
+</script>

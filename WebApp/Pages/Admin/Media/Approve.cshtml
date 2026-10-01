@@ -1,0 +1,208 @@
+﻿@page "{id}"
+@model WebApp.Pages.Admin.Media.ApproveModel
+@{
+    ViewData["Title"] = "Media Approve";
+}
+@section Styles
+    {
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title float-left">Approve Content</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" asp-page-handler="Approve" enctype="multipart/form-data">
+                                <input type="hidden" asp-for="tempmedia.Id" />
+                                <input type="hidden" asp-for="tempmedia.ActionDate" />
+                                <input type="hidden" asp-for="tempmedia.RowId" />
+                                <input type="hidden" asp-for="tempmedia.EnglishHeading" />
+                                <input type="hidden" asp-for="tempmedia.HindiHeading" />
+                                <input type="hidden" asp-for="tempmedia.EnglishContent" />
+                                <input type="hidden" asp-for="tempmedia.HindiContent" />
+                                <input type="hidden" asp-for="tempmedia.EnglishFile" />
+                                <input type="hidden" asp-for="tempmedia.HindiFile" />
+                                <input type="hidden" asp-for="tempmedia.EnglishImage" />
+                                <input type="hidden" asp-for="tempmedia.HindiImage" />
+                                <input type="hidden" asp-for="tempmedia.Tag" />
+                                <input type="hidden" asp-for="tempmedia.HindiTag" />
+                                <input type="hidden" asp-for="tempmedia.ActionDate" />
+
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Pending For</label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <input asp-for="tempmedia.Action" class="form-control" readonly="readonly" />
+                                        <span asp-validation-for="tempmedia.Action" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Date</label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <input value="@($"{Model.tempmedia.ActionDate.AddHours(5.5):dd/MM/yyyy}")" class="form-control" readonly="readonly" />
+                                        <span asp-validation-for="tempmedia.ActionDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Requested By</label>
+                                    <div class="col-md-4 col-lg-5">
+                                        <input asp-for="tempmedia.RoleName" class="form-control" readonly="readonly" />
+                                    </div>
+                                    <div class="col-md-5 col-lg-5">
+                                        <input asp-for="tempmedia.UserName" class="form-control" readonly="readonly" />
+                                    </div>
+                                    <span asp-validation-for="tempmedia.RoleName" class="text-danger"></span>
+                                    <span asp-validation-for="tempmedia.UserName" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label asp-for="tempmedia.EnglishHeading" class="col-md-3 col-lg-2" style="margin-top: 6px;">English Heading<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="tempmedia.EnglishHeading" id="txtenglishname" class="form-control" placeholder="English Name" autocomplete="on" />
+                                        <span asp-validation-for="tempmedia.EnglishHeading" class="text-danger"></span>
+                                        <br />
+                                    </div>
+                                    <label asp-for="tempmedia.HindiHeading" class="col-md-3 col-lg-2" style="margin-top: 6px;">&nbsp;&nbsp;  Hindi Heading<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="tempmedia.HindiHeading" id="txthindiname" class="form-control" placeholder="Hindi Name" autocomplete="on" />
+                                        <span asp-validation-for="tempmedia.HindiHeading" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label asp-for="tempmedia.Tag" class="col-md-3 col-lg-2" style="margin-top: 6px;">English Tag<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="tempmedia.Tag" id="txttag" class="form-control" placeholder="English Name" autocomplete="on" />
+                                        <span asp-validation-for="tempmedia.Tag" class="text-danger"></span>
+                                        <br />
+                                    </div>
+                                    <label asp-for="tempmedia.HindiTag" class="col-md-3 col-lg-2" style="margin-top: 6px;">&nbsp;&nbsp;  Hindi Tag<span class="required">*</span></label>
+                                    <div class="col-md-3 col-lg-3">
+                                        <input asp-for="tempmedia.HindiTag" id="txthindi" class="form-control" placeholder="Hindi Name" autocomplete="on" />
+                                        <span asp-validation-for="tempmedia.HindiTag" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 col-lg-5" role="tabpanel" aria-labelledby="nav-UploadFile-tab">
+                                    <div class="row">
+                                        <div class="col-md-4"><span class="FD">English Image</span><br /><a href="~/img/UploadedFiles/Media/File/EnglishImage/@Model.tempmedia.EnglishImage" target="_blank" class="btn btn-success">Image</a></div>
+
+                                        <div class="col-md-4"><span class="FD">Hindi Image</span><br /><a href="~/img/UploadedFiles/Media/File/HindiImage/@Model.tempmedia.HindiImage" target="_blank" class="btn btn-success">Image</a></div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-9 offset-md-3 col-lg-10 offset-lg-2">
+                                        <div class="custom-control custom-checkbox">
+                                            <input asp-for="tempmedia.Show" class="custom-control-input" checked>
+                                            <label asp-for="tempmedia.Show" class="custom-control-label">Show</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">English Content<span class="required">*</span></label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <textarea asp-for="tempmedia.EnglishContent" class="form-control" id="EnglishContentDesc" autocomplete="on" rows="3"></textarea>
+                                        <span asp-validation-for="tempmedia.EnglishContent" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label class="col-md-3 col-lg-2 col-form-label">Hindi Content<span class="required">*</span></label>
+                                    <div class="col-md-9 col-lg-10">
+                                        <textarea asp-for="tempmedia.HindiContent" class="form-control" id="HindiContentDesc" autocomplete="on" rows="3"></textarea>
+                                        <span asp-validation-for="tempmedia.HindiContent" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group offset-md-3 offset-lg-2">
+                                    <div class="btn-group">
+                                        <button type="submit" asp-page-handler="Approve" class="btn btn-success"><i class="fa fa-save"></i> Approve</button>
+                                        <button type="submit" asp-page-handler="Reject" class="btn btn-danger"><i class="fa fa-times"></i> Reject</button>
+                                        <a class="btn btn-secondary" asp-page="Pending"><i class="fa fa-arrow-left"></i> Back</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @*@if (!Model.IsNew)
+            {
+            <form method="post" asp-page-handler="Delete">
+            <input type="hidden" asp-for="TempNewProject.Id" />
+            <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+            </form>
+            }*@
+            </div>
+        </div>
+    </section>
+
+    @section Scripts
+    {
+    <script src="~/plugins/summernote/summernote-bs4.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" asp-append-version="true">
+        var today = new Date();
+        $('#ShowPressreleaseDate').daterangepicker({
+            "showDropdowns": true, //to show dropdowns for Month and year
+            "singleDatePicker": true, //to show single date picker not range
+            "locale": {
+                "format": "DD-MM-YYYY",
+                "separator": " - "
+            },
+            "minDate": today,
+        },
+            function (start, end, label) {
+                $('#modelDTO_ShowPressreleaseDate').val(start.format('YYYY-MM-DDThh:mm'));
+            });
+        $("#EnglishContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+        $("#HindiContentDesc").summernote({
+            height: 300,                 // set editor height
+            minHeight: null,             // set minimum height of editor
+            maxHeight: null             // set maximum height of editor
+        });
+
+        $(document).ready(function () {
+            //< !--Allow only alphanumeric-- >
+            $('#txtenglishname').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#txthindiname').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+            $('#txttag').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#txthindi').on('keypress', function (e) {
+                var regex = new RegExp("^[a-zA-Z0-9(),./-]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key) && event.charCode != '8' && event.charCode != '32') {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

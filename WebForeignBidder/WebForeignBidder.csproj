@@ -1,0 +1,234 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;CA1416;</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;CA1416;</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+	<SatelliteResourceLanguages>en;hi</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--commented for serilog functionality-->
+    <!--<Content Remove="appsettings.json" />-->
+    <Content Remove="Pages\Admin\PhotoGallery\Events\Manage.cshtml" />
+    <Content Remove="wwwroot\css\styles.css" />
+    <Content Remove="wwwroot\js\custom\Validation.js" />
+    <Content Remove="wwwroot\js\scripts.js" />
+    <Content Remove="wwwroot\Rotativa\help-wkhtmltoimage.txt" />
+    <Content Remove="wwwroot\Rotativa\help-wkhtmltopdf.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--commented for serilog functionality-->
+    <!--<None Include="appsettings.json" />-->
+    <None Include="Pages\Admin\PhotoGallery\Approve.cshtml" />
+    <None Include="Pages\Admin\PhotoGallery\Events\Manage.cshtml" />
+    <None Include="Pages\Admin\PhotoGallery\Index.cshtml" />
+    <None Include="Pages\Admin\PhotoGallery\Manage.cshtml" />
+    <None Include="Pages\Admin\PhotoGallery\Pending.cshtml" />
+    <None Include="wwwroot\css\styles.css" />
+    <None Include="wwwroot\js\custom\Validation.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\scripts.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\css\bootstrap-datepicker.css.map" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\css\bootstrap-datepicker.standalone.css.map" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\css\bootstrap-datepicker3.css.map" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\css\bootstrap-datepicker3.standalone.css.map" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\js\bootstrap-datepicker.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\js\bootstrap-datepicker.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker-en-CA.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ar-tn.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ar.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.az.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.bg.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.bm.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.bn.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.br.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.bs.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ca.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.cs.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.cy.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.da.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.de.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.el.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-AU.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-CA.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-GB.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-IE.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-NZ.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.en-ZA.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.eo.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.es.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.et.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.eu.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.fa.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.fi.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.fo.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.fr-CH.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.fr.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.gl.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.he.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.hi.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.hr.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.hu.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.hy.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.id.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.is.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.it-CH.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.it.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ja.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ka.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.kh.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.kk.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.km.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ko.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.kr.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.lt.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.lv.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.me.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.mk.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.mn.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ms.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.nl-BE.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.nl.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.no.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.oc.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.pl.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.pt-BR.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.pt.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ro.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.rs-latin.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.rs.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ru.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.si.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sk.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sl.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sq.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sr-latin.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sr.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sv.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.sw.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.ta.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.tg.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.th.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.tk.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.tr.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.uk.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.uz-cyrl.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.uz-latn.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.vi.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.zh-CN.min.js" />
+    <None Include="wwwroot\plugins\bootstrap-datepicker\locales\bootstrap-datepicker.zh-TW.min.js" />
+    <None Include="wwwroot\plugins\datatables\Datatables-1.13.4\jquery.dataTables.min.js" />
+    <None Include="wwwroot\plugins\hierarchy\hierarchy.js" />
+    <None Include="wwwroot\plugins\password-requirement\js\jquery.passwordRequirements.js" />
+    <None Include="wwwroot\plugins\password-requirement\js\jquery.passwordRequirements.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\jquery.tinymce.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\advlist\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\anchor\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\autolink\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\autoresize\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\autosave\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\bbcode\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\charmap\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\codesample\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\code\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\colorpicker\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\contextmenu\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\directionality\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\emoticons\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\example\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\example_dependency\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\fullpage\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\fullscreen\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\hr\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\imagetools\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\image\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\importcss\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\insertdatetime\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\layer\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\legacyoutput\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\link\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\lists\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\media\moxieplayer.swf" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\media\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\nonbreaking\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\noneditable\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\pagebreak\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\paste\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\preview\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\print\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\save\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\searchreplace\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\spellchecker\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\tabfocus\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\table\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\template\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\textcolor\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\textpattern\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\visualblocks\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\visualchars\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\plugins\wordcount\plugin.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\skins\lightgray\fonts\tinymce-small.svg" />
+    <None Include="wwwroot\plugins\Tinymce\skins\lightgray\fonts\tinymce.svg" />
+    <None Include="wwwroot\plugins\Tinymce\themes\inlite\theme.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\themes\modern\theme.min.js" />
+    <None Include="wwwroot\plugins\Tinymce\tinymce.min.js" />
+    <None Include="wwwroot\Rotativa\help-wkhtmltoimage.txt" />
+    <None Include="wwwroot\Rotativa\help-wkhtmltopdf.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CCAvenueCryptoPackage" Version="2.2.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.23" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="PdfSharpCore" Version="1.3.67" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="9.0.2" />
+    <PackageReference Include="Shyjus.BrowserDetector" Version="2.0.0" />
+    <PackageReference Include="UAParser" Version="3.1.47" />
+    <!--<PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.65" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\Admin\HomePage\Banner\" />
+    <Folder Include="wwwroot\img\UploadedFiles\EventPhotos\EnglishPhoto\" />
+    <Folder Include="wwwroot\img\UploadedFiles\Media\EnglishImage\" />
+    <Folder Include="wwwroot\img\UploadedFiles\Media\File\EnglishImage\" />
+    <Folder Include="wwwroot\img\UploadedFiles\Media\File\HindiImage\" />
+    <Folder Include="wwwroot\img\UploadedFiles\Media\HindiImage\" />
+    <Folder Include="wwwroot\img\UploadedFiles\Documents\" />
+    <Folder Include="wwwroot\img\UploadedFiles\GeneralUpload\" />
+    <Folder Include="wwwroot\img\UploadedFiles\WhatsNew\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Admin\PhotoGallery\Events\Manage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\PhotoGallery\Events\Manage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Pages\Admin\TenderUpload\Manage1.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\js\custom\disableRightClick.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

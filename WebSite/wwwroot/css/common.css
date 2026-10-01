@@ -1,0 +1,310 @@
+﻿/*careers page css*/
+p {
+    margin-bottom: .6rem;
+}
+
+#whats-your-interest .service-list-custom-col {
+    flex: 0 0 25%;
+}
+
+.img-fit {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+section#latest {
+    position: fixed;
+    z-index: 111;
+    right: -350px;
+    top: 180px;
+    transition: all .2s;
+}
+
+#latest > .container {
+    width: 350px;
+}
+
+#latest .icon-Important-Updates, #latest .icon.icon-banner-arrow-right {
+    position: absolute;
+    left: -45px;
+    padding: 7px;
+    background: #df1a14;
+    top: 0;
+    cursor: pointer;
+    width: 45px;
+    text-align: center;
+    font-size: 30px;
+}
+
+#latest .icon.icon-banner-arrow-right {
+    display: none
+}
+
+#latest .service-type-desc p {
+    font-weight: 500;
+    max-height: 90px;
+    overflow: auto;
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+#whats-your-interest .service-hp-retail-bg {
+    background-image: url(../images/Finance-RH.jpg);
+}
+
+
+#whats-your-interest .service-bg-0 {
+    background-image: url(../images/Finance-RH.jpg);
+}
+
+#whats-your-interest .service-bg-1 {
+    background-image: url(../images/legal-RH.jpg);
+}
+
+#whats-your-interest .service-bg-2 {
+    background-image: url(../images/HR-RH.jpg);
+}
+
+#whats-your-interest .service-bg-3 {
+    background-image: url(../images/Engineering-RH.jpg);
+}
+
+#whats-your-interest .service-bg-4 {
+    background-image: url(../images/Marketing-RH.jpg);
+}
+
+#whats-your-interest .service-bg-5 {
+    background-image: url(../images/System-Information-RH.jpg);
+}
+
+#whats-your-interest .service-bg-6 {
+    background-image: url(../images/Research-and-Development-RH.jpg);
+}
+
+#whats-your-interest .service-bg-7 {
+    background-image: url(../images/Quality-RH.jpg);
+}
+
+#whats-your-interest .service-bg-8 {
+    background-image: url(../images/Quality-RH.jpg);
+}
+
+.service-types#latest {
+    background-color: #ffffff;
+}
+
+#latest .slick-slide {
+    height: 100%;
+    min-height: 1px;
+    border: 1px solid #d3ecff;
+    justify-content: center;
+    align-items: center;
+}
+
+#our-evp .header-image-slider-wrapper {
+    position: relative
+}
+
+#our-evp .carousel-control-next, #our-evp .carousel-control-prev {
+    position: absolute;
+    top: auto;
+    bottom: 50px;
+    font-size: 40px;
+    width: auto;
+}
+
+.carousel-control-prev {
+    left: 40px;
+}
+
+.carousel-control-next {
+    right: auto;
+    left: 90px;
+}
+/*---Quick Access Section---*/
+#whats-your-interest .quick-access-list li {
+    flex: 0 0 25%;
+    margin: 20px 0px;
+}
+
+#whats-your-interest .quick-access-list .quick-access-item {
+    background-color: transparent;
+    text-align: center;
+    margin-right: 2px;
+    transition: all 0.5s;
+    position: relative;
+}
+
+#whats-your-interest .quick-access-item:hover {
+    background-size: cover;
+    background-position: top;
+    transition: all 0.5s ease;
+}
+
+    #whats-your-interest .quick-access-item:hover::before {
+        opacity: 0;
+        transition: all 1s ease;
+    }
+
+#whats-your-interest .quick-access-item:before {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: "";
+    z-index: 0;
+    opacity: 1;
+    transition: all 1s ease;
+}
+
+#whats-your-interest .quick-access-item.investors:hover .quick-access-icon {
+    background-image: url(../images/investors-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.career:hover .quick-access-icon {
+    background-image: url(../images/Career-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.rti:hover .quick-access-icon {
+    background-image: url(../images/RTI1-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.csr:hover .quick-access-icon {
+    background-image: url(../images/csr-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.health:hover .quick-access-icon {
+    background-image: url(../images/Sustainbility-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.ongoing-prjects:hover .quick-access-icon {
+    background-image: url(../images/MajorOngoingProjects-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.jv:hover .quick-access-icon {
+    background-image: url(../images/JVs-Subsidiaries-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.cooperate:hover .quick-access-icon {
+    background-image: url(../images/CorporateGovernance-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item.purchase:hover .quick-access-icon {
+    background-image: url(../images/Procurement-sm.jpg);
+    background-size: cover;
+    background-position: 50%;
+}
+
+#whats-your-interest .quick-access-item:hover .quick-access-icon .icon {
+    display: block;
+}
+
+#whats-your-interest .quick-access-item .csr-text {
+    display: flex;
+    padding-bottom: 0.3rem;
+    flex-direction: column;
+    align-items: center;
+}
+
+#whats-your-interest .quick-access-item:hover .csr-text:after {
+    content: "";
+    height: 2px;
+    background-color: #fff;
+    min-width: 40px;
+    margin-top: 3px;
+}
+
+#whats-your-interest .quick-access-list .quick-access-item:hover .quick-access-head {
+    background: transparent;
+    background: transparent;
+}
+
+#whats-your-interest .quick-access-list .quick-access-item .quick-access-icon {
+    padding: 1rem;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#whats-your-interest .quick-access-list .quick-access-item .quick-access-head {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #000000;
+    padding: 1rem;
+    height: auto;
+    background-color: transparent;
+    position: relative;
+    z-index: 1;
+    justify-content: center;
+}
+
+#whats-your-interest .quick-access-list .quick-access-item .quick-access-icon .icon {
+    font-size: 3rem;
+    position: relative;
+    z-index: 1;
+    background-color: #004e8f;
+    border-radius: 50%;
+    padding: 17px;
+}
+/*---!Quick Access Section---*/
+
+a.aLink, aLink {
+    color: #004e8f;
+}
+
+.quick-access-head a {
+    color: inherit
+}
+
+div[onclick] {
+    cursor: pointer
+}
+
+.bullet {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+a.aLink:hover {
+    text-decoration: underline;
+}
+
+.wrapper .col2 {
+    float: left;
+    width: 45%;
+}
+
+.wrapper .col1 {
+    float: left;
+    margin-right: 9%;
+    width: 45%;
+}
+
+.col-xs-4 {
+    width: 33.33333333%;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+/*careers page css*/

@@ -1,0 +1,315 @@
+﻿using Application.Dtos;
+using Application.ServiceInterfaces;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
+
+namespace WebApp.Pages.Admin.MenuHeadings
+{
+
+    [Authorize(Roles = "SuperAdmin,Editors,Admin,ContentCreator,Moderator,Publisher")]
+    public class UpdateForApproveModel : PageModel
+    {
+        private readonly IHttpClientService _httpClient;
+        private readonly IFileService _fileService;
+        private readonly INotyfService _notyf;
+
+        public UpdateForApproveModel(
+            IHttpClientService httpClient,
+            IFileService fileService,
+            INotyfService notyf)
+        {
+            _httpClient = httpClient;
+            _fileService = fileService;
+            _notyf = notyf;
+        }
+        [FromRoute] public int? id { get; set; }
+        [BindProperty] public MenuHeadingsDTO MenuHeadings { get; set; }
+
+        public async Task<IActionResult> OnGet()
+        {
+            var CategoryResult = await _httpClient.GetAsync("MenuHeadings/Get", true, (int)id);
+            if (CategoryResult == "unauthorized")
+            {
+                _notyf.Information("Please login/register");
+                return RedirectToPage("/Account/Login");
+            }
+            MenuHeadings = !string.IsNullOrEmpty(CategoryResult) ? JsonConvert.DeserializeObject<MenuHeadingsDTO>(CategoryResult) : null;
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPost()
+        {
+            if (MenuHeadings.EnglishFile != null)
+            {//...........Check Valid File ...................
+                if (!_fileService.CheckValidFile(MenuHeadings.EnglishFile))
+                {
+                    //......Redirect  
+                    _notyf.Information("Please Upload Valid File");
+                    return RedirectToPage("Index");
+                }
+                MenuHeadings.EnglishAttachment = await _fileService.SaveImageAsync(@"\img\UploadedFiles\MenuHeadings\Files\English\", MenuHeadings.EnglishFile);
+                MenuHeadings.EnglishFile = null;
+            }
+            if (MenuHeadings.EnglishFile != null)
+            {//...........Check Valid File ...................
+                if (!_fileService.CheckValidFile(MenuHeadings.HindiFile))
+                {
+                    //......Redirect  
+                    _notyf.Information("Please Upload Valid File");
+                    return RedirectToPage("Index");
+                }
+                MenuHeadings.HindiAttachment = await _fileService.SaveImageAsync(@"\img\UploadedFiles\MenuHeadings\Files\Hindi\", MenuHeadings.HindiFile);
+                MenuHeadings.EnglishFile = null;
+            }
+            var tempModelDTO = SetAudit("Edit", "Pending", MenuHeadings);
+            return await CreateAudit(tempModelDTO);
+        }
+        private TempMenuHeadingsDTO SetAudit(string action, string status, MenuHeadingsDTO model)
+        {
+            var uname = User.Identity.Name;
+            var role = User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+            return new TempMenuHeadingsDTO
+            {
+                EnglishAttachment = model.EnglishAttachment,
+                HindiAttachment = model.HindiAttachment,
+                EnglishContentDesc = model.EnglishContentDesc,
+                HindiContentDesc = model.HindiContentDesc,
+                HindiPageLink = model.HindiPageLink,
+                EnglishPageLink = model.EnglishPageLink,
+                HindiHeadingName = model.HindiHeadingName,
+                EnglishHeadingName = model.EnglishHeadingName,
+                Title = model.Title,
+                HindiTitle = model.HindiTitle,
+                Description = model.Description,
+                Keyword = model.Keyword,
+                DescriptionHindi = model.DescriptionHindi,
+                KeywordHindi = model.KeywordHindi,
+                ParentId = model.ParentId,
+                Priority = model.Priority,
+                Action = action,
+                Show = model.Show,
+                ActionDate = DateTime.UtcNow,
+                UpdateDate = DateTime.Now,
+                UserName = uname,
+                RoleName = role,
+                Status = status,
+                ForReview = 2,
+                IP = HttpContext.Connection.RemoteIpAddress.ToString(),
+                RowId = !action.Equals("Create", StringComparison.InvariantCultureIgnoreCase) ? id : null
+            };
+        }
+        private async Task<IActionResult> CreateAudit(TempMenuHeadingsDTO modelDto)
+        {
+            var Result = await _httpClient.PostAsync("TempMenuHeadings/CreateAudit", true, modelDto);
+            if (Result == "unauthorized")
+            {
+                _notyf.Information("Please login/register");
+                return RedirectToPage("/Account/Login");
+            }
+            var TempDTO = !string.IsNullOrEmpty(Result) ? JsonConvert.DeserializeObject<TempMenuHeadingsDTO>(Result) : null;
+            if (TempDTO == null)
+                _notyf.Error("Save failed");
+            else
+                _notyf.Success("Saved for approval");
+            return RedirectToPage("Index");
+        }
+
+        //public async Task<IActionResult> OnPostApprove()
+        //{
+        //    if (TempDTO.EnglishFile != null)
+        //    { //...........Check Valid File ...................
+        //        if (!_fileService.CheckValidFile(TempDTO.EnglishFile))
+        //        {
+        //            //......Redirect  
+        //            _notyf.Information("Please Upload Valid File");
+        //            return RedirectToPage("Index");
+        //        }
+        //        TempDTO.EnglishAttachment = await _fileService.SaveImageAsync(@"\img\UploadedFiles\MenuHeadings\Files\English\", TempDTO.EnglishFile);
+        //        TempDTO.EnglishFile = null;
+        //    }
+        //    if (TempDTO.HindiFile != null)
+        //    {//...........Check Valid File ...................
+        //        if (!_fileService.CheckValidFile(TempDTO.HindiFile))
+        //        {
+        //            //......Redirect  
+        //            _notyf.Information("Please Upload Valid File");
+        //            return RedirectToPage("Index");
+        //        }
+        //        TempDTO.HindiAttachment = await _fileService.SaveImageAsync(@"\img\UploadedFiles\MenuHeadings\Files\Hindi\", TempDTO.HindiFile);
+        //        TempDTO.HindiFile = null;
+        //    }
+        //    var modelDto = new MenuHeadingsDTO
+        //    {
+        //        Id = TempDTO.RowId ?? 0,
+        //        ParentId = TempDTO.ParentId,
+        //        HindiHeadingName = TempDTO.HindiHeadingName,
+        //        EnglishHeadingName = TempDTO.EnglishHeadingName,
+        //        Title = TempDTO.Title,
+        //        HindiTitle = TempDTO.HindiTitle,
+        //        Description = TempDTO.Description,
+        //        Keyword = TempDTO.Keyword,
+        //        DescriptionHindi = TempDTO.DescriptionHindi,
+        //        KeywordHindi = TempDTO.KeywordHindi,
+        //        EnglishPageLink = TempDTO.EnglishPageLink,
+        //        HindiPageLink = TempDTO.HindiPageLink,
+        //        HindiContentDesc = TempDTO.HindiContentDesc,
+        //        EnglishContentDesc = TempDTO.EnglishContentDesc,
+        //        EnglishAttachment = TempDTO.EnglishAttachment,
+        //        HindiAttachment = TempDTO.HindiAttachment,
+        //        Priority = TempDTO.Priority,
+        //        ForReview = 2,
+        //        Show = TempDTO.Show,
+        //        UpdateDate = DateTime.Now,
+        //    };
+
+        //    if (TempDTO.Action == "Create")
+        //    {
+
+        //        var createResponse = await _httpClient.PostAsync("MenuHeadings/Create", true, modelDto);
+        //        if (createResponse == "unauthorized")
+        //        {
+        //            _notyf.Information("Please login/register");
+        //            return RedirectToPage("/Account/Login");
+        //        }
+        //        var createResult = !string.IsNullOrEmpty(createResponse) ? JsonConvert.DeserializeObject<MenuHeadingsDTO>(createResponse) : null;
+        //        if (createResult == null)
+        //        {
+        //            _notyf.Error("Create failed");
+        //            return RedirectToPage("Pending");
+        //        }
+        //        var tempModeldto = SetAudit(TempDTO.Action, "Approved", createResult);
+        //        return await CreateAudit(tempModeldto);
+        //    }
+
+        //    if (TempDTO.Action == "Edit")
+        //    {
+        //        var editResponse = await _httpClient.PutAsync("MenuHeadings/Edit", true, modelDto.Id, modelDto);
+        //        if (editResponse == "unauthorized")
+        //        {
+        //            _notyf.Information("Please login/register");
+        //            return RedirectToPage("/Account/Login");
+        //        }
+        //        var editResult = !string.IsNullOrEmpty(editResponse) ? JsonConvert.DeserializeObject<MenuHeadingsDTO>(editResponse) : null;
+        //        if (editResult == null)
+        //        {
+        //            _notyf.Error("Edit failed");
+        //            return RedirectToPage("Pending");
+        //        }
+        //        var tempModelDto = SetAudit(TempDTO.Action, "Approved", editResult);
+        //        return await CreateAudit(tempModelDto);
+        //    }
+
+        //    if (TempDTO.Action == "Delete")
+        //    {
+        //        var deleteResponse = await _httpClient.DeleteAsync("MenuHeadings/Delete", true, modelDto.Id);
+        //        if (deleteResponse == "unauthorized")
+        //        {
+        //            _notyf.Information("Please login/register");
+        //            return RedirectToPage("/Account/Login");
+        //        }
+        //        var RowsChanged = !string.IsNullOrEmpty(deleteResponse) && Convert.ToInt32(deleteResponse) > 0;
+        //        if (!RowsChanged)
+        //        {
+        //            _notyf.Error("Delete failed");
+        //            return RedirectToPage("Pending");
+        //        }
+        //        var tempModelDto = SetAudit(TempDTO.Action, "Approved", modelDto);
+        //        return await CreateAudit(tempModelDto);
+        //    }
+        //    _notyf.Error("Action not specified");
+        //    return RedirectToPage("Pending");
+        //}
+
+        //public async Task<IActionResult> OnPostReject()
+        //{
+        //    var ModelDTO = new MenuHeadingsDTO
+        //    {
+        //        Id = TempDTO.RowId ?? 0,
+        //        ParentId = TempDTO.ParentId,
+        //        HindiHeadingName = TempDTO.HindiHeadingName,
+        //        EnglishHeadingName = TempDTO.EnglishHeadingName,
+        //        Title = TempDTO.Title,
+        //        HindiTitle = TempDTO.HindiTitle,
+        //        Description = TempDTO.Description,
+        //        Keyword = TempDTO.Keyword,
+        //        KeywordHindi = TempDTO.KeywordHindi,
+        //        DescriptionHindi = TempDTO.DescriptionHindi,
+        //        EnglishPageLink = TempDTO.EnglishPageLink,
+        //        HindiPageLink = TempDTO.HindiPageLink,
+        //        HindiContentDesc = TempDTO.HindiContentDesc,
+        //        EnglishContentDesc = TempDTO.EnglishContentDesc,
+        //        EnglishAttachment = TempDTO.EnglishAttachment,
+        //        HindiAttachment = TempDTO.HindiAttachment,
+        //        Priority = TempDTO.Priority,
+        //        UpdateDate = DateTime.Now,
+        //    };
+        //    var tempModelDTO = SetAudit(TempDTO.Action, "Rejected", ModelDTO);
+        //    return await CreateAudit(tempModelDTO);
+        //}
+
+        //private TempMenuHeadingsDTO SetAudit(string action, string status, MenuHeadingsDTO model)
+        //{
+        //    var uname = User.Identity.Name;
+        //    var role = User.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+        //    return new TempMenuHeadingsDTO
+        //    {
+        //        HindiHeadingName = TempDTO.HindiHeadingName,
+        //        EnglishHeadingName = TempDTO.EnglishHeadingName,
+        //        Title = TempDTO.Title,
+        //        HindiTitle = TempDTO.HindiTitle,
+        //        Description = TempDTO.Description,
+        //        Keyword = TempDTO.Keyword,
+        //        DescriptionHindi = TempDTO.DescriptionHindi,
+        //        KeywordHindi = TempDTO.KeywordHindi,
+        //        EnglishPageLink = TempDTO.EnglishPageLink,
+        //        HindiPageLink = TempDTO.HindiPageLink,
+        //        HindiContentDesc = TempDTO.HindiContentDesc,
+        //        EnglishContentDesc = TempDTO.EnglishContentDesc,
+        //        EnglishAttachment = TempDTO.EnglishAttachment,
+        //        HindiAttachment = TempDTO.HindiAttachment,
+        //        Priority = model.Priority,
+        //        ParentId = model.ParentId,
+        //        Action = action,
+        //        ActionDate = DateTime.UtcNow,
+        //        UpdateDate = DateTime.Now,
+        //        UserName = uname,
+        //        RoleName = role,
+        //        Status = status,
+        //        IP = HttpContext.Connection.RemoteIpAddress.ToString(),
+        //        RowId = model.Id == 0 ? (int?)null : model.Id,
+        //        Show = model.Show,
+        //    };
+        //}
+        //private async Task<IActionResult> CreateAudit(TempMenuHeadingsDTO modelDto)
+        //{
+        //    if (id != 0)
+        //    {
+        //        modelDto.Id = id;
+        //        modelDto.Show = false;
+        //        var example = await _httpClient.PutAsync("TempMenuHeadings/Edit", true, id, modelDto);
+        //    }
+        //    modelDto.Show = true;
+        //    modelDto.Id = 0;
+        //    var tempResponse = await _httpClient.PostAsync("TempMenuHeadings/CreateAudit", true, modelDto);
+        //    if (tempResponse == "unauthorized")
+        //    {
+        //        _notyf.Information("Please login/register");
+        //        return RedirectToPage("/Account/Login");
+        //    }
+        //    var tempResult = !string.IsNullOrEmpty(tempResponse) ? JsonConvert.DeserializeObject<TempMenuHeadingsDTO>(tempResponse) : null;
+        //    if (tempResult == null)
+        //        _notyf.Error("Save failed");
+        //    else
+        //        _notyf.Success("Saved successfully");
+        //    return RedirectToPage("Pending");
+        //}
+    }
+}

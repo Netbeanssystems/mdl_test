@@ -1,0 +1,338 @@
+﻿@page "/{lang}/Forms/Enquiry"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.Forms.EnquiryModel
+@{
+    Layout = "_InternalPagesLayout";
+    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        ViewData["Title"] = "Enquiry";
+    }
+    else
+    {
+
+        ViewData["Title"] = "पूछताछ";
+    }
+}
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">Enquiry</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">Home</a> > Enquiry</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">पूछताछ</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">मुख्य पृष्ठ </a> > पूछताछ</span></div>
+    </div>
+}
+
+
+<div class="mid-content">
+    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        <div class="container">
+            <h5 class="main-head">
+                <b>Your comments and suggestions will go a long way for guiding us towards improving our services and responses to our valued customers.</b>
+            </h5>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <form method="post" class="row g-3">
+                        <span style="font-size:medium;">
+                            <b> NOTE :</b>
+                            <span>
+                                All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _) etc. are not allowed. By any way you try to save it will be removed and then saved.
+                            </span>
+                        </span>
+                        <p>(<span class="astricks">*</span>) Information Required</p>
+                        <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
+                        <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
+                        <div class="col-md-4">
+                            <label for="vigi_Name" asp-for="vigi.Name" class="form-label">Name<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Name" placeholder="Name" onkeypress="return myKeyPress(event)" class="form-control vic">
+                            <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="vigi_Designation" asp-for="vigi.Designation" class="form-label">Designation<span class="astricks">*</span></label>
+                            <input type="text" onkeypress="return myKeyPress(event)" placeholder="Designation" asp-for="vigi.Designation" class="form-control vic">
+                            <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="vigi_Organization" asp-for="vigi.Organization" class="form-label">Organization<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Organization" placeholder="Organization" onkeypress="return myKeyPress(event)" class="form-control vic">
+                            <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="vigi_Email" asp-for="vigi.Email" class="form-label">E-Mail<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Email" class="form-control vic" placeholder="E-Mail" onkeypress="return myKeyPress(event)">
+                            <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-4">
+                            <label for="vigi_Contact" asp-for="vigi.Contact" class="form-label">Contact No<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Contact" placeholder="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"  class="form-control vic">
+                            <span asp-validation-for="vigi.Contact" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label for="vigi_Fax" asp-for="vigi.Fax" class="form-label">Fax No</label>
+                            <input asp-for="vigi.Fax" placeholder="Fax No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"  class="form-control vic">
+                            <span asp-validation-for="vigi.Fax" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label for="vigi_PostalAddress" asp-for="vigi.PostalAddress" class="form-label">Postal Address<span class="astricks">*</span></label>
+                            <textarea asp-for="vigi.PostalAddress" placeholder="Postal Address" onkeypress="return myKeyPress(event)" class="form-control vic" rows="3"></textarea>
+                            <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label for="vigi_ComplaintDetails" asp-for="vigi.ComplaintDetails" class="form-label">Queries<span class="astricks">*</span></label>
+                            <textarea class="form-control vic" placeholder="Queries" onkeypress="return myKeyPress(event)" asp-for="vigi.ComplaintDetails" rows="3"></textarea>
+                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-check-inline">
+                                <p><b>Queries Regarding</b></p>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                <label class="form-check-label" for="inlineCheckbox1">Ship Building</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                <label class="form-check-label" for="inlineCheckbox2">Submarine & Heavy Engg</label>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label for="captcha">
+                                Captcha <span class="astricks">*</span>
+                            </label>
+                            <div class="form-group mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                                    </div>
+                                    <button onclick="speakCaptcha()">🔊</button>
+                                    <label for="vigi_CaptchaCode" class="sr-only">captha</label>
+                                    <input type="text" class="form-control" placeholder="Captcha Code" asp-for="vigi.CaptchaCode" />
+                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" tabindex="0" data-placement="top">
+                                        <div class="input-group-text" tabindex="0">
+                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-center text-md-start">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <h5 class="main-head"><b>आपकी टिप्पणियां और सुझाव हमारी सेवाएं और अपने मूल्यवान ग्राहकों के प्रति प्रतिक्रियाओं को बेहतर बनाने में मार्गदर्शन प्रदान करेंगे।</b></h5>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <form method="post" class="row g-3">
+                        <span style="font-size:medium;">
+                            <b> नोट :</b>
+                            <span>
+                               सभी विशिष्ट चिह्न जैसे (>,=,$,;,%,^,:,&,*,”,[,],{,},+,-,_) आदि की अनुमति नहीं है। आप किसी भी तरह इसे सेव करने का प्रयत्न करते हैं तो ये हटा दिए जाएंगे और फिर सेव किया जाएगा।
+                            </span>
+
+                        </span>
+                        <p>(<span class="astricks">*</span>) आवश्यक जानकारी</p>
+                        <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
+                        <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
+                        <div class="col-md-4">
+                            <label for="vigi_Name" asp-for="vigi.Name" class="form-label">नाम<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Name" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control">
+                            <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ip1" asp-for="vigi.Designation" class="form-label">पदनाम<span class="astricks">*</span></label>
+                            <input type="text" autocomplete="off" id="ip1" placeholder="पदनाम" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="vigi.Designation" class="form-control">
+                            <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ip2" asp-for="vigi.Organization" class="form-label">संगठन<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Organization" placeholder="संगठन" id="ip2" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control">
+                            <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ip3" asp-for="vigi.Email" class="form-label">ई-मेल<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Email" autocomplete="off" id="ip3" placeholder="ई-मेल" class="form-control" onkeypress="return myKeyPress(event)">
+                            <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-4">
+                            <label for="ip4" asp-for="vigi.Contact" class="form-label">संपर्क नं.<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Contact" autocomplete="off" id="ip4" placeholder="संपर्क नं." oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control">
+                            <span asp-validation-for="vigi.Contact" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
+                            <label for="फैक्स" asp-for="vigi.Fax" class="form-label">फैक्स नं.</label>
+                            <input autocomplete="off" asp-for="vigi.Fax" placeholder="फैक्स नं." maxlength="10" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label for="डाक" asp-for="vigi.PostalAddress" class="form-label">डाक पता<span class="astricks">*</span></label>
+                            <textarea asp-for="vigi.PostalAddress" autocomplete="off" placeholder="डाक पता" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label for="प्रश्न" asp-for="vigi.ComplaintDetails" class="form-label">प्रश्न<span class="astricks">*</span></label>
+                            <textarea class="form-control" autocomplete="off" placeholder="प्रश्न" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="vigi.ComplaintDetails" rows="3"></textarea>
+                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-check-inline">
+                                <p class="form-check-label">के संबंध में प्रश्न </p>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                <label class="form-check-label" for="inlineCheckbox1">जहाज निर्माण </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                <label class="form-check-label" for="inlineCheckbox2">पनडुब्बी एवं भारी अभियांत्रिकी</label>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label for="captcha">
+                                कैप्चा <span style="color:red">*</span>
+                            </label>
+                            <div class="form-group mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="कैप्चा कोड" />
+                                    </div>
+                                    <button onclick="speakCaptcha()">🔊</button>
+                                    <input type="text" class="form-control" placeholder="कैप्चा कोड" asp-for="vigi.CaptchaCode" />
+                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                                        <div class="input-group-text" tabindex="0">
+                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">जमा करें</button>
+                            <button type="button" id="btn_reset" class="btn btn-primary">रीसेट करें</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+@*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+<script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+<script>
+    $("#img-captcha,#captchaRefresh").click(function () {
+        resetCaptchaImage();
+       // setTimeout(() => speakCaptcha(), 300);
+    });
+
+    function resetCaptchaImage() {
+        var d = new Date();
+        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+    }
+
+    $("#inlineCheckbox1").change(function () {
+        if (this.checked) {
+            $("#vigi_ShipBuildRelated").val(1);
+        }
+        else {
+            $("#vigi_ShipBuildRelated").val(0);
+        }
+    });
+
+
+    $("#inlineCheckbox2").change(function () {
+        if (this.checked) {
+            $("#vigi_SubHeavyRelated").val(1);
+        }
+        else {
+            $("#vigi_SubHeavyRelated").val(0);
+        }
+    });
+
+    $("#btn_reset").click(function () {
+        $("#vigi_Name").val("");
+        $("#vigi_Designation").val("");
+        $("#vigi_Organization").val("");
+        $("#vigi_Email").val("");
+        $("#vigi_Contact").val("");
+        $("#vigi_Fax").val("");
+        $("#vigi_PostalAddress").val("");
+        $("#vigi_ComplaintDetails").val("");
+        $("#vigi_CaptchaCode").val("");
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    });
+
+    $.validator.setDefaults({
+        onkeyup: false
+    })
+
+    $('.vic').keyup(function (e) {
+        var strg = this.value;
+        var firstChar = strg.charAt(0);
+        if ((firstChar == " ") || (firstChar == "&nbsp;") || (strg == "")) {
+            this.value = this.value.replace(/\s/g, '');
+        }
+    });
+     // $('#vigi_CaptchaCode').on('blur', function () {
+     //        var capcha = $(this).val();
+     //        if (capcha.length > 0) {
+     //            $.get("/English/Forms/Enquiry?handler=Validatecapcha", { CaptchaCode: capcha })
+     //                .done(function (data) {
+
+     //                    if (data != capcha) {
+     //                        $("#captchavalid").html("Please Enter Valid Captcha")
+     //                        $("#vigi_CaptchaCode").val("");
+     //                        resetCaptchaImage();
+     //                    }
+     //                });
+     //        }
+     //    });
+
+    $('#vigi_CaptchaCode').on('blur', function () {
+        var captcha = $(this).val();
+        if (captcha.length > 0) {
+            $.ajax({
+                url: "/English/Forms/Feedback?handler=Validatecapcha",  // URL updated
+                type: "POST",  // Changed to POST request
+                data: { CaptchaCode: captcha },  // Send as POST data
+                success: function (data) {
+                    if (data !== captcha) {
+                        $("#captchavalid").html("Please Enter Valid Captcha");
+                        $("#vigi_CaptchaCode").val("");
+                        resetCaptchaImage();  // Assuming this function resets the CAPTCHA image
+                    }
+                }
+            });
+        }
+    });
+
+</script>

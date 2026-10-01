@@ -1,0 +1,964 @@
+﻿@page
+@using Microsoft.AspNetCore.Http;
+@model IndexModel
+@{
+    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        ViewData["Title"] = "Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India";
+    }
+    else
+    {
+        ViewData["Title"] = "मझगांव डॉक शिपबिल्डर्स लिमिटेड की आधिकारिक वेबसाइट, रक्षा मंत्रालय, भारत सरकार";
+    }
+}
+<link href="~/botresource/bot.css" rel="stylesheet" />
+<div onclick="Show('0')" id="bot-launch-button">
+    Ask
+</div>
+
+
+
+<div class="hero-sec">
+    <h1 class="sr-only">Official Website of Mazagon Dock Shipbuilders Limited, Ministry of Defence, Government of India</h1>
+    <div class="owl-carousel hero-carousal">
+        <vc:banner></vc:banner>
+    </div>
+    @* <h1 class="hideTag"></h1> *@
+
+</div>
+<div class="owlCtrl owlCtrl-1">
+    <span class="play active"><i title="Play" role="button" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+    <span class="stop"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+</div>
+<div class="vessels main-content">
+    <div class="container ">
+        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+        {
+            <div class="vessels-txt">
+                <h2>Product Portfolio</h2>
+                <p style="text-align: center;">Our current product portfolio encompasses a diverse range of products for both domestic and International clientele.</p>
+                <p>We have built a total of 806 vessels since 1960, including 31 warships, ranging from advanced destroyers to missile boats as well as 8 submarines. For both national and global clientele, we have also provided cargo ships, passenger ships, supply vessels, multipurpose support vessels, water tankers, tugs, dredgers, fishing trawlers, barges, and border outposts. Jackets, wellhead platform main decks, process platforms, jack up rigs, and other products have also been manufactured and delivered by us.</p>
+            </div>
+            <div class="owl-carousel vessels-carousal">
+                <div class="item" data-id="item1">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons5 vsIcon"><span class="path1 vsIcon"></span><span class="path2 vsIcon"></span><span class="path3 vsIcon"></span><span class="path4 vsIcon"></span><span class="path5 vsIcon"></span><span class="path6 vsIcon"></span><span class="path7 vsIcon"></span></span></div>
+                            <p>Warships</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item2">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons1 vsIcon"></span></div>
+                            <p>Submarines</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item3">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons3 vsIcon"></span></div>
+                            <p>Offshore Patrol Vessel (OPV)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item4">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons2 vsIcon"></span></div>
+                            <p>Floating Border Outposts (BOP)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item5">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons6 vsIcon"></span></div>
+                            <p>Tugs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item6">
+                    <div class="vessel-single">
+                        <div>
+
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/barges.png" alt="barges" />
+                            </div>
+                            <p>Barges</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item7">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon alt"><span class="icon-icons8 vsIcon"></span></div>
+                            <p>Dredgers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item8">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Multipurpose-Support-Vessel.png" alt="Multipurpose-Support-Vessel" />
+                            </div>
+                            <p>Multipurpose Support Vessel (MSV)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item9">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Floating-Cranes.png" alt="Floating-Cranes" />
+                            </div>
+                            <p>Floating Cranes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item10">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Ferries.png" alt="Ferries" />
+                            </div>
+                            <p>Ferries</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item11">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Cargo-Vessels.png" alt="Cargo-Vessels" />
+                            </div>
+                            <p>Cargo Vessels</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item12">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Fishing-Trawlers.png" alt="Fishing-Trawlers" />
+                            </div>
+                            <p>Fishing Trawlers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item13">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Offshore-oil-Platforms.png" alt="Offshore-oil-Platforms" />
+                            </div>
+                            <p>Offshore oil Platforms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="vessels-txt">
+                <h2>
+                    उत्पाद पोर्ट्फोलिओ
+                </h2>
+                <p style="text-align: center;">हमारे वर्तमान उत्पाद पोर्टफोलियो में घरेलू और अंतर्राष्ट्रीय ग्राहकों दोनों के लिए उत्पादों की एक विविध श्रेणी शामिल है।</p>
+                <p>हमने 1960 के बाद से कुल 806 जहाजों का निर्माण किया है, जिसमें 31 युद्धपोत शामिल हैं, जिनमें उन्नत विध्वंसक से लेकर मिसाइल नौकाएँ और साथ ही 8 पनडुब्बियाँ शामिल हैं। राष्ट्रीय और वैश्विक दोनों प्रकार के ग्राहकों के लिए, हमने मालवाहक जहाज, यात्री जहाज, आपूर्ति जहाज, बहुउद्देशीय समर्थन जहाज, पानी के टैंकर, टग, ड्रेजर्स, मछली पकड़ने वाले ट्रॉलर, बार्ज और सीमा चौकियां भी प्रदान की हैं। जैकेट, वेलहेड प्लेटफॉर्म मेन डेक, प्रोसेस प्लेटफॉर्म, जैक अप रिग्स और अन्य उत्पाद भी हमारे द्वारा निर्मित और वितरित किए गए हैं।</p>
+            </div>
+            <div class="owl-carousel vessels-carousal">
+                <div class="item" data-id="item1">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons5 vsIcon"><span class="path1 vsIcon"></span><span class="path2 vsIcon"></span><span class="path3 vsIcon"></span><span class="path4 vsIcon"></span><span class="path5 vsIcon"></span><span class="path6 vsIcon"></span><span class="path7 vsIcon"></span></span></div>
+                            <p>जंगी जहाज़</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item2">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons1 vsIcon"></span></div>
+                            <p>पनडुब्बियों</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item3">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons3 vsIcon"></span></div>
+                            <p>अपतटीय गश्ती पोत (ओपीवी)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item4">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons2 vsIcon"></span></div>
+                            <p>फ़्लोटिंग सीमा चौकियां (बीओपी)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item5">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon"><span class="icon-icons6 vsIcon"></span></div>
+                            <p>
+                                टग
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item6">
+                    <div class="vessel-single">
+                        <div>
+
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/barges.png" alt="barges" />
+                            </div>
+                            <p>
+                                बार्ज
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item7">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon alt"><span class="icon-icons8 vsIcon"></span></div>
+                            <p>
+                                ड्रेजरों
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item8">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Multipurpose-Support-Vessel.png" alt="बहुउद्देशीय समर्थन पोत (एमएसवी)" />
+                            </div>
+                            <p>बहुउद्देशीय समर्थन पोत (एमएसवी)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item9">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Floating-Cranes.png" alt="फ्लोटिंग क्रेन" />
+                            </div>
+                            <p>
+                                फ्लोटिंग क्रेन
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item10">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Ferries.png" alt="घाट" />
+                            </div>
+                            <p>
+                                घाट
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item11">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Cargo-Vessels.png" alt="मालवाहक जहाज़" />
+                            </div>
+                            <p>मालवाहक जहाज़</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item12">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Fishing-Trawlers.png" alt="फिशिंग ट्रॉलर" />
+                            </div>
+                            <p>
+                                फिशिंग ट्रॉलर
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" data-id="item13">
+                    <div class="vessel-single">
+                        <div>
+                            <div class="ship-icon">
+                                <img class="mb-5" src="~/Assets/images/Offshore-oil-Platforms.png" alt="अपतटीय तेल प्लेटफार्म" />
+                            </div>
+                            <p>
+                                अपतटीय तेल प्लेटफार्म
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+        <div class="owlCtrl owlCtrl-2">
+            <span class="play2 active"><i title="Play" role="button" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+            <span class="stop2"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+        </div>
+
+    </div>
+    <div class="vessels-bg item1" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item2" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item3" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item4" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item5" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item6" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item7" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+    <div class="vessels-bg item8" style="background-image:url('./Assets/images/vessels-1.jpg') ;"></div>
+</div>
+
+<section class="media">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="media-left">
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                    {
+                        <h2>Media</h2>
+                    }
+                    else
+                    {
+                        <h2>
+                            मिडिया
+                        </h2>
+                    }
+
+                    <div class="owl-carousel media-carousal">
+                        <vc:media></vc:media>
+                    </div>
+                    <div class="owlCtrl owlCtrl-4">
+                        <span class="play4 active"><i title="Play" role="button" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                        <span class="stop4"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="announce blue">
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                    {
+                        <h3><span class="icon-icons4"></span> What's New</h3>
+                    }
+                    else
+                    {
+                        <h3><span class="icon-icons4"></span> नया क्या है</h3>
+                    }
+
+                    <div class="scroller-mid">
+                        <div class="news newsScroll">
+                            <vc:Whats-New></vc:Whats-New>
+                        </div>
+                    </div>
+                    <div class="ctrlBtn">
+                        <span class="bttest active"><i title="Play" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                        <span class="bttest"><i title="Pause" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+                <div class="announce yellow">
+                    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                    {
+                        <h3><span class="icon-icons9"></span> Announcements</h3>
+                    }
+                    else
+                    {
+                        <h3>
+                            <span class="icon-icons9"></span>
+                            घोषणाएं
+                        </h3>
+                    }
+
+                    <div class="scroller-mid">
+                        <div class="news2 newsScroll">
+                            <ul>
+                                <vc:announcement></vc:announcement>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ctrlBtn">
+                        <span class="bttest2 active"><i title="Play" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+                        <span class="bttest2"><i title="Pause" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="service">
+
+    <div class="container">
+        <div class="service-main">
+            <div class="row">
+                @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+                {
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/English/products"><span class="sr-only">PRODUCTS</span> </a>
+                            <div class="service-single-img">
+                                <img alt="PRODUCTS" src="./Assets/images/service-1.jpg" />
+                                <div class="service-single-txt">
+                                    <span>PRODUCTS</span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">PRODUCTS</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/English/services"><span class="sr-only">services</span></a>
+                            <div class="service-single-img">
+                                <img alt="services" src="./Assets/images/service-2.jpg" />
+                                <div class="service-single-txt">
+                                    <span>SERVICES</span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">SERVICES</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/English/facilities"><span class="sr-only">FACILITIES</span></a>
+                            <div class="service-single-img">
+                                <img alt="FACILITIES" src="./Assets/images/service-3.jpg" />
+                                <div class="service-single-txt">
+                                    <span>FACILITIES</span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">FACILITIES</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/Hindi/products"></a>
+                            <div class="service-single-img">
+                                <img src="./Assets/images/service-1.jpg" alt="">
+                                <div class="service-single-txt">
+                                    <span>उत्पाद</span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">उत्पाद</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/Hindi/services"></a>
+                            <div class="service-single-img">
+                                <img src="./Assets/images/service-2.jpg" alt="">
+                                <div class="service-single-txt">
+                                    <span>
+                                        सेवाएं
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">
+                                सेवाएं
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="service-single">
+                            <a class="fullLink" href="/Hindi/facilities"></a>
+                            <div class="service-single-img">
+                                <img src="./Assets/images/service-3.jpg" alt="">
+                                <div class="service-single-txt">
+                                    <span>सुविधाएँ</span>
+                                </div>
+                            </div>
+                            <span class="text-center" style="color:white !important;">सुविधाएँ</span>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="gallery">
+    <h3 class="sr-only"> Gallery </h3>
+    <div class="container">
+        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+        {
+            <h2 id="e1">Event Gallery</h2>
+        }
+        else
+        {
+            <h2 id="e1">
+                इवेंट गैलरी
+            </h2>
+        }
+        <vc:events></vc:events>
+    </div>
+</section>
+
+<section class="logo-sec">
+    <h3 class="sr-only">goverment directories</h3>
+    <div class="container">
+        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+        {
+            <div class="owl-carousel logo-carousal">
+                <div class="item">
+                    <a title="Defence Establishments and Entrepreneurship Platform" onclick="return confirm('External site that opens in a new window.');" href="https://srijandefence.gov.in/CMMLogin" target="_blank">
+                        <img alt="Defence Establishments and Entrepreneurship Platform" src="/Assets/images/Sreejan-Deep-logo.jpg">   <!--Updated-->
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Data.Gov.in" onclick="return confirm('External site that opens in a new window.');" href="https://www.data.gov.in/ " target="_blank">
+                        <img alt="Data.Gov.in" src="/Assets/images/DataGov.jpg"> 
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="MyGov.in" onclick="return confirm('External site that opens in a new window.');" href="https://www.mygov.in/" target="_blank">
+                        <img alt="MyGov.in" src="/Assets/images/MyGov.png">
+                    </a>
+                </div>
+
+                <div class="item">
+                    <a title="Department Of Defence Production" onclick="return confirm('External site that opens in a new window.');" href="https://defenceinvestorcell.gov.in" target="_blank">
+                        <img alt="Department Of Defence Production" src="/Assets/images/logo-4.png">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="GeM Logo, Government of India" onclick="return confirm('External site that opens in a new window.');" href="https://gem.gov.in/?lang=hindi" target="_blank">
+                        <img alt="GeM Logo, Government of India" src="/Assets/images/gem-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Digital India" onclick="return confirm('External site that opens in a new window.');" href="https://digitalindia.gov.in/" target="_blank">
+                        <img alt="Digital India" src="/Assets/images/digital-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Skill Development And Entrepreneurship" onclick="return confirm('External site that opens in a new window.');" href="https://www.skillindiadigital.gov.in" target="_blank">
+                        <img alt="Skill Development And Entrepreneurship" src="/Assets/images/skill-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="National Career Service" onclick="return confirm('External site that opens in a new window.');" href="https://www.ncs.gov.in/hi-in/Pages/default.aspx" target="_blank">
+                        <img alt="National Career Service" src="/Assets/images/National-Career-Service.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="India Gov Logo" onclick="return confirm('External site that opens in a new window.');" href="https://www.india.gov.in/" target="_blank">
+                        <img alt="India Gov Logo" src="/Assets/images/India-gov.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="National Voter's Services Portal" onclick="return confirm('External site that opens in a new window.');" href="https://www.nvsp.in/" target="_blank">
+                        <img alt="National Voter's Services Portal" src="/Assets/images/National-voters-Service-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="Central Public Procurement Portal" onclick="return confirm('External site that opens in a new window.');" href="https://eprocure.gov.in/cppp/hi" target="_blank">
+                        <img alt="Central Public Procurement Portal" src="/Assets/images/Central-Public-Procurement-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="NITI Aayog" href="https://niti.gov.in/" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                        <img alt="NITI Aayog" src="/Assets/images/niti-ayog.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="India Investment Grid" onclick="return confirm('External site that opens in a new window.');" href="https://indiainvestmentgrid.gov.in/index.jsp" target="_blank">
+                        <img alt="India Investment Grid" src="/Assets/images/logo-2.png">
+                    </a>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="owl-carousel logo-carousal">
+                <div class="item">
+                    <a title="रक्षा प्रतिष्ठान और उद्यमिता मंच" onclick="return confirm('External site that opens in a new window.');" href="https://srijandefence.gov.in/CMMLogin" target="_blank">
+                        <img alt="रक्षा प्रतिष्ठान और उद्यमिता मंच" src="/Assets/images/Sreejan-Deep-logo.jpg">        <!--Updated-->
+                    </a>
+                </div>
+
+
+                <div class="item">
+                    <a title="रक्षा उत्पादन विभाग" onclick="return confirm('External site that opens in a new window.');" href="https://defenceinvestorcell.gov.in" target="_blank">
+                        <img alt="रक्षा उत्पादन विभाग" src="/Assets/images/logo-4.png">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="जीईएम लोगो, भारत सरकार" onclick="return confirm('External site that opens in a new window.');" href="https://gem.gov.in/?lang=hindi" target="_blank">
+                        <img alt="जीईएम लोगो, भारत सरकार" src="/Assets/images/gem-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="डिजिटल इंडिया" onclick="return confirm('External site that opens in a new window.');" href="https://digitalindia.gov.in/" target="_blank">
+                        <img alt="डिजिटल इंडिया" src="/Assets/images/digital-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="कौशल विकास और उद्यमिता" onclick="return confirm('External site that opens in a new window.');" href="https://www.skillindiadigital.gov.in" target="_blank">
+                        <img alt="कौशल विकास और उद्यमिता" src="/Assets/images/skill-india-logo.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="राष्ट्रीय कैरियर सेवा" onclick="return confirm('External site that opens in a new window.');" href="https://www.ncs.gov.in/hi-in/Pages/default.aspx" target="_blank">
+                        <img alt="राष्ट्रीय कैरियर सेवा" src="/Assets/images/National-Career-Service.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="भारत सरकार लोगो" onclick="return confirm('External site that opens in a new window.');" href="https://www.india.gov.in/" target="_blank">
+                        <img alt="भारत सरकार लोगो" src="/Assets/images/India-gov.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="राष्ट्रीय मतदाता सेवा पोर्टल" onclick="return confirm('External site that opens in a new window.');" href="https://www.nvsp.in/" target="_blank">
+                        <img alt="राष्ट्रीय मतदाता सेवा पोर्टल" src="/Assets/images/National-voters-Service-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="केंद्रीय सार्वजनिक खरीद पोर्टल" onclick="return confirm('External site that opens in a new window.');" href="https://eprocure.gov.in/cppp/hi" target="_blank">
+                        <img alt="केंद्रीय सार्वजनिक खरीद पोर्टल" src="/Assets/images/Central-Public-Procurement-Portal.jpg">
+                    </a>
+                </div>
+                <div class="item">
+                    <a title="भारत निवेश ग्रिड" onclick="return confirm('External site that opens in a new window.');" href="https://indiainvestmentgrid.gov.in/index.jsp" target="_blank">
+                        <img alt="भारत निवेश ग्रिड" src="/Assets/images/logo-2.png">
+                    </a>
+                </div>
+
+            </div>
+        }
+        <div class="owlCtrl owlCtrl-5">
+            <span class="play5 active"><i title="Play" role="button" aria-pressed="true" aria-label="Play" class="fa fa-play-circle-o" aria-hidden="true"></i></span>
+            <span class="stop5"><i title="Pause" role="button" aria-pressed="false" aria-label="Pause" class="fa fa-pause-circle-o" aria-hidden="true"></i></span>
+        </div>
+    </div>
+     <div id="popup"> 
+         <button id="closeButton">&times;</button>  
+
+       @* <img src="assets/images/Har Ghar Tiranga Logo.jpg"
+             class="banner-img"
+             data-link="https://idex.gov.in/disc-category/46"
+             style="display: block;"> *@
+
+       @* <img src="assets/images/Outreach and Promotional Event_page-0002.jpg"
+             class="banner-img"
+             data-link="https://mazagondock.webex.com/mazagondock/j.php?MTID=ma83d4b9da587b6b1a370f0ae4b9deade"
+             style="display: none;">*@
+        <img src="assets/images/VAW_2026_Banner.jpg"
+             class="banner-img"
+             style="display: none;">
+     </div>  
+</section>
+
+<div id="bot-container" class="">
+    <div id="bot-title-grid">
+        <div class="bot-title-back-button" onclick="Back()"></div>
+        @* <div class="bot-title-avatar"></div> By Roshan *@
+        <div id="TitelText" class="bot-title-text">Our Smart Bot!</div>
+        <div class="bot-title-close-button" onclick="myFunction()"></div>
+    </div>
+
+    <label id="url" hidden="hidden"></label>
+    <label id="session" hidden="hidden"></label>
+    <label id="ACC" hidden="hidden"></label>
+    <label id="ACCno" hidden="hidden"></label>
+    <label id="Agg" hidden="hidden"></label>
+    <label id="IDname" hidden="hidden"></label>
+    <label id="ButtonId" hidden="hidden"></label>
+    <label id="menuname" hidden="hidden"></label>
+    <label id="discription" hidden="hidden"></label>
+    <label id="ACMO" hidden="hidden"></label>
+    <label id="nema" hidden="hidden"></label>
+    <label id="Mobile" hidden="hidden"></label>
+    <label id="districts1" hidden="hidden"></label>
+    <label id="Subdivisionid" hidden="hidden"></label>
+    <label id="sanctionedload" hidden="hidden"></label>
+    <label id="Feederid" hidden="hidden"></label>
+    <label id="address" hidden="hidden"></label>
+    <label id="address1" hidden="hidden"></label>
+    <label id="Token" hidden="hidden"></label>
+    <input id="IsThisABillPage" type="hidden" value="0" />
+
+    <div id="bot-message-grid">
+        <span id="img"></span>
+        <ul id="maindiv" class="bot-message-list">
+            <li id="liDemo" class="message user appeared" style="display: none;">
+                <div class="message-avatar"></div>
+                <div class="message-wrapper">
+                    <div class="message-text"></div>
+                </div>
+            </li>
+        </ul>
+
+        <ul id="divBillinfor" style="display: none; max-height: 410px;" class="bot-message-list">
+            <!-- Your list items -->
+        </ul>
+
+        <ul id="divnewconnection" style="display: none; max-height: 410px;" class="bot-message-list">
+            <!-- Your list items -->
+        </ul>
+
+        <ul id="divaccountno" style="display: none; max-height: 410px;" class="bot-message-list">
+            @* Server-side rendering here if needed *@
+        </ul>
+
+        <ul id="divResponse" style="display: none; max-height: 410px;" class="bot-message-list">
+            <!-- Your list items -->
+        </ul>
+    </div>
+
+    <div id="bot-input-grid">
+        <span class="menu-bar" id="back"><i class="fa fa-bars" onclick="Show(1)"></i></span>
+        <label class="sr-only" for="bot-input-box">ask a query</label>
+        <input id="bot-input-box" type="text" autocomplete="off" placeholder="Ask your query here..." disabled="disabled" />
+        <div id="bot-send-button" onclick="RedirectOnLink()"></div>
+    </div>
+
+    <div class="send-mes" id="Chatbox-msg" style="display: none; margin-top: 10px; max-width: 95%; color: black;">
+        <div class="text-item-view">
+        </div>
+    </div>
+
+    <!-- Message Template -->
+    <div class="message-template" style="display: none">
+        <ul>
+            <li class="message">
+                <div class="message-avatar"></div>
+                <div class="message-wrapper">
+                    <div class="message-text"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="indicator-template" style="display: none">
+        <div class="bot-typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="myModal">
+    <div class="modal-dialog" style="position: absolute; top: 12%; right: 2.5%; width: 27em;">
+        <div class="modal-content" style="background: #FFF;">
+            <div class="modal-body" style="color: #005271; font-size: 14px;">
+                <button class="btn" style="position: relative; z-index: 1; font-size: 25px; padding: 0px!important;" id="close" type="button"><span aria-hidden="true">&times;</span></button>
+                <div class="col-sm-12 col-md-12">
+                    <div class="section-title-left">
+                        <h4>Complaint Handling policy and terms and conditions</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+@section Scripts {
+    <script>
+        const plax1 = document.querySelector(".hero-sec");
+        window.addEventListener("scroll", function () {
+            let offset = window.pageYOffset;
+            plax1.style.transform = "translateY(" + offset * 0.7 + "px)";
+        });
+    </script>
+      <script>
+        function PopUp() {
+            $('#popup').fadeIn();
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                PopUp();
+            }, 1000);
+
+            // Close the popup when clicking outside or on the close button
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#popup').length || $(event.target).is('#closeButton')) {
+                    $('#popup').fadeOut();
+                }
+            });
+
+            // Prevent closing when clicking inside the popup
+            $('#popup').on('click', function (event) {
+                event.stopPropagation();
+            });
+
+             //Open a link when clicking on the image
+             $('#popup img').on('click', function () {
+                 window.open('https://idex.gov.in/disc-category/46', '_blank');
+                // window.open('https://mazagondock.webex.com/mazagondock/j.php?MTID=m971388b3a293487283b68cbfec82f858', '_blank');
+             });
+
+            // Close the popup when clicking the close button
+            $('#closeButton').on('click', function () {
+                $('#popup').fadeOut();
+            });
+        });
+    </script>
+    }*@
+
+@*<script>
+        $(document).ready(function () {
+
+            const images = $('#popup .banner-img');
+            let current = 0;
+            let switched = false; // to prevent double switching
+
+            // Hide all except first
+            images.hide();
+            $(images[0]).show();
+
+            // Show popup
+            setTimeout(() => {
+                $('#popup').fadeIn();
+            }, 1000);
+
+            // --- AUTO SWITCH AFTER 10 SEC ---
+            setTimeout(() => {
+                if (!switched) {
+                    $(images[0]).fadeOut(300, function () {
+                        $(images[1]).fadeIn(300);
+                        current = 1;
+                        switched = true;
+                    });
+                }
+            }, 10000);
+
+            // --- Image click ---
+            images.on('click', function () {
+                const link = $(this).data('link');
+                if (link) window.open(link, '_blank');
+            });
+
+            // --- Close button logic ---
+            $('#closeButton').on('click', function () {
+
+                if (current === 0) {
+                    // Switch immediately to second image
+                    $(images[0]).fadeOut(300, function () {
+                        $(images[1]).fadeIn(300);
+                        current = 1;
+                        switched = true;
+                    });
+                } else {
+                    // Close popup
+                    $('#popup').fadeOut();
+                }
+            });
+
+        });
+    </script>
+    <script src="~/js/botscript.js"></script>
+}*@
+
+
+@*15 aug  image*@
+@section Scripts {
+
+    <style>
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            background: #ffffff;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            /* --- FIXED UNITS FOR A TRULY BIGGER POPUP --- */
+            max-width: 90vw; /* Use vw (Viewport Width) so it takes up 90% of screen width */
+            min-width: 80vw;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 30px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+            #closeButton:hover {
+                background: #d9534f;
+            }
+
+        .banner-img {
+            width: 100%; /* Spreads the image smoothly to fill the container width */
+            height: auto; /* Keeps the aspect ratio perfectly intact without distortion */
+            max-height: 80vh; /* Restricts vertical height so it never overflows off the screen bottom */
+            display: block;
+            border-radius: 6px;
+        }
+    </style>
+    <script>
+        // Parallax Effect for Hero Section
+        const plax1 = document.querySelector(".hero-sec");
+        if (plax1) {
+            window.addEventListener("scroll", function() {
+                let offset = window.pageYOffset;
+                plax1.style.transform = "translateY(" + offset * 0.7 + "px)";
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Show popup after 1 second
+            setTimeout(function() {
+                // 1. Force the hidden image to display first
+                $('#popup .banner-img').show();
+
+                // 2. Then fade in the entire popup container
+                $('#popup').fadeIn();
+            }, 1000);
+
+            // Close popup when clicking the Close Button
+            $('#closeButton').on('click', function(event) {
+                event.stopPropagation();
+                $('#popup').fadeOut();
+            });
+
+            // Close the popup when clicking anywhere outside the image box
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#popup').length) {
+                    $('#popup').fadeOut();
+                }
+            });
+
+            // Prevent closing when clicking inside the popup element itself
+            $('#popup').on('click', function(event) {
+                event.stopPropagation();
+            });
+        });
+    </script>
+}

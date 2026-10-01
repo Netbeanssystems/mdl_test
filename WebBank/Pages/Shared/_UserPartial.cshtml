@@ -1,0 +1,52 @@
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Http
+@using WebBank.Helpers
+@inject IConfiguration _config;
+@inject IHttpContextAccessor _httpContextAccessor
+@if (User.Identity.IsAuthenticated)
+{
+    var RoleName = DataHelper.GetUserRole(User);
+    var NickName = DataHelper.GetUserNickName(User);
+    var Role = !string.IsNullOrEmpty(RoleName) ? RoleName : "Guest";
+    var UserName = User.Identity.IsAuthenticated ? User.Identity.Name : "Guest";
+    var UserImage = _httpContextAccessor.HttpContext.Session.GetString("ProfileImage");
+    //var greeting = "Good";
+    //var currentHour = DateTime.UtcNow.AddHours(5.5).Hour;
+    //if (currentHour < 12)
+    //{ greeting = $"{greeting} Morning"; }
+    //else if (currentHour < 17)
+    //{ greeting = $"{greeting} Afternoon"; }
+    //else
+    //{ greeting = $"{greeting} Evening"; }
+    //if (!string.IsNullOrEmpty(NickName))
+    //{ greeting = $"{greeting} {NickName.Split(' ')[0]}"; }
+    <div class="user-panel mt-2 pb-2 mb-2 d-flex">
+        <div class="image">
+            <img style="top: 15%;position: relative;" src="@($"{_config["BaseUrl"]}/img/users/{UserImage}")"
+                 alt="User Image"
+                 class="img-circle elevation-2"
+                 onerror=@($"src='{_config["BaseUrl"]}/img/users/default_user100.png'")
+                 asp-append-version="true" />
+        </div>
+        <a asp-page="/Index" class="d-block">
+            <p class="ml-2 mb-0">@(!string.IsNullOrEmpty(NickName)?NickName: User.Identity.Name)</p>
+            <p class="ml-2 mb-0">(@UserName)</p>
+        </a>
+        @*<div class="info">
+            </div>*@
+    </div>
+}
+else
+{
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src="@($"{_config["BaseUrl"]}/img/users/default_user100.png")"
+                 alt="User Image"
+                 class="img-circle elevation-2"
+                 asp-append-version="true" />
+        </div>
+        <div class="info">
+            <a asp-page="/Index" class="d-block">Hello, Guest</a>
+        </div>
+    </div>
+}

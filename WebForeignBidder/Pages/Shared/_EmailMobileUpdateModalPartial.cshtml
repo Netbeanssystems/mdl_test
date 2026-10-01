@@ -1,0 +1,44 @@
+﻿@model EmailMobileUpdateDTO
+<div class="modal fade" id="EmailMobileUpdateModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="EmailMobileUpdateModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EmailMobileUpdateModalTitle">Update Email/Mobile</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" asp-for="EntityId" />
+                    <div class="form-group">
+                        <label asp-for="Email" class="col-form-label">Email<span class="required">*</span></label>
+                        <div class="input-group">
+                            <input asp-for="Email" class="form-control" placeholder="Email" autocomplete="on" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fa fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MobileNo" class="col-form-label">10 Digit Mobile Number<span class="required">*</span></label>
+                        <div class="input-group">
+                            <input asp-for="MobileNo" class="form-control" placeholder="Mobile Number" autocomplete="on" />
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fa fa-phone"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <span asp-validation-for="MobileNo" class="text-danger"></span>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnUpdate" type="button" class="btn btn-sm btn-primary">Update</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

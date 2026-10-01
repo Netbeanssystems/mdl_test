@@ -1,0 +1,116 @@
+﻿@model List<Application.ViewModels.WhatsNewVM>
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration config;
+
+<ul>
+    @if (Model?.Count > 0)
+    {
+        @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+        {
+            string dt = "";
+            @foreach (var mm in Model.OrderBy(a => a.Priority))
+            {
+                @if (mm.Show)
+                {
+                    @if (mm.EnglishAttachment != null)
+                    {
+                        <li>
+                            @if (dt == mm.PublishDate?.ToString("dd MMM yyyy"))
+                            {
+                                <ul class="newsList">
+                                    <li>@Html.Raw(mm.EnglishContentDesc) <a target="_blank" href="@config["FileBaseUrl"]/admin/img/UploadedFiles/WhatsNew/Images/@mm.EnglishAttachment"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <p><strong>@mm.PublishDate?.ToString("dd MMM yyyy")</strong></p>
+                                <ul class="newsList">
+                                    <li>@Html.Raw(mm.EnglishContentDesc) <a target="_blank" href="@config["FileBaseUrl"]/admin/img/UploadedFiles/WhatsNew/Images/@mm.EnglishAttachment"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></li>
+                                </ul>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        @if (dt == mm.PublishDate?.ToString("dd MMM yyyy"))
+                        {
+                            <li>
+                                <ul class="newsList">
+                                    <li>
+                                        @* <a href="@mm.EnglishPageLink" target="_blank"> *@
+                                        @Html.Raw(mm.EnglishContentDesc)
+                                        @* </a> *@
+                                        </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <p><strong>@mm.PublishDate?.ToString("dd MMM yyyy")</strong></p>
+                                <ul class="newsList">
+                                    <li>
+                                        @* <a href="@mm.EnglishPageLink" target="_blank"> *@
+                                        @Html.Raw(mm.EnglishContentDesc)
+                                        @* </a> *@
+                                        </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                }
+                dt = mm.PublishDate?.ToString("dd MMM yyyy");
+            }
+        }
+        else
+        {
+            string dt = "";
+            @foreach (var mm in Model.OrderBy(a => a.Priority))
+            {
+                @if (mm.Show)
+                {
+                    @if (mm.EnglishAttachment != null)
+                    {
+                        <li>
+                            @if (dt == mm.PublishDate?.ToString("dd MMM yyyy"))
+                            {
+                                <ul class="newsList">
+                                    <li>@Html.Raw(mm.HindiContentDesc) <a target="_blank" href="@config["FileBaseUrl"]/admin/img/UploadedFiles/WhatsNew/Images/@mm.EnglishAttachment"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <p><strong>@mm.PublishDate?.ToString("dd MMM yyyy")</strong></p>
+                                <ul class="newsList">
+                                    <li>@Html.Raw(mm.HindiContentDesc) <a target="_blank" href="@config["FileBaseUrl"]/admin/img/UploadedFiles/WhatsNew/Images/@mm.EnglishAttachment"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a></li>
+                                </ul>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        @if (dt == mm.PublishDate?.ToString("dd MMM yyyy"))
+                        {
+                            <li>
+                                <ul class="newsList">
+                                    <li><a href="@mm.EnglishPageLink" target="_blank">@Html.Raw(mm.HindiContentDesc)</a></li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <p><strong>@mm.PublishDate?.ToString("dd MMM yyyy")</strong></p>
+                                <ul class="newsList">
+                                    <li><a href="@mm.EnglishPageLink" target="_blank">@Html.Raw(mm.HindiContentDesc)</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                }
+                dt = mm.PublishDate?.ToString("dd MMM yyyy");
+            }
+        }
+    }
+</ul>

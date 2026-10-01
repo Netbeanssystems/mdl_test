@@ -1,0 +1,84 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Roles";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Roles and Permissions</h3>
+            <a class="float-right ml-3" data-toggle="modal" data-target="#ManageModal">
+                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+            </a>
+            <a class="float-right" asp-page="Permissions">
+                <i class="fa fa-list text-dark" data-toggle="tooltip" data-placement="top" title="Manage All"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Role</th>
+                                <th class="search">Can View</th>
+                                <th class="search">Can Create</th>
+                                <th class="search">Can Edit</th>
+                                <th class="search">Can Delete</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                @*<th class="text-center noExport">Menus</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@(item.CanView?"Yes":"No")</td>
+                                    <td>@(item.CanCreate ? "Yes":"No")</td>
+                                    <td>@(item.CanEdit ? "Yes":"No")</td>
+                                    <td>@(item.CanDelete ? "Yes":"No")</td>
+                                    <td class="text-center">
+                                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("BidderSuperAdmin"))
+                                        {
+                                            <a data-id="@item.Id" data-toggle="modal" data-target="#ManageModal" class="ml-2 mr-2">
+                                                <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Edit"></i>
+                                            </a>
+                                        }
+                                        @*<a onclick='Delete(@item.Id);'><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>*@
+                                    </td>
+                                    @*<td class="text-center">
+                                        <a asp-page="Menus" asp-route-rolename="@item.Name">
+                                        <i class="fa fa-edit text-dark" data-toggle="tooltip" data-placement="top" title="Menus"></i>
+                                        </a>
+                                        </td>*@
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="search">Role</th>
+                                <th class="search">Can View</th>
+                                <th class="search">Can Create</th>
+                                <th class="search">Can Edit</th>
+                                <th class="search">Can Delete</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                @*<th class="text-center noExport">Menus</th>*@
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+    <partial name="Shared/_RolesManagePartial" model="Model.ModelDto" />
+</section>
+@section Scripts{
+<script src="~/js/custom/Roles.js" asp-append-version="true"></script>
+}

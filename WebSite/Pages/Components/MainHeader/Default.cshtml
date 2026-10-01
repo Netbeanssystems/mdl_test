@@ -1,0 +1,494 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model List<Application.ViewModels.MenuHeadingsCustomVM>
+
+<ul>
+    @if (Model?.Count > 0)
+    {
+        @if (Context.Session.GetString("Lang") == null || Context.Session.GetString("Lang") == "English")
+        {
+            <li><a title="Home" href="/">Home</a></li>
+
+            @foreach (var mm in Model.OrderBy(a => a.Priority))
+            {
+                @if (mm.Show)
+                {
+                    @if (@mm.EnglishHeadingName == "RTI")
+                    {
+
+
+                    }
+                    else
+                    {
+
+                        @if (mm.Children?.Any() != true)
+                        {
+                            <li>
+                                @if (mm.EnglishPageLink != null)
+                                {
+                                    <a title="@mm.EnglishHeadingName"  href="/English/@mm.EnglishPageLink">
+                                        @mm.EnglishHeadingName
+                                    </a>
+                                }
+                                else if (mm.EnglishPageLink == null)
+                                {
+                                    <a title="@mm.EnglishHeadingName" href="/English/@mm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                        @mm.EnglishHeadingName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@mm.EnglishHeadingName">
+                                        @mm.EnglishHeadingName <span>(current)</span>
+                                    </a>
+                                }
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                @if (mm.EnglishPageLink != null)
+                                {
+                                    <a href="/English/@mm.EnglishPageLink" title="@mm.EnglishHeadingName">
+                                        @mm.EnglishHeadingName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@mm.EnglishHeadingName" tabindex="0">
+                                        @mm.EnglishHeadingName
+                                    </a>
+                                }
+                                @if (mm.Children.Count(a => a.Show) > 0)
+                                {
+                                    <ul>
+                                        @foreach (var nm in mm.Children.Where(a => a.Show).OrderBy(x => x.Priority).ToList())
+                                        {
+                                            @if (nm.Children.Count(a => a.Show) == 0)
+                                            {
+                                                <li>
+                                                    @if (nm.EnglishPageLink == null)
+                                                    {
+                                                        @if (Model.Any(a => a.ParentId == nm.Id))
+                                                        {
+                                                            @nm.EnglishHeadingName
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Online Portal for Retired Employees")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName.Contains("http"))
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="/English/@nm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (nm.EnglishHeadingName == "Vendor Registration")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="/English/@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Online Recruitment")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "MDL e Connect")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Online Vendor Registrations")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "MDL E-Procurement")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "E-Procurement")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Disposal Cell")
+                                                        {
+                                                            <a href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "online payment")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Export")
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName.Contains("http"))
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.EnglishHeadingName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            if (nm.EnglishPageLink.Contains("http") || nm.EnglishPageLink.Contains("www"))
+                                                            {
+                                                                <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                    @nm.EnglishHeadingName
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a title="@nm.EnglishHeadingName" href="/English/@nm.EnglishPageLink">
+                                                                    @nm.EnglishHeadingName
+                                                                </a>
+                                                            }
+                                                        }
+                                                    }
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    @if (nm.EnglishContentDesc == null)
+                                                    {
+                                                        <a title="@nm.EnglishHeadingName" href="@(nm.Clickable ? "English/"+ nm.EnglishHeadingName.Replace(" ", "-").ToLower() : "javascript:void(0);")">
+                                                            @nm.EnglishHeadingName
+                                                        </a>
+                                                    }
+                                                    else if (nm.EnglishPageLink != null)
+                                                    {
+                                                        <a title="@nm.EnglishHeadingName" href="/English/@nm.EnglishPageLink">
+                                                            @nm.EnglishHeadingName
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a title="@nm.EnglishHeadingName" href="/English/@nm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                                            @nm.EnglishHeadingName
+                                                        </a>
+                                                    }
+                                                    <ul>
+                                                        @foreach (var ssm in nm.Children.Where(a => a.Show).OrderBy(x => x.Priority).ToList())
+                                                        {
+                                                            <li>
+                                                                @if (ssm.EnglishPageLink == null)
+                                                                {
+                                                                    <a title="@ssm.EnglishHeadingName" href="/English/@ssm.EnglishHeadingName.Replace(" ", "-").ToLower()">@ssm.EnglishHeadingName</a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @if (ssm.EnglishHeadingName == "BSE Stockwatch")
+                                                                    {
+                                                                        <a title="@ssm.EnglishHeadingName" href="/English/@ssm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                            @ssm.EnglishHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else if (ssm.EnglishHeadingName == "NSE Market Tracker")
+                                                                    {
+                                                                        <a title="@ssm.EnglishHeadingName" href="/English/@ssm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                            @ssm.EnglishHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else if (ssm.EnglishHeadingName == "Online Portal for Retired Employees")
+                                                                    {
+                                                                        <a title="@ssm.EnglishHeadingName" href="@ssm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                            @ssm.EnglishHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (ssm.EnglishPageLink.Contains("http") || ssm.EnglishPageLink.Contains("www"))
+                                                                        {
+                                                                            <a title="@ssm.EnglishHeadingName" href="@ssm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                                @ssm.EnglishHeadingName
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a title="@ssm.EnglishHeadingName" href="/English/@ssm.EnglishPageLink">
+                                                                                @ssm.EnglishHeadingName
+                                                                            </a>
+                                                                        }
+                                                                        
+                                                                    }
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            <li><a title="होम" href="/Index">मुख्य पृष्ठ</a></li>
+
+            @foreach (var mm in Model.OrderBy(a => a.Priority))
+            {
+                @if (mm.Show)
+                {
+                    @if (@mm.EnglishHeadingName == "RTI")
+                    {
+
+
+                    }
+                    else
+                    {
+                        @if (mm.Children?.Any() != true)
+                        {
+                            <li>
+                                @if (mm.EnglishPageLink != null)
+                                {
+                                    <a title="@mm.HindiHeadingName" href="/Hindi/@mm.EnglishPageLink">
+                                        @mm.HindiHeadingName
+                                    </a>
+                                }
+                                else if (mm.EnglishPageLink == null)
+                                {
+                                    <a title="@mm.HindiHeadingName" href="/Hindi/@mm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                        @mm.HindiHeadingName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@mm.HindiHeadingName">
+                                        @mm.HindiHeadingName <span>(current)</span>
+                                    </a>
+                                }
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                @if (mm.EnglishPageLink != null)
+                                {
+                                    <a href="/Hindi/@mm.EnglishPageLink" title="@mm.HindiHeadingName">
+                                        @mm.HindiHeadingName
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@mm.HindiHeadingName" tabindex="0">
+                                        @mm.HindiHeadingName
+                                    </a>
+                                }
+                                @if (mm.Children.Count(a => a.Show) > 0)
+                                {
+                                    <ul>
+                                        @foreach (var nm in mm.Children.Where(a => a.Show).OrderBy(x => x.Priority).ToList())
+                                        {
+                                            @if (nm.Children.Count(a => a.Show) == 0)
+                                            {
+                                                <li>
+                                                    @if (nm.EnglishPageLink == null)
+                                                    {
+                                                        @if (Model.Any(a => a.ParentId == nm.Id))
+                                                        {
+                                                            @nm.HindiHeadingName
+                                                        }
+                                                        else if (nm.HindiHeadingName == "Online Portal for Retired Employees")
+                                                        {
+                                                            <a href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName.Contains("http"))
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="/Hindi/@nm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (nm.EnglishHeadingName == "Vendor Registration")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Online Recruitment")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "MDL e Connect")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Online Vendor Registrations")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "MDL E-Procurement")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "E-Procurement")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Disposal Cell")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "online payment")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName == "Export")
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="@nm.EnglishPageLink" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else if (nm.EnglishHeadingName.Contains("http"))
+                                                        {
+                                                            <a title="@nm.EnglishHeadingName" href="@nm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a title="@nm.HindiHeadingName" href="/Hindi/@nm.EnglishPageLink">
+                                                                @nm.HindiHeadingName
+                                                            </a>
+                                                        }
+                                                    }
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li>
+                                                    @if (nm.EnglishContentDesc == null)
+                                                    {
+                                                        <a title="@nm.HindiHeadingName" href="@(nm.Clickable ? "Hindi/"+ nm.EnglishHeadingName.Replace(" ", "-").ToLower() : "javascript:void(0);")">
+                                                            @nm.HindiHeadingName
+                                                        </a>
+                                                    }
+                                                    else if (nm.EnglishPageLink != null)
+                                                    {
+                                                        <a title="@nm.HindiHeadingName" href="/Hindi/@nm.EnglishPageLink">
+                                                            @nm.HindiHeadingName
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a title="@nm.HindiHeadingName" href="/Hindi/@nm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                                            @nm.HindiHeadingName
+                                                        </a>
+                                                    }
+                                                    <ul>
+                                                        @foreach (var ssm in nm.Children.Where(a => a.Show).OrderBy(x => x.Priority).ToList())
+                                                        {
+                                                            <li>
+                                                                @if (ssm.EnglishPageLink == null)
+                                                                {
+                                                                    <a title="@ssm.HindiHeadingName" href="/Hindi/@ssm.EnglishHeadingName.Replace(" ", "-").ToLower()">@ssm.HindiHeadingName</a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @if (ssm.EnglishHeadingName == "BSE Stockwatch")
+                                                                    {
+                                                                        <a href="@ssm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                            @ssm.HindiHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else if (ssm.EnglishHeadingName == "NSE Market Tracker")
+                                                                    {
+                                                                        <a href="@ssm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                            @ssm.HindiHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else if (ssm.EnglishHeadingName == "Online Portal for Retired Employees")
+                                                                    {
+                                                                        <a href="@ssm.EnglishPageLink" onclick="return confirm('बाहरी साइट जो एक नई विंडो में खुलती है । ');" target="_blank">
+                                                                            @ssm.HindiHeadingName
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (ssm.EnglishPageLink.Contains("http") || ssm.EnglishPageLink.Contains("www"))
+                                                                        {
+                                                                            <a title="@ssm.HindiHeadingName" href="@ssm.EnglishPageLink" onclick="return confirm('External site that opens in a new window.');" target="_blank">
+                                                                                @ssm.HindiHeadingName
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a title="@ssm.HindiHeadingName" href="/Hindi/@ssm.EnglishHeadingName.Replace(" ", "-").ToLower()">
+                                                                                @ssm.HindiHeadingName
+                                                                            </a>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+    }
+</ul>

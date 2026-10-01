@@ -1,0 +1,149 @@
+@page
+@model WebForeignBidder.Pages.Admin.Bidder.ListOfUploadedDocsModel
+@{
+    ViewData["Title"] = "List Of Uploaded Documents";
+    int serialNumber = 0;
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title font-weight-bold mb-0">List Of Uploaded Documents</h3>
+            <div class="card-tools">
+                <a href="@(Model.OnlyOpenedFilter ? $"?tenderNo={Model.TenderNoFilter}&onlyOpened=false" : $"?tenderNo={Model.TenderNoFilter}&onlyOpened=true")" 
+                   class="btn btn-sm @(Model.OnlyOpenedFilter ? "btn-info" : "btn-outline-secondary") mr-2"
+                   title="Toggle between showing all tenders and only opened tenders">
+                    <i class="fa @(Model.OnlyOpenedFilter ? "fa-check-square" : "fa-filter") mr-1"></i>
+                    @(Model.OnlyOpenedFilter ? "Showing: Opened Only (Click for All)" : "Show Only Opened Tenders")
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="search">Id</th>
+                                <th>Tender/Reference No.</th>
+                                <th>Document</th>
+                                <th>Tender Opening Date</th>
+                                <th>Uploaded Date andTime </th>
+                                <th>Remarks</th>
+                                <th>Document type</th>
+                                <th>Status</th>
+                                @if (Model.IsAdminOrExecutive)
+                                {
+                                    <th>Uploaded by</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td>@(++serialNumber)</td>
+                                    <td>@item.TenderNo</td>
+                                    <td>
+                                        @if (item.IsOpen)
+                                        {
+                                            <a class="btn btn-sm btn-primary genfile" data-id="@item.EncryptedId" title="Download Document">
+                                                <i class="fa fa-download mr-1"></i> @item.TenderDocDecrypted
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-warning p-2 text-wrap" title="Tender opening date has not passed yet.">
+                                                <i class="fa fa-lock mr-1"></i> Locked until Opening Date
+                                                @if (item.TenderOpeningDate.HasValue && item.TenderOpeningDate.Value != default)
+                                                {
+                                                    <br /><small class="text-dark font-weight-bold">(@item.TenderOpeningDate.Value.ToString("dd-MM-yyyy HH:mm:ss"))</small>
+                                                }
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @(item.TenderOpeningDate.HasValue && item.TenderOpeningDate.Value != default ? item.TenderOpeningDate.Value.ToString("dd-MM-yyyy HH:mm:ss") : "-")
+                                    </td>
+                                    <td>@item.CreatedDate</td>
+                                    <td>@item.Remarks</td>
+                                    <td>@item.DocType</td>
+                                    <td>@item.IsActive</td>
+                                    @if (Model.IsAdminOrExecutive)
+                                    {
+                                        <td>@item.CreatedBy</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@Html.AntiForgeryToken();
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        $('.genfile').on('click', function (e) {
+            e.preventDefault();
+
+            var Id = $(this).data('id');
+            var clickedButton = $(this);
+
+            $.ajax({
+                type: 'POST',
+                url: "?handler=DownloadGenFile",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: { Id: Id },
+                success: function (data) {
+                    if (data != null && data.success !== false) {
+                        var filename = data.filename;
+                        var bytes = Base64ToBytes(data.encdata);
+                        var blob = new Blob([bytes], { type: "application/octet-stream" });
+
+                        var isIE = false || !!document.documentMode;
+                        if (isIE) {
+                            window.navigator.msSaveBlob(blob, filename);
+                        } else {
+                            var url = window.URL || window.webkitURL;
+                            var link = url.createObjectURL(blob);
+                            var a = $("<a />");
+                            a.attr("download", filename);
+                            a.attr("href", link);
+                            $("body").append(a);
+                            a[0].click();
+                            a.remove();
+                        }
+                    } else {
+                        var errMsg = (data && data.message) ? data.message : 'Invalid details or file not found !';
+                        alert(errMsg);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Download failed: ' + error);
+                    alert('An error occurred while downloading the document.');
+                }
+            });
+        });
+
+        $('#tblDataTable').DataTable();
+
+        function Base64ToBytes(base64) {
+            var binary_string = window.atob(base64);
+            var len = binary_string.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes;
+        }
+    </script>
+}

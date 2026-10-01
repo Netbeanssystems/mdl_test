@@ -1,0 +1,327 @@
+/* TIMELINE
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.timeline {
+  position: relative;
+}
+
+
+
+.timeline ol {
+  font-size: 0;
+  width: 100vw;
+  padding: 220px 0;
+  transition: all 0.8s;
+  margin: 0;
+}
+
+.timeline ol li {
+  position: relative;
+  display: inline-block;
+  list-style-type: none;
+  width: 120px;
+  height: 3px;
+  background: #003f85;
+}
+
+.timeline ol li:last-child {
+  width: 280px;
+}
+
+.timeline ol li:not(:first-child) {
+  margin-left: 14px;
+}
+
+.timeline ol li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #df1a14;
+  z-index: 1;
+}
+
+.timeline ol li div {
+  position: absolute;
+  left: 10%;
+  width: 220px;
+  padding: 15px;
+  font-size: 1rem;
+  white-space: normal;
+  color: black;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0px 0 9px rgba(0,0,0,0.4);
+  text-align: center;
+  height: 185px;
+  transition: all 0.5s ease;
+}
+.timeline ol li div img{
+	max-height: 40px;
+}
+.timeline-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #000;
+    text-align: left;
+    height: 60px;
+    overflow: hidden;
+    position: relative;
+    display: block;
+    overflow-y: auto;
+}
+.timeline-text p{
+  margin: 0;
+}
+
+/* .timeline ol li div .timeline-text.timeline-ellipsis::before {
+  position: absolute;
+  content: "... Read More";
+  bottom: 0;
+  right: 0;
+  font-weight: 700;
+  padding: 0.1rem 0.1rem 0.1rem 0.8rem;
+  background-color: #fff;
+  line-height: 0.7rem;
+} */
+
+.timeline ol li div .timeline-text.timeline-ellipsis .read-more{
+  display: inline-block;
+}
+
+.read-more{
+  position: absolute;
+  padding: 0.1rem 0.1rem 0.1rem 0.5rem;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  color: #003f85;
+  font-weight: 600;
+  display: none;
+  outline: none;
+}
+.popover{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 0;
+}
+
+.popover-body {
+  color: #ffffff;
+  background: #004e8f;
+  border-radius: 5px;
+  border: 0;
+}
+.bs-popover-auto[x-placement^=bottom]>.arrow::before, .bs-popover-bottom>.arrow::before{
+  border: 0;
+}
+.bs-popover-auto[x-placement^=bottom]>.arrow::after, .bs-popover-bottom>.arrow::after {
+  border-bottom-color: #004e8f;
+}
+
+.timeline ol li div:hover .read-more{
+  background-color: #f9f9f9;
+}
+
+.timeline ol li div::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  transform: rotateX(-50%);
+  left: 50%;
+}
+
+.timeline ol li:nth-child(odd) div {
+  top: -25px;
+  transform: translateY(-100%);
+}
+
+.timeline ol li:nth-child(odd) div::before {
+  top: 100%;
+  width: 0; 
+  height: 0; 
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;  
+  border-top: 8px solid #fff;
+  border-bottom: transparent;
+}
+
+.timeline ol li:nth-child(even) div {
+  top: calc(100% + 25px);
+}
+
+.timeline ol li:nth-child(even) div::before {
+  top: -8px;
+  width: 0; 
+  height: 0; 
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;  
+  border-top: transparent;
+  border-bottom: 8px solid #fff;
+}
+
+.timeline time {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #003f85;
+}
+
+.timeline ol li:nth-child(odd) div:hover{
+	top: -20px;
+	transition: all 0.5s ease;
+	background-color: #f9f9f9;
+}
+.timeline ol li:nth-child(even) div:hover {
+	top: calc(100% + 20px);
+	transition: all 0.5s ease;
+	background-color: #f9f9f9;
+}
+
+
+/* TIMELINE ARROWS
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.timeline .arrows {
+  display: flex;
+  justify-content: center;
+}
+.timeline .arrows .arrow{
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: transparent;
+	border: 0;
+	font-size: 2rem;
+}
+.timeline .arrows .arrow .icon:before{
+	color: #003f85;
+}
+
+.timeline .arrows .arrow__prev {
+  left: -45px
+}
+
+.timeline .arrows .arrow__next {
+	right: -45px
+  }
+
+.timeline .disabled {
+  opacity: .5;
+}
+
+.timeline .arrows img {
+  width: 45px;
+  height: 45px;
+}
+
+
+/* GENERAL MEDIA QUERIES
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+@media screen and (max-width: 767px) {
+  .timeline ol,
+  .timeline ol li {
+    width: auto; 
+  }
+  
+  .timeline ol {
+    padding: 0;
+    transform: none !important;
+  }
+  
+  .timeline ol li {
+    display: block;
+    height: auto;
+    background: transparent;
+  }
+  
+  .timeline ol li:first-child {
+    margin-top: 25px;
+  }
+  
+  .timeline ol li:not(:first-child) {
+    margin-left: auto;
+  }
+
+  .timeline ol li{
+    margin: 0 !important;
+  }
+  
+  .timeline ol li div {
+    width: 94%;
+    height: auto !important;
+    margin: 1rem auto;
+  }
+  
+  .timeline ol li div {
+    position: static;
+  }
+  
+  .timeline ol li:nth-child(odd) div {
+    transform: none;
+    text-align: center;
+  }
+
+  .timeline ol li:nth-child(odd) div{
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline ol li:nth-child(even) div{
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .timeline ol li div img{
+    margin: 0 auto !important;
+  }
+  /* .timeline ol li div p{
+    margin-top: 1rem!important;
+    margin-bottom: 1rem!important;
+  } */
+  
+  .timeline ol li:nth-child(odd) div::before,
+  .timeline ol li:nth-child(even) div::before {
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: none;
+    border-left: 1px solid #003f85;
+    height: 25px;
+    display: none;
+  }
+  
+  .timeline ol li:last-child,
+  .timeline ol li:nth-last-child(2) div::before,
+  .timeline ol li:not(:last-child)::after,
+  .timeline .arrows {
+    display: none;
+  }
+
+  .timeline-inner .slick-arrow:before{
+    color: #004e8f;
+  }
+  .timeline ol li:last-child{
+    display: none;
+  }
+}
+
+@media only screen and (max-width : 767px) {
+    
+}
+
+@media only screen and (min-width : 768px) {
+  .timeline-inner{	
+    white-space: nowrap;
+    overflow-x: hidden;
+  }
+}

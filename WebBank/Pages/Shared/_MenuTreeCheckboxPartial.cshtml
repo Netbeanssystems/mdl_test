@@ -1,0 +1,18 @@
+@model List<MenuDTO>
+@foreach (var item in Model.OrderBy(x => x.Sequence))
+{
+    <ul>
+        <li>
+            <div class="custom-checkbox d-inline-block ml-4">
+                <input type="checkbox" class="custom-control-input d-inline-block" id="@($"{item.Id}_{item.MenuText}")" name="selectMenuName" value="@item.Id" />
+                <label class="custom-control-label adjusttop d-inline-block" for="@($"{item.Id}_{item.MenuText}")">@item.MenuText</label>
+            </div>
+            @if (item.Children.Any())
+            {
+                <ul>
+                    <partial name="_MenuTreeCheckboxPartial" model="@item.Children" />
+                </ul>
+            }
+        </li>
+    </ul>
+}

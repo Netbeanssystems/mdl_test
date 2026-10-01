@@ -1,0 +1,116 @@
+﻿@page
+@model WebBank.Pages.Admin.Document.AddModel
+@{
+    ViewData["Title"] = "Add";
+}
+@section Styles
+{
+    <link href="~/plugins/summernote/summernote-bs4.css" rel="stylesheet" asp-append-version="true" />
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-title float-left">Add</h1>
+                        <a class="btn btn-sm btn-secondary float-right d-none" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.IsInTime && Model.AvailableUploadWindows != null && Model.AvailableUploadWindows.Any())
+                        {
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> Upload window(s) are OPEN. Please select the upload window and submit your document.
+                            </div>
+                            
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label>Upload Window<span class="required">*</span></label>
+                                    <select asp-for="DocumentsDTO.URLsTimingId" class="form-control" id="uploadWindowSelect" required>
+                                        <option value="">-- Select Upload Window --</option>
+                                        @foreach (var window in Model.AvailableUploadWindows)
+                                        {
+                                            <option value="@window.Id" data-description="@window.Description">@window.Description</option>
+                                        }
+                                    </select>
+                                    <small class="text-muted">Select the appropriate upload window for your document submission.</small>
+                                </div>
+                                
+                                <input type="hidden" asp-for="DocumentsDTO.Description" id="selectedDescription" />
+                                
+                                <div class="row flex-column">
+                                    <div class="col-md-4">
+                                        <label for="DocumentsDTO_DocumentFile" class="FD">Upload File<span class="required">*</span></label>
+                                        <input class="form-control Attachment" accept=".pdf" asp-for="DocumentsDTO.DocumentFile" aria-describedby="fileInstructions" required />
+                                    </div>
+                                    <small id="fileInstructions" class="text-danger">
+                                        <i class="fas fa-lock"></i> Only password-protected PDF files are allowed. File must be less than 2 MB.
+                                        <br />
+                                        <i class="fas fa-info-circle"></i> Make sure your PDF is encrypted with a password before uploading.
+                                    </small>
+                                </div>
+
+                                <div class="form-group offset-md-3 offset-lg-4" style="margin-top: 15px;">
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>&nbsp;
+                                        <a class="btn btn-secondary" asp-page="Index"><i class="fa fa-arrow-left"></i> Back</a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> No upload window is currently active.
+                                <br />
+                                <small>Document upload is only allowed during the active upload window period. Please check back later or contact the administrator for more information.</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        // Update Description hidden field when upload window selection changes
+        $('#uploadWindowSelect').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var description = selectedOption.data('description');
+            $('#selectedDescription').val(description);
+        });
+
+        // Trigger change on page load to set initial value
+        $(document).ready(function() {
+            $('#uploadWindowSelect').trigger('change');
+        });
+
+        $('form').keypress((e) => {
+            if (e.which === 13) {
+                SubmitForm(e);
+                return true;
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('copy', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('cut', function (e) {
+                    e.preventDefault();
+                });
+            });
+        });
+    </script>
+}

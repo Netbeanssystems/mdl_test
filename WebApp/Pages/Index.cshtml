@@ -1,0 +1,379 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+
+<section class="content">
+    <div class="container-fluid">
+        @*for showing customizable alert on home page*@
+        @if (!string.IsNullOrEmpty(Model.DashboardAlertVm?.Message) && Model.DashboardAlertVm.StartDate <= DateTime.UtcNow.AddHours(5.5) && Model.DashboardAlertVm.EndDate >= DateTime.UtcNow.AddHours(5.5))
+        {
+            <div class="@(string.IsNullOrEmpty(Model.DashboardAlertVm.BackgroundColor) ? "alert alert-warning" : $"alert alert-{Model.DashboardAlertVm.BackgroundColor}")" role="alert">
+                @if (!string.IsNullOrEmpty(Model.DashboardAlertVm.Heading) && Model.DashboardAlertVm.ShowHeading)
+                {
+                    if (Model.DashboardAlertVm.BlinkHeading)
+                    {
+                        <h5 class="alert-heading blink_me">@Model.DashboardAlertVm.Heading</h5>
+                    }
+                    else
+                    {
+                        <h5 class="alert-heading">@Model.DashboardAlertVm.Heading</h5>
+                    }
+                    <hr class="mt-0" />
+                }
+                @if (!string.IsNullOrEmpty(Model.DashboardAlertVm.Message))
+                {
+                    <p class="mb-0">@Model.DashboardAlertVm.Message</p>
+                }
+            </div>
+        }
+
+@*        @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+        {
+            <div id="dvDashBoardTables"></div>
+        }
+*@
+        <div class="row">
+            @*<div class="col-md-6 col-sm-12 form-group">
+                <div class="card">
+                    <div class="card-header" style="background-color: #00abbd;">
+                        <h3 class="card-title float-left" style="color: white;">Skill</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                            <div class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand">
+                                    <div class=""></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink">
+                                    <div class=""></div>
+                                </div>
+                            </div>
+                            <canvas id="visitors-chart" height="200" width="524" class="chartjs-render-monitor" style="display: block; width: 524px; height: 200px;"></canvas>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-end">
+                            <span class="mr-2">
+                                <input type="radio" id="SkillParks" name="Skill" value="SkillParks" checked="checked">
+                                <label for="SkillParks">SDCs</label><br>
+                            </span>
+                            <span class="mr-2">
+                                <input type="radio" id="SkillBatches" name="Skill" value="SkillBatches">
+                                <label for="SkillBatches">Skill Batches</label><br>
+                            </span>
+                            <span>
+                                <input type="radio" id="Students" name="Skill" value="StudentAdmission">
+                                <label for="Students">Students</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            @*<div class="col-md-6 col-sm-12 form-group">
+                <div class="card">
+                    <div class="card-header" style="background-color: #00abbd;">
+
+                        <h3 class="card-title float-left" style="color: white;">Batch Status [Created vs Regular (Regular - DistrictWise)]</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative mb-4">
+                            <div class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand">
+                                    <div class=""></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink">
+                                    <div class=""></div>
+                                </div>
+                            </div>
+                            <canvas id="sales-chart" height="200" style="display: block; width: 524px; height: 200px;" width="524" class="chartjs-render-monitor"></canvas>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-end">
+                            <span class="mr-2">
+                                <i class="fas fa-square text-primary"></i> This year
+                            </span>
+
+                            <span>
+                                <i class="fas fa-square text-gray"></i> Last year
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            @*<div class="col-md-6 col-sm-12 form-group">
+                <div class="card">
+                    <div class="card-header" style="background-color: #00abbd;">
+                        <h3 class="card-title float-left" style="color: white;">Final Assessment - Regular Skill</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </div>
+</section>
+@if (Model.ShowChangePasswordModal)
+{
+    <partial name="_ChangePasswordModalPartial" />
+}
+@section Scripts{
+   @*  <script src="~/plugins/chart.js/chart-4.3.0.min.js" asp-append-version="true"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+
+
+    @if (Model.ShowChangePasswordModal)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#changePasswordModal").modal('show');
+            });
+        </script>
+    }
+
+    <script type="text/javascript">
+        function BindTables() {
+            $.ajax({
+                type: "GET",
+                url: "?handler=DashboardTables",
+                success: function (data) {
+                    if (data !== "") {
+                        if (data === "unauthorized") {
+                            $("#divClientAlert").addClass("alert-warning");
+                            $("#divClientAlert > p.m-0").text("Please login");
+                            $("#divClientAlert").show();
+                            SetTimeOut($("#divClientAlert"));
+                            window.location.href = "/Account/Login";
+                        } else {
+                            $("#dvDashBoardTables").html(data);
+                        }
+                    } else {
+                        $("#dvDashBoardTables").hide();
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            //BindTables();
+            //LineChart("SkillParks");
+            //BarChart();
+            //PieChart();
+        });
+
+        var ticksStyle = {
+            fontColor: '#495057',
+            fontStyle: 'bold'
+        }
+        var mode = 'index';
+        var intersect = true;
+
+        $("input[name = 'Skill']").click(function (event) {
+            if (this.value === "SkillParks") {
+                LineChart("SkillParks");
+            } else if (this.value === "SkillBatches") {
+                LineChart("SkillBatches");
+            } else if (this.value === "StudentAdmission") {
+                LineChart("StudentAdmission");
+            }
+        });
+
+        function LineChart(ChartType) {
+            let LabelsArray = [];
+            let DataArray = [];
+            $.ajax({
+                type: "GET",
+                url: "?handler=DashboardStats",
+                data: { table: ChartType },
+                success: function (list) {
+                    if (list !== "") {
+                        if (list === "unauthorized") {
+                            $("#divClientAlert").addClass("alert-warning");
+                            $("#divClientAlert > p.m-0").text("Please login");
+                            $("#divClientAlert").show();
+                            SetTimeOut($("#divClientAlert"));
+                            window.location.href = "/Account/Login";
+                        } else {
+                            $(list).each(function (i, e) {
+                                LabelsArray.push(e.recordText);
+                                DataArray.push(e.recordCount);
+                            });
+                            var MaxValue = (Math.max(...DataArray));
+                            var $visitorsChart = $('#visitors-chart');
+                            var visitorsChart = new Chart($visitorsChart,
+                                {
+                                    data: {
+                                        labels: LabelsArray,
+                                        datasets: [
+                                            {
+                                                type: 'line',
+                                                data: DataArray,
+                                                backgroundColor: 'transparent',
+                                                borderColor: '#007bff',
+                                                pointBorderColor: '#007bff',
+                                                pointBackgroundColor: '#007bff',
+                                                fill: true
+                                                // pointHoverBackgroundColor: '#007bff',
+                                                // pointHoverBorderColor    : '#007bff'
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        maintainAspectRatio: false,
+                                        tooltips: {
+                                            mode: mode,
+                                            intersect: intersect
+                                        },
+                                        hover: {
+                                            mode: mode,
+                                            intersect: intersect
+                                        },
+                                        legend: {
+                                            display: false
+                                        },
+                                        scales: {
+                                            yAxes: [
+                                                {
+                                                    // display: false,
+                                                    gridLines: {
+                                                        display: true,
+                                                        lineWidth: '4px',
+                                                        color: 'rgba(0, 0, 0, .2)',
+                                                        zeroLineColor: 'transparent'
+                                                    },
+                                                    ticks: $.extend({
+                                                        beginAtZero: true,
+                                                        suggestedMax: MaxValue,
+                                                        stepSize: 50
+                                                    },
+                                                        ticksStyle)
+                                                }
+                                            ],
+                                            xAxes: [
+                                                {
+                                                    display: true,
+                                                    gridLines: {
+                                                        display: false
+                                                    },
+                                                    ticks: ticksStyle
+                                                }
+                                            ]
+                                        }
+                                    }
+                                });
+                        }
+                    }
+                }
+            });
+        }
+
+        function BarChart() {
+            var $salesChart = $('#sales-chart');
+            var salesChart = new Chart($salesChart,
+                {
+                    type: 'bar',
+                    data: {
+                        labels: ['JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                        datasets: [
+                            {
+                                backgroundColor: '#007bff',
+                                borderColor: '#007bff',
+                                data: [1000, 2000, 3000, 2500, 2700, 2500, 3000]
+                            },
+                            {
+                                backgroundColor: '#ced4da',
+                                borderColor: '#ced4da',
+                                data: [700, 1700, 2700, 2000, 1800, 1500, 2000]
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            mode: mode,
+                            intersect: intersect
+                        },
+                        hover: {
+                            mode: mode,
+                            intersect: intersect
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            yAxes: [
+                                {
+                                    // display: false,
+                                    gridLines: {
+                                        display: true,
+                                        lineWidth: '4px',
+                                        color: 'rgba(0, 0, 0, .2)',
+                                        zeroLineColor: 'transparent'
+                                    },
+                                    ticks: $.extend({
+                                        beginAtZero: true,
+                                        // Include a dollar sign in the ticks
+                                        callback: function (value) {
+                                            if (value >= 1000) {
+                                                value /= 1000;
+                                                value += 'k';
+                                            }
+                                            return '$' + value;
+                                        }
+                                    },
+                                        ticksStyle)
+                                }
+                            ],
+                            xAxes: [
+                                {
+                                    display: true,
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    ticks: ticksStyle
+                                }
+                            ]
+                        }
+                    }
+                });
+        }
+
+        function PieChart() {
+            var donutData = {
+                labels: [
+                    'Chrome',
+                    'IE',
+                    'FireFox',
+                    'Safari',
+                    'Opera'
+                ],
+                datasets: [
+                    {
+                        data: [700, 500, 400, 600, 300],
+                        backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc']
+                    }
+                ]
+            }
+            var donutOptions = {
+                maintainAspectRatio: false,
+                responsive: true
+            }
+            var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+            var pieData = donutData;
+            var pieOptions = {
+                maintainAspectRatio: false,
+                responsive: true
+            }
+            //Create pie or dounut chart
+            // You can switch between pie and douhnut using the method below.
+            var pieChart = new Chart(pieChartCanvas,
+                {
+                    type: 'pie',
+                    data: pieData,
+                    options: pieOptions
+                });
+        }
+    </script>
+}

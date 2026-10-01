@@ -1,0 +1,80 @@
+﻿@page "{id?}"
+@model ManageModel
+@{
+    ViewData["Title"] = "Manage State";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-3 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        @if (!Model.IsNew)
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Edit State</h3>
+                            <div class="btn-group btn-group-sm float-right">
+                                <a href="#" class="text-dark mr-3" data-toggle="modal" data-target="#confirmationModal" title="Delete"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                <a class="text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            </div>
+                            <div class="clearfix"></div>
+                        }
+                        else
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Create State</h3>
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="State.Id" />
+                                <input type="hidden" asp-for="State.CreatedDate" />
+                                <input type="hidden" asp-for="State.CreatedBy" />
+                            }
+                            <div class="form-group">
+                                <label asp-for="State.CountryId" class="col-form-label">Countries<span class="required">*</span></label>
+                                <select asp-for="State.CountryId" class="form-control" asp-items="ViewBag.Countries">
+                                    <option value="">-select-</option>
+                                </select>
+                                <span asp-validation-for="State.CountryId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="State.StateName" class="col-form-label">State Name<span class="required">*</span></label>
+                                <input asp-for="State.StateName" onkeypress="return myKeyPress(event)" class="form-control" placeholder="State Name" autocomplete="on" />
+                                <span asp-validation-for="State.StateName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="State.StateCode" class="col-form-label">State Code<span class="required">*</span></label>
+                                <input asp-for="State.StateCode" onkeypress="return myKeyPress(event)" class="form-control" placeholder="State Code" autocomplete="on" />
+                                <span asp-validation-for="State.StateCode" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch custom-switch-on-primary">
+                                    <input asp-for="State.IsActive" class="custom-control-input" checked="@Model.IsNew">
+                                    <label asp-for="State.IsActive" class="custom-control-label">Active</label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @if (!Model.IsNew)
+            {
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" asp-for="State.Id" />
+                    <partial name="_ConfirmationModalPartial" model=@("Are you sure you want to delete this item? This can not be undone.") />
+                </form>
+            }
+        </div>
+    </div>
+</section>

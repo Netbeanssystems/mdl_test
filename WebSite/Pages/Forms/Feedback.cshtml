@@ -1,0 +1,896 @@
+﻿@page "/{lang}/Forms/Feedback"
+@using Microsoft.AspNetCore.Http;
+@model WebSite.Pages.Forms.FeedbackModel
+@{
+    Layout = "_InternalPagesLayout";
+    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+        ViewData["Title"] = "Feedback";
+    }
+    else
+    {
+        ViewData["Title"] = "फीडबैक";
+    }
+}
+
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">Feedback</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">Home</a> > Feedback</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">फीडबैक</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">मुख्य पृष्ठ </a> > फीडबैक</span></div>
+    </div>
+}
+
+
+<div class="mid-content">
+    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+    {
+            <p>(<span class="astricks">*</span>) Information Required</p>
+        <div class="container">
+            <p class="text-center">
+                We welcome your feedback and suggestion about the portal to help us further to serve you better.
+                Please fill up the form below to write to us with your input and suggestion.<br />
+                Visually challenged users can opt to send the feedback to cit-support[dot]mdl[at]mazdock[dot]com if they have difficulty in using
+                Captcha.
+            </p>
+            <br />
+            <p class="text-center">
+                Please Select your rating on the scale of 1 to 5, 1 for lowest & 5 for highest satisfaction
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="table table-striped table-hover table-bordered">
+
+                            <table       class="guestbook-table feedBackTable">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">
+                                            Sr. No.
+                                        </th>
+                                        <th>
+                                            Parameter
+                                        </th>
+                                        <th>
+                                            <table class="table table-striped table-hover table-bordered">
+                                                <tbody>
+                                                    <tr class=" text-light">
+                                                        <td>
+                                                            <strong>5</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>4</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>3</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>2</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>1</strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @* <tr>
+                                <td >
+                                01
+                                </td>
+                                <td>
+                                MDL website
+                                </td>
+                                <td>
+                                <table id="lytA_ctl26_rbtnWebsite" class="w-100"  >
+                                <tbody>
+                                <tr>
+                                <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_0" type="radio" name="lytA$ctl26$rbtnWebsite"  value="5" ></td>
+                                <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_1" type="radio" name="lytA$ctl26$rbtnWebsite" value="4" ></td>
+                                <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_2" type="radio" name="lytA$ctl26$rbtnWebsite" value="3" ></td>
+                                <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_3" type="radio" name="lytA$ctl26$rbtnWebsite" value="2" ></td>
+                                <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_4" type="radio" name="lytA$ctl26$rbtnWebsite" value="1" ></td>
+                                </tr>
+                                </tbody>
+                                </table>
+                                </td>
+                                </tr> *@
+                                    <tr>
+                                        <td >
+                                            01
+                                        </td>
+                                        <td>
+                                            MDL website
+                                        </td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnWebsite" class="w-100"   role="presentation" aria-label="Rate MDL website from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <input class="rate1" id="lytA_ctl26_rbtnWebsite_0" type="radio" name="lytA$ctl26$rbtnWebsite" value="5" aria-label="MDL website - 5: Excellent" >
+                                                        </td>
+                                                        <td>
+                                                            <input class="rate1" id="lytA_ctl26_rbtnWebsite_1" type="radio" name="lytA$ctl26$rbtnWebsite" value="4" aria-label="MDL website - 4: Very Good" >
+                                                        </td>
+                                                        <td>
+                                                            <input class="rate1" id="lytA_ctl26_rbtnWebsite_2" type="radio" name="lytA$ctl26$rbtnWebsite" value="3" aria-label="MDL website - 3: Good" >
+                                                        </td>
+                                                        <td>
+                                                            <input class="rate1" id="lytA_ctl26_rbtnWebsite_3" type="radio" name="lytA$ctl26$rbtnWebsite" value="2" aria-label="MDL website - 2: Fair" >
+                                                        </td>
+                                                        <td>
+                                                            <input class="rate1" id="lytA_ctl26_rbtnWebsite_4" type="radio" name="lytA$ctl26$rbtnWebsite" value="1" aria-label="MDL website - 1: Poor" >
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >02</td>
+                                        <td>MDL Online Recruitment</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlineRecruit" class="w-100" border="0" role="radiogroup" aria-label="Rate MDL Online Recruitment from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_0" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="5" aria-label="MDL Online Recruitment - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_1" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="4" aria-label="MDL Online Recruitment - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_2" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="3" aria-label="MDL Online Recruitment - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_3" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="2" aria-label="MDL Online Recruitment - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_4" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="1" aria-label="MDL Online Recruitment - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >03</td>
+                                        <td>MDL Online Vendor Registration</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnVenderReg" class="w-100" border="0" role="radiogroup" aria-label="Rate MDL Online Vendor Registration from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_0" type="radio" name="lytA$ctl26$rbtnVenderReg" value="5" aria-label="MDL Online Vendor Registration - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_1" type="radio" name="lytA$ctl26$rbtnVenderReg" value="4" aria-label="MDL Online Vendor Registration - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_2" type="radio" name="lytA$ctl26$rbtnVenderReg" value="3" aria-label="MDL Online Vendor Registration - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_3" type="radio" name="lytA$ctl26$rbtnVenderReg" value="2" aria-label="MDL Online Vendor Registration - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_4" type="radio" name="lytA$ctl26$rbtnVenderReg" value="1" aria-label="MDL Online Vendor Registration - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >04</td>
+                                        <td>MDL E-Procurement</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnEProcurement" class="w-100" border="0" role="radiogroup" aria-label="Rate MDL E-Procurement from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_0" type="radio" name="lytA$ctl26$rbtnEProcurement" value="5" aria-label="MDL E-Procurement - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_1" type="radio" name="lytA$ctl26$rbtnEProcurement" value="4" aria-label="MDL E-Procurement - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_2" type="radio" name="lytA$ctl26$rbtnEProcurement" value="3" aria-label="MDL E-Procurement - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_3" type="radio" name="lytA$ctl26$rbtnEProcurement" value="2" aria-label="MDL E-Procurement - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_4" type="radio" name="lytA$ctl26$rbtnEProcurement" value="1" aria-label="MDL E-Procurement - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >05</td>
+                                        <td>MDL Online Bill Status</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlineBillStatus" class="w-100" border="0" role="radiogroup" aria-label="Rate MDL Online Bill Status from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_0" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="5" aria-label="MDL Online Bill Status - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_1" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="4" aria-label="MDL Online Bill Status - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_2" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="3" aria-label="MDL Online Bill Status - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_3" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="2" aria-label="MDL Online Bill Status - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_4" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="1" aria-label="MDL Online Bill Status - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >06</td>
+                                        <td>MDL Vendor Balance Confirmation</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnVenderBalanceConfirmation" class="w-100" border="0" role="radiogroup" aria-label="Rate MDL Vendor Balance Confirmation from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_0" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="5" aria-label="MDL Vendor Balance Confirmation - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_1" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="4" aria-label="MDL Vendor Balance Confirmation - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_2" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="3" aria-label="MDL Vendor Balance Confirmation - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_3" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="2" aria-label="MDL Vendor Balance Confirmation - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_4" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="1" aria-label="MDL Vendor Balance Confirmation - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td >07</td>
+                                        <td>Online Payment option</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlinePayment" class="w-100" border="0" role="radiogroup" aria-label="Rate Online Payment option from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_0" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="5" aria-label="Online Payment option - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_1" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="4" aria-label="Online Payment option - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_2" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="3" aria-label="Online Payment option - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_3" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="2" aria-label="Online Payment option - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_4" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="1" aria-label="Online Payment option - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td >08</td>
+                                        <td>Online Portal for Retired Employees</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee" class="w-100" border="0" role="radiogroup" aria-label="Rate Online Portal for Retired Employees from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_0" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="5" aria-label="Online Portal for Retired Employees - 5: Excellent" autocomplete="off"></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_1" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="4" aria-label="Online Portal for Retired Employees - 4: Very Good" autocomplete="off"></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_2" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="3" aria-label="Online Portal for Retired Employees - 3: Good" autocomplete="off"></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_3" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="2" aria-label="Online Portal for Retired Employees - 2: Fair" autocomplete="off"></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_4" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="1" aria-label="Online Portal for Retired Employees - 1: Poor" autocomplete="off"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <form method="post" class="row g-3">
+                            <span style="font-size:medium;">   <b> NOTE :</b> All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _ ) etc. are not allowed. By any way you try to save it will be removed and then saved.</span>
+                            <p>(<span class="astricks">*</span>) Information Required</p>
+                            <input type="hidden" asp-for="TEST.City" value="dELH" />
+                            <input type="hidden" asp-for="vigi.RatingNo1" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo2" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo3" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo4" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo5" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo6" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo7" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo8" value="0" />
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.ReasonSatisfied" class="form-label">Where you were Highly Satisfied<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.ReasonSatisfied" placeholder="Where you were Highly Satisfied" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="vigi.ReasonSatisfied" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.ReasonDisSatisfied" class="form-label">Where you were Dissatisfied<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.ReasonDisSatisfied" placeholder="Where you were Dissatisfied" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="vigi.ReasonDisSatisfied" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Name"   class="form-label">Name<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Name" autocomplete="off" placeholder="Name" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Designation"   class="form-label">Designation<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Designation" autocomplete="off" placeholder="Designation" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Organization"   class="form-label">Organization<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Organization" autocomplete="off" placeholder="Organization" oninput="this.value =this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Email"   class="form-label">E-Mail<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Email" autocomplete="off" placeholder="E-Mail" class="form-control vic" onkeypress="return myKeyPress(event)">
+                                <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <label asp-for="vigi.City"   class="form-label">City<span class="astricks">*</span></label>
+                                <input asp-for="vigi.City" autocomplete="off" placeholder="City" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control vic" onkeypress="return myKeyPress(event)">
+                                <span asp-validation-for="vigi.City" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.Address"   class="form-label">Address<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.Address" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" placeholder="Address" class="form-control vic" rows="3"></textarea>
+                                <span asp-validation-for="vigi.Address" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.Comment" class="form-label">Comments<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.Comment" autocomplete="off" placeholder="Comments" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic" rows="3"></textarea>
+                                <span asp-validation-for="vigi.Comment" class="text-danger"></span>
+                            </div>
+
+                            @*   <div class="col-lg-4">
+                        <p>(<span class="astricks">*</span>) Information Required</p>
+                        <div class="form-group mt-3">
+                        <div class="input-group">
+                        <div class="input-group-prepend">
+                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                        </div>
+                        <input type="text" class="form-control" placeholder="Captcha Code" asp-for="vigi.CaptchaCode" />
+                        <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                        <div class="input-group-text" tabindex="0">
+                        <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                        </div>
+                        </div>
+                        </div>
+                        <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                        </div>
+                        </div> *@
+                            <div class="col-lg-4">
+                                <label for="captcha">
+                                    <label for="vigi_CaptchaCode">Enter the CAPTCHA code shown in the image<span class="astricks">*</span></label>
+                                </label>
+                                <div class="form-group mt-3">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                                        </div>
+                                        <label class="sr-only" for="vigi_CaptchaCode">Captcha</label>
+                                        <button onclick="speakCaptcha()">🔊</button>
+                                        <input type="text" class="form-control" placeholder="Captcha Code" asp-for="vigi.CaptchaCode" />
+                                        <div class="input-group-append" title="Reresh Captcha" tabindex="0" data-toggle="tooltip" data-placement="top">
+                                            <div class="input-group-text" tabindex="0">
+                                                <button id="captchaRefresh" class="fa fa-refresh" tabindex="0" type="button" aria-label="Refresh CAPTCHA"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 text-sm-center text-md-start">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+
+
+
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <p class="text-center">
+                हम पोर्टल के बारे में आपके फीडबैक और सुझाव आमंत्रित करते हैं ताकि हम आपको फीडबैक फीडबैक फीडबैक बेहतर सेवा प्रदान कर सकें। कृपया नीचे दिए गए फॉर्म को भरकर हमें अपनी प्रतिक्रिया और सुझाव भेजें। यदि दृष्टिबाधित उपयोगकर्ता कैप्चा (Captcha) का प्रयोग करने में कठिनाई महसूस करते हैं तो वे cit-support[dot]mdl[at]mazdock[dot]com पर प्रतिक्रिया भेजने का विकल्प चुन सकते हैं।
+            </p>
+            <br />
+            <p class="text-center">
+                कृपया 1 से 5 के पैमाने पर अपना मूल्यांकन चुनें, जहाँ 1 सबसे कम और 5 सबसे अधिक संतुष्टि के लिए है।
+                <hr>
+            <p>(<span class="astricks">*</span>) आवश्यक जानकारी</p>
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <div class="table table-striped table-hover table-bordered">
+
+                            <table      class="guestbook-table">
+                                <thead>
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <strong>क्र.सं.</strong>
+                                        </td>
+                                        <td>
+                                            <strong>पैरामीटर </strong>
+                                        </td>
+                                        <td>
+                                            <table class="bordernone table table-resposnive table-bordered table-hover table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <strong>5</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>4</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>3</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>2</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>1</strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody width="100">
+                                    <tr>
+                                        <td >
+                                            01
+                                        </td>
+                                        <td>
+                                            एमडीएल वेबसाइट
+                                        </td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnWebsite" class="w-100"  >
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_0" type="radio" name="lytA$ctl26$rbtnWebsite" value="5" ></td>
+                                                        <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_1" type="radio" name="lytA$ctl26$rbtnWebsite" value="4" ></td>
+                                                        <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_2" type="radio" name="lytA$ctl26$rbtnWebsite" value="3" ></td>
+                                                        <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_3" type="radio" name="lytA$ctl26$rbtnWebsite" value="2" ></td>
+                                                        <td><input class="rate1" id="lytA_ctl26_rbtnWebsite_4" type="radio" name="lytA$ctl26$rbtnWebsite" value="1" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td >
+                                            02
+                                        </td>
+                                        <td>
+                                            MDL Online Recruitment
+                                        </td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlineRecruit" class="w-100"   role="presentation" aria-label="Rate MDL Online Recruitment from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_0" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="5" aria-label="MDL Online Recruitment - 5: Excellent" ></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_1" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="4" aria-label="MDL Online Recruitment - 4: Very Good" ></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_2" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="3" aria-label="MDL Online Recruitment - 3: Good" ></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_3" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="2" aria-label="MDL Online Recruitment - 2: Fair" ></td>
+                                                        <td><input class="rate2" id="lytA_ctl26_rbtnOnlineRecruit_4" type="radio" name="lytA$ctl26$rbtnOnlineRecruit" value="1" aria-label="MDL Online Recruitment - 1: Poor" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >
+                                            03
+                                        </td>
+                                        <td>
+                                            MDL Online Vendor Registration
+                                        </td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnVenderReg" class="w-100"   role="presentation" aria-label="Rate MDL Online Vendor Registration from 5 to 1">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_0" type="radio" name="lytA$ctl26$rbtnVenderReg" value="5" aria-label="MDL Online Vendor Registration - 5: Excellent" ></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_1" type="radio" name="lytA$ctl26$rbtnVenderReg" value="4" aria-label="MDL Online Vendor Registration - 4: Very Good" ></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_2" type="radio" name="lytA$ctl26$rbtnVenderReg" value="3" aria-label="MDL Online Vendor Registration - 3: Good" ></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_3" type="radio" name="lytA$ctl26$rbtnVenderReg" value="2" aria-label="MDL Online Vendor Registration - 2: Fair" ></td>
+                                                        <td><input class="rate3" id="lytA_ctl26_rbtnVenderReg_4" type="radio" name="lytA$ctl26$rbtnVenderReg" value="1" aria-label="MDL Online Vendor Registration - 1: Poor" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >04</td>
+                                        <td>एमडीएल ई-प्रोक्योरमेंट</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnEProcurement" class="w-100"   role="presentation" aria-label="एमडीएल ई-प्रोक्योरमेंट के लिए 5 से 1 तक मूल्यांकन करें">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_0" type="radio" name="lytA$ctl26$rbtnEProcurement" value="5" aria-label="एमडीएल ई-प्रोक्योरमेंट - 5: उत्कृष्ट" ></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_1" type="radio" name="lytA$ctl26$rbtnEProcurement" value="4" aria-label="एमडीएल ई-प्रोक्योरमेंट - 4: बहुत अच्छा" ></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_2" type="radio" name="lytA$ctl26$rbtnEProcurement" value="3" aria-label="एमडीएल ई-प्रोक्योरमेंट - 3: अच्छा" ></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_3" type="radio" name="lytA$ctl26$rbtnEProcurement" value="2" aria-label="एमडीएल ई-प्रोक्योरमेंट - 2: सामान्य" ></td>
+                                                        <td><input class="rate4" id="lytA_ctl26_rbtnEProcurement_4" type="radio" name="lytA$ctl26$rbtnEProcurement" value="1" aria-label="एमडीएल ई-प्रोक्योरमेंट - 1: खराब" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >05</td>
+                                        <td>एमडीएल ऑनलाइन बिल स्थिति</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlineBillStatus" class="w-100"   role="presentation" aria-label="एमडीएल ऑनलाइन बिल स्थिति के लिए 5 से 1 तक मूल्यांकन करें">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_0" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="5" aria-label="एमडीएल ऑनलाइन बिल स्थिति - 5: उत्कृष्ट" ></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_1" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="4" aria-label="एमडीएल ऑनलाइन बिल स्थिति - 4: बहुत अच्छा" ></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_2" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="3" aria-label="एमडीएल ऑनलाइन बिल स्थिति - 3: अच्छा" ></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_3" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="2" aria-label="एमडीएल ऑनलाइन बिल स्थिति - 2: सामान्य" ></td>
+                                                        <td><input class="rate5" id="lytA_ctl26_rbtnOnlineBillStatus_4" type="radio" name="lytA$ctl26$rbtnOnlineBillStatus" value="1" aria-label="एमडीएल ऑनलाइन बिल स्थिति - 1: खराब" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >06</td>
+                                        <td>एमडीएल विक्रेता शेष राशि पुष्टिकरण</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnVenderBalanceConfirmation" class="w-100"   role="presentation" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण के लिए 5 से 1 तक मूल्यांकन करें">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_0" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="5" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण - 5: उत्कृष्ट" ></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_1" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="4" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण - 4: बहुत अच्छा" ></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_2" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="3" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण - 3: अच्छा" ></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_3" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="2" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण - 2: सामान्य" ></td>
+                                                        <td><input class="rate6" id="lytA_ctl26_rbtnVenderBalanceConfirmation_4" type="radio" name="lytA$ctl26$rbtnVenderBalanceConfirmation" value="1" aria-label="एमडीएल विक्रेता शेष राशि पुष्टिकरण - 1: खराब" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >07</td>
+                                        <td>ऑनलाइन भुगतान विकल्प</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlinePayment" class="w-100"   role="presentation" aria-label="ऑनलाइन भुगतान विकल्प के लिए 5 से 1 तक मूल्यांकन करें">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_0" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="5" aria-label="ऑनलाइन भुगतान विकल्प - 5: उत्कृष्ट" ></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_1" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="4" aria-label="ऑनलाइन भुगतान विकल्प - 4: बहुत अच्छा" ></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_2" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="3" aria-label="ऑनलाइन भुगतान विकल्प - 3: अच्छा" ></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_3" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="2" aria-label="ऑनलाइन भुगतान विकल्प - 2: सामान्य" ></td>
+                                                        <td><input class="rate7" id="lytA_ctl26_rbtnOnlinePayment_4" type="radio" name="lytA$ctl26$rbtnOnlinePayment" value="1" aria-label="ऑनलाइन भुगतान विकल्प - 1: खराब" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td >08</td>
+                                        <td>सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल</td>
+                                        <td>
+                                            <table id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee" class="w-100"   role="presentation" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल के लिए 5 से 1 तक मूल्यांकन करें">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_0" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="5" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल - 5: उत्कृष्ट" ></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_1" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="4" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल - 4: बहुत अच्छा" ></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_2" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="3" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल - 3: अच्छा" ></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_3" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="2" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल - 2: सामान्य" ></td>
+                                                        <td><input class="rate8" id="lytA_ctl26_rbtnOnlinePortalRetiredEmployee_4" type="radio" name="lytA$ctl26$rbtnOnlinePortalRetiredEmployee" value="1" aria-label="सेवानिवृत्त कर्मचारियों हेतु ऑनलाइन पोर्टल - 1: खराब" ></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <form method="post" class="row g-3">
+
+                            <span style="font-size:medium;">   <b> नोट :</b> सभी विशिष्ट चिह्न जैसे (>,=,$,;,%,^,:,&,*,”,[,],{,},+,-,_) आदि की अनुमति नहीं है। आप किसी भी तरह इसे सेव करने का प्रयत्न करते हैं तो ये हटा दिए जाएंगे और फिर सेव किया जाएगा।</span>
+                            <p>(<span class="astricks">*</span>) आवश्यक जानकारी </p>
+                            <input type="hidden" asp-for="TEST.City" value="dELH" />
+                            <input type="hidden" asp-for="vigi.RatingNo1" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo2" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo3" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo4" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo5" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo6" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo7" value="0" />
+                            <input type="hidden" asp-for="vigi.RatingNo8" value="0" />
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.ReasonSatisfied" class="form-label">जहां आप अत्यंत संतुष्ट थे<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.ReasonSatisfied" placeholder="जहां आप अत्यंत संतुष्ट थे" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="vigi.ReasonSatisfied" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.ReasonDisSatisfied" class="form-label">जहां आप असंतुष्ट थे <span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.ReasonDisSatisfied" placeholder="जहां आप असंतुष्ट थे" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="vigi.ReasonDisSatisfied" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Name"  class="form-label">नाम<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Name" autocomplete="off" placeholder="नाम" oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Designation" for="inputPassword4" class="form-label">पदनाम<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Designation" autocomplete="off" placeholder="पदनाम" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Designation" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Organization" for="inputPassword4" class="form-label">संगठन<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Organization" autocomplete="off" placeholder="संगठन" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
+                                <span asp-validation-for="vigi.Organization" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="vigi.Email" for="inputPassword4" class="form-label">ई-मेल<span class="astricks">*</span></label>
+                                <input asp-for="vigi.Email" autocomplete="off" placeholder="ई-मेल" class="form-control vic" onkeypress="return myKeyPress(event)">
+                                <span asp-validation-for="vigi.Email" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <label asp-for="vigi.City" for="शहर" class="form-label">शहर<span class="astricks">*</span></label>
+                                <input asp-for="vigi.City" autocomplete="off" placeholder="शहर" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control vic" onkeypress="return myKeyPress(event)">
+                                <span asp-validation-for="vigi.City" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.Address" for="पता" class="form-label">पता<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.Address" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" placeholder="पता" class="form-control vic" rows="3"></textarea>
+                                <span asp-validation-for="vigi.Address" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6">
+                                <label asp-for="vigi.Comment" for="टिप्पणी" class="form-label">टिप्पणी<span class="astricks">*</span></label>
+                                <textarea asp-for="vigi.Comment" autocomplete="off" placeholder="टिप्पणी" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic" rows="3"></textarea>
+                                <span asp-validation-for="vigi.Comment" class="text-danger"></span>
+                            </div>
+
+                            @*   <div class="col-lg-4">
+                        <p>(<span class="astricks">*</span>) Information Required</p>
+                        <div class="form-group mt-3">
+                        <div class="input-group">
+                        <div class="input-group-prepend">
+                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                        </div>
+                        <input type="text" class="form-control" placeholder="Captcha Code" asp-for="vigi.CaptchaCode" />
+                        <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                        <div class="input-group-text" tabindex="0">
+                        <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                        </div>
+                        </div>
+                        </div>
+                        <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                        </div>
+                        </div> *@
+                            <div class="col-lg-4">
+
+                            <label for="vigi_CaptchaCode">चित्र में दिखाया गया कैप्चा कोड दर्ज करें।<span class="astricks">*</span></label>
+                                <div class="form-group mt-3">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
+                                        </div>
+                                        <button onclick="speakCaptcha()">🔊</button>
+                                        <input type="text" class="form-control" placeholder="कैप्चा कोड" asp-for="vigi.CaptchaCode" />
+                                        <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                                            <div class="input-group-text" tabindex="0">
+                                                <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 text-sm-center text-md-start">
+                                <button type="submit" class="btn btn-primary">जमा करें</button>
+                                <button type="button" id="btn_reset" class="btn btn-primary">रीसेट करें</button>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+
+
+
+        </div>
+    }
+</div>
+
+@*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+<script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
+@*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
+<script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
+<script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+
+<script>
+    function speakCaptcha() {
+        fetch("../Home/GetCaptchaCode")
+            .then(response => response.json())
+            .then(data => {
+                const captcha = data.captcha;
+
+                if (!captcha || captcha.length === 0) {
+                    alert("Captcha not loaded");
+                    return;
+                }
+
+                const msg = new SpeechSynthesisUtterance(captcha);
+                msg.lang = 'en-US';
+                msg.rate = 0.5;
+                window.speechSynthesis.speak(msg);
+            })
+            .catch(err => {
+                console.error("Failed to get captcha", err);
+                alert("Failed to get captcha.");
+            });
+    }
+</script>
+<script>
+    $("#img-captcha,#captchaRefresh").click(function () {
+        resetCaptchaImage();
+       @*  setTimeout(() => speakCaptcha(), 300); *@
+    });
+    function resetCaptchaImage() {
+        var d = new Date();
+        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+    }
+    @*     fetch('/Home/GetCaptchaText')
+        .then(response => response.text())
+        .then(newCaptcha => {
+        document.getElementById("captchaText").dataset.captcha = newCaptcha;
+        }); *@
+        $(".rate1").change(function () {
+            if (this.checked) {
+
+                $("#vigi_RatingNo1").val(this.value);
+            }
+            else {
+                $("#vigi_RatingNo1").val(0);
+            }
+        });
+
+
+    $(".rate2").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo2").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo2").val(0);
+        }
+    });
+
+    $(".rate3").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo3").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo3").val(0);
+        }
+    });
+
+    $(".rate4").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo4").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo4").val(0);
+        }
+    });
+
+    $(".rate5").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo5").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo5").val(0);
+        }
+    });
+
+    $(".rate6").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo6").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo6").val(0);
+        }
+    });
+
+    $(".rate7").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo7").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo7").val(0);
+        }
+    });
+
+    $(".rate8").change(function () {
+        if (this.checked) {
+
+            $("#vigi_RatingNo8").val(this.value);
+        }
+        else {
+            $("#vigi_RatingNo8").val(0);
+        }
+    });
+
+    $("#btn_reset").click(function () {
+        $("#vigi_ReasonSatisfied").val("");
+        $("#vigi_ReasonDisSatisfied").val("");
+        $("#vigi_Name").val("");
+        $("#vigi_Designation").val("");
+        $("#vigi_Organization").val("");
+        $("#vigi_Email").val("");
+        $("#vigi_City").val("");
+        $("#vigi_Address").val("");
+        $("#vigi_Comment").val("");
+        $("#vigi_CaptchaCode").val("");
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    });
+
+    $.validator.setDefaults({
+        onkeyup: false
+    })
+
+
+    $('.vic').keyup(function (e) {
+        var strg = this.value;
+        var firstChar = strg.charAt(0);
+        if ((firstChar == " ") || (firstChar == "&nbsp;") || (strg == "")) {
+            this.value = this.value.replace(/\s/g, '');
+        }
+    });
+
+    // $('#vigi_CaptchaCode').on('blur', function () {
+    //         var capcha = $(this).val();
+    //         if (capcha.length > 0) {
+    //             $.get("/English/Forms/Feedback?handler=Validatecapcha", { CaptchaCode: capcha })
+    //                 .done(function (data) {
+
+    //                     if (data != capcha) {
+    //                         $("#captchavalid").html("Please Enter Valid Captcha")
+    //                         $("#vigi_CaptchaCode").val("");
+    //                         resetCaptchaImage();
+    //                     }
+    //                 });
+    //         }
+    //     });
+
+    $('#vigi_CaptchaCode').on('blur', function () {
+        var captcha = $(this).val();
+        if (captcha.length > 0) {
+            $.ajax({
+                url: "/English/Forms/Feedback?handler=Validatecapcha",
+                type: "POST",
+                data: { CaptchaCode: captcha },  // Send as POST data
+                success: function (data) {
+                    if (data !== captcha) {
+                        //$("#captchavalid").html("Please Enter Valid Captcha");
+                        $("#captchavalid").html("");
+                        $("#vigi_CaptchaCode").val("");
+                        resetCaptchaImage();
+                    }
+                }
+            });
+        }
+    });
+    document.querySelectorAll('.feedBackTable').forEach(el => el.removeAttribute('role'));
+
+</script>

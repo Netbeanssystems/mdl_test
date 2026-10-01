@@ -1,0 +1,68 @@
+﻿    @page
+@using System.Net
+@model WebBank.Pages.Admin.Document.IndexModel
+@{
+    ViewData["Title"] = "Bank Documents";
+    int serialNumber = 0;
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title float-left font-weight-bold">List of uploaded Documents</h1>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.ModelVms?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th role="button" class="search">Id</th>
+                                <th class="search">Description</th>
+                                <th>View Document</th>
+                                <th>Uploaded Date and Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ModelVms)
+                            {
+                                <tr>
+                                    <td>@(++serialNumber)</td>
+                                    @* <td>@item.DocumentName</td> *@
+                                   @*  <td><a target="_blank" href="/bank/img/UploadedFiles/Documents/@item.DocumentName">@item.DocumentNameDecrypted</a> </td> *@
+                                  <td>@item.Description</td>
+                                   <td>
+                                      <a href="/bank/file/download?name=@WebUtility.UrlEncode(item.DocumentName)">
+                                        @Html.Encode(item.DocumentNameDecrypted)
+                                      </a>
+                                   </td>
+                                  <td>@item.CreatedDate</td>
+                                 
+                               
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+</section>
+@section Scripts
+{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblDataTable').DataTable();
+
+
+        $(document).ready(function () {
+            // Add Validations here
+        });
+    </script>
+}

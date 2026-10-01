@@ -1,0 +1,183 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Sign up";
+    Layout = "_LoginLayout";
+}
+@section Styles{
+    <link href="~/plugins/password-requirement/css/jquery.passwordRequirements.css" rel="stylesheet" />
+}
+<div class="col-md-4 offset-md-4">
+    <div class="card">
+        <h5 class="card-header text-center">Create account | Sign up</h5>
+        <div class="card-body login-card-body">
+            <p>Sign up to create an account with us...</p>
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post" autocomplete="off">
+                <div class="form-group">
+                    <label asp-for="Input.Username" class="col-form-label">Username*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Username" asp-for="Input.Username" autocomplete="off" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.Username" class="text-danger-sm"></span>
+                    <span class="information">Will be required to sign you in</span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="col-form-label">Email*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Email" asp-for="Input.Email" autocomplete="off" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger-sm"></span>
+                    <span class="information">Will be used for communicating with you. (We don't spam our users)</span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="col-form-label">Password*</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control pr-password" placeholder="Password" asp-for="Input.Password" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="toggle_pwd fa fa-eye" title="Show/Hide Password" data-toggle="tooltip" data-placement="top"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger-sm"></span>
+                    @*<span class="information">Minimum of 8 characters including 1 lower-case, 1 upper-case, 1 number and 1 special character</span>*@
+                </div>
+                @*<div class="form-group">
+            <label asp-for="Input.ConfirmPassword" class="col-form-label">Confirm Password*</label>
+            <div class="input-group">
+                <input class="form-control" placeholder="Confirm Password" asp-for="Input.ConfirmPassword" autocomplete="off" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger-sm"></span>
+            <span class="information">Must match with your password</span>
+        </div>*@
+                <div class="form-group">
+                    <label asp-for="Input.Name" class="col-form-label">Name*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Name" asp-for="Input.Name" autocomplete="off" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-list"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.Name" class="text-danger-sm"></span>
+                    <span class="information">You nick name (to greet you every time you sign in)</span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.PhoneNumber" class="col-form-label">Phone Number*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Phone Number" asp-for="Input.PhoneNumber" autocomplete="off" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-phone"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger-sm"></span>
+                    <span class="information">Your 10 digit mobile number (to send important message notifications)</span>
+                </div>
+                @*<div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <img id="img-captcha" src="/bank/Common/GetCaptchaImage" alt="captcha" />
+                        </div>
+                        <input type="text" class="form-control" placeholder="Captcha Code" asp-for="Input.CaptchaCode" />
+                        <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                            <div class="input-group-text">
+                                <span id="captchaRefresh" class="fa fa-redo"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.CaptchaCode" class="text-danger"></span>
+                </div>*@
+                @*commented as this form is not in use*@
+                @*<div class="form-group">
+            <button type="submit" class="pr-submit-btn btn btn-primary btn-block" disabled="disabled">Sign Up</button>
+        </div>*@
+            </form>
+            <div class="form-group float-left">
+                <a asp-page="ForgotPassword">Forgot Password?</a>
+            </div>
+            <div class="form-group float-right">
+                <a asp-page="ForgotUsername">Forgot Username?</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="social-auth-links text-center m-0">
+                <p>- OR -</p>
+                <a class="btn btn-primary btn-block" asp-page="Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+                @*<a href="#" class="btn btn-block btn-primary">
+                        <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
+                    </a>
+                    <a href="#" class="btn btn-block btn-danger">
+                        <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+                    </a>*@
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/plugins/password-requirement/js/jquery.passwordRequirements.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        //commented as this form is not in use
+        //$('#Input_Username').on('blur', function () {
+        //    var uname = $(this).val();
+        //    if (uname.length > 0) {
+        //        $.get("/Account/Register?handler=CheckUsername", { uname: uname })
+        //            .done(function (data) {
+        //                if (data) {
+        //                    $("#divClientAlert").addClass("alert-danger");
+        //                    $("#divClientAlert > p.m-0").text("This username has been taken");
+        //                    $("#divClientAlert").show();
+        //                    SetTimeOut($("#divClientAlert"));
+        //                    $('#Input_Username').removeClass('valid').addClass('input-validation-error');
+        //                    $('#Input_Username').next('div.input-group-append').children('div.input-group-text').css('border-color', '#dc3545');
+        //                }
+        //            });
+        //    }
+        //});
+        $("#img-captcha,#captchaRefresh").click(function () {
+            resetCaptchaImage();
+        });
+        function resetCaptchaImage() {
+            var d = new Date();
+            $("#img-captcha").attr("src", "/bank/Common/GetCaptchaImage?" + d.getTime());
+        }
+        $(".pr-password").passwordRequirements();
+        $(".toggle_pwd").click(function () {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var type = $(this).hasClass("fa-eye-slash") ? "text" : "password";
+            $(this).parent().parent().prev('input').attr("type", type);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let inputs = document.querySelectorAll("input, textarea");
+            inputs.forEach(function (input) {
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('copy', function (e) {
+                    e.preventDefault();
+                });
+                input.addEventListener('cut', function (e) {
+                    e.preventDefault();
+                });
+            });
+        });
+    </script>
+}

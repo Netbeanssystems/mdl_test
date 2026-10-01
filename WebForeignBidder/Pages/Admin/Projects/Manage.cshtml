@@ -1,0 +1,72 @@
+﻿@page "{id?}"
+@model ManageModel
+@{
+    ViewData["Title"] = "Manage Project";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        @if (!Model.IsNew)
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Edit Project</h3>
+                            @*<div class="btn-group btn-group-sm float-right">
+                                    <a href="#" class="text-dark mr-3" data-toggle="modal" data-target="#confirmationModal" title="Delete"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+                                </div>*@
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                        else
+                        {
+                            <h3 class="card-title float-left font-weight-bold">Create Project</h3>
+                            <a class="float-right text-dark" asp-page="Index"><i class="fa fa-arrow-left" data-toggle="tooltip" data-placement="top" title="Back"></i></a>
+                            <div class="clearfix"></div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            @if (!Model.IsNew)
+                            {
+                                <input type="hidden" asp-for="projects.Id" />
+                                <input type="hidden" asp-for="projects.CreatedDate" />
+                            }
+                            <div class="form-group">
+                                <label asp-for="projects.ProjectName" class="col-form-label">Project Name<span class="required">*</span></label>
+                                <input asp-for="projects.ProjectName" class="form-control" placeholder="Project Name">
+                                <span id="usererror" asp-validation-for="projects.ProjectName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="projects.YardFrom" class="col-form-label">Yard From<span class="required">*</span></label>
+                                <input asp-for="projects.YardFrom" class="form-control" placeholder="Yard From">
+                                <span id="usererror" asp-validation-for="projects.YardFrom" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="projects.YardTo" class="col-form-label">Yard To<span class="required">*</span></label>
+                                <input asp-for="projects.YardTo" class="form-control" placeholder="Yard To">
+                                <span id="usererror" asp-validation-for="projects.YardTo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="projects.Remarks" class="col-form-label">Remarks<span class="required">*</span></label>
+                                <input asp-for="projects.Remarks" class="form-control" placeholder="Remarks">
+                                <span id="usererror" asp-validation-for="projects.Remarks" class="text-danger"></span>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3 offset-md-3">
+                                    <button type="submit" class="btn btn-block btn-primary">Save</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <a class="btn btn-block btn-secondary" asp-page="Index">Back</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,72 @@
+.financial-header{
+    background-image: url('../images/vision mission.jpg');
+    height: 250px;
+}
+
+.vision-mission-block{
+    background-color: #003f85;
+    box-shadow: 0px 0px 7px rgba(0,0,0,0.5);
+    border-bottom: 6px solid #e20809;
+}
+.vision-mission-block .vision-mission-block-head{
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+.vision-mission-block .vision-mission-block-head .icon{
+    font-size: 3rem;
+}
+.vision-mission-block .vision-mission-block-content{
+    color: #fff;
+    font-size: 0.9rem;
+    border-bottom: 3px solid #fff;
+}
+
+.our-values-info img{
+    max-width: 100%;
+}
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+
+}
+
+@media only screen and (max-width : 991px) {
+
+}
+
+
+@media only screen and (max-width : 767px) {
+ 
+}
+
+@media only screen and (max-width : 576px) {
+    .our-values-info img{
+        max-width: 100%;
+    }
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+}
+

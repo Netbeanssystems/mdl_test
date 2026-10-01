@@ -1,0 +1,50 @@
+﻿@model Application.ViewModels.PetrolPriceBuildupListVM
+@if (Model?.NewsList?.Count > 0)
+{
+    <div class="table-responsive">
+        <table id="tblTempNewProjects" class="table table-sm table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Request Date</th>
+                    <th>English Heading</th>
+                    <th>Hindi Heading</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    @if (Model.role == "SuperAdmin" || Model.role == "Admin" || Model.role == "Publisher")
+                    {
+                        <th>Action</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.NewsList.Where(c => c.Show))
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@($"{item.ActionDate.AddHours(5.5):dd/MM/yyyy hh:mm tt}")</td>
+                        <td>@item.EnglishHeadingName</td>
+                        <td>@item.HindiHeadingName</td>
+                        <td>@item.UserName</td>
+                        <td>@item.RoleName</td>
+                        <td>@item.Action</td>
+                        <td>@item.Status</td>
+                        <td>
+                            @if ((Model.role == "SuperAdmin" || Model.role == "Admin" || Model.role == "Publisher") && item.Status != "Approved")
+                            {
+                                <a class="fa fa-edit text-danger" title="Approve" asp-page="Approve" asp-route-id="@item.Id"></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>No records has been added yet. Click 'Create New' to start adding.</p>
+}

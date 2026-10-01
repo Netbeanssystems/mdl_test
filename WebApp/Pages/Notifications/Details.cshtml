@@ -1,0 +1,197 @@
+﻿@page "{nid?}"
+@model DetailsModel
+@{
+    ViewData["Title"] = "Notification Details";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title float-left font-weight-bold">Notification Details</h3>
+            <a class="float-right" asp-page="Manage">
+                <i class="fa fa-plus text-dark" data-toggle="tooltip" data-placement="top" title="Create"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="card-body">
+            @if (Model.NotificationDetails?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblDataTable" class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="noSort">Icon</th>
+                                <th class="search">Title</th>
+                                <th class="search">Notification Text</th>
+                                @*<th class="search">For Role</th>
+                                <th class="search">For User</th>*@
+                                <th class="search">Date</th>
+                                <th class="text-center noExport noSort">Seen</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                <th class="text-center noExport noSort">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input class="custom-control-input chkParent" type="checkbox" id="chkParentT" name="chkParent" />
+                                        <label class="custom-control-label" for="chkParentT">Seen/Delete</label>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.NotificationDetails.OrderByDescending(x => x.CreatedDate))
+                            {
+                                <tr>
+                                    <td class="text-center">@(!string.IsNullOrEmpty(item.Icon)? Html.Raw($"<i class=\"{item.Icon}\"></i>") : Html.Raw(""))</td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Text</td>
+                                    @*<td>@item.RoleName</td>
+                                    <td>@item.UserName</td>*@
+                                    <td>@($"{item.CreatedDate:dd-MM-yyyy hh:mm tt}")</td>
+                                    <td class="text-center"><i class="@(item.IsActive?"fa fa-minus":"fa fa-check-circle text-success")"></i></td>
+                                    <td class="text-center">
+                                        @if (item.IsActive)
+                                        {
+                                            <a href="@item.TargetUrl" target="_blank">
+                                                <i class="fa fa-arrow-right text-dark" data-toggle="tooltip" data-placement="top" title="Visit"></i>
+                                            </a>
+                                            @*<a data-id="@item.Id" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-dark" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>*@
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="custom-control custom-switch custom-switch-on-primary">
+                                            <input class="custom-control-input chkChild" type="checkbox" id="@($"chk-{item.NotificationId}-{item.Id}")" name="@($"chk-{item.NotificationId}-{item.Id}")" />
+                                            <label class="custom-control-label" for="@($"chk-{item.NotificationId}-{item.Id}")">&nbsp;</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="noSort">Icon</th>
+                                <th class="search">Title</th>
+                                <th class="search">Notification Text</th>
+                                @*<th class="search">For Role</th>
+                                <th class="search">For User</th>*@
+                                <th class="search">Date</th>
+                                <th class="text-center noExport noSort">Seen</th>
+                                <th class="text-center noExport noSort">Action</th>
+                                <th class="text-center noExport noSort">
+                                    <div class="custom-control custom-switch custom-switch-on-primary">
+                                        <input class="custom-control-input chkParent" type="checkbox" id="chkParentB" name="chkParent" />
+                                        <label class="custom-control-label" for="chkParentB">Seen/Delete</label>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button id="btnDeleteSelected" class="btn btn-danger">Mark as Seen/Delete</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+    </div>
+    @*<form method="post" asp-page-handler="Delete">
+        <partial name="_DeleteModalPartial" />
+    </form>*@
+</section>
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblDataTable').DataTable({
+            initComplete: function () {
+                var r = $('#tblDataTable tfoot tr');
+                r.find('th').each(function () {
+                    if ($(this).hasClass('search')) {
+                        $(this).css('padding', 5);
+                        var title = $(this).text();
+                        $(this).html('<input type="text" class="form-control" placeholder="' + title + '" />');
+                    } else {
+                        $(this).html('');
+                    }
+                });
+                $('#tblDataTable thead').prepend(r);
+                this.api().columns().every(function () {
+                    var that = this;
+                    $('input', this.footer()).on('keyup change clear',
+                        function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                });
+            }
+        });
+        $('.chkParent').change(function () {
+            if ($(this).is(":checked")) {
+                $('.chkChild').each(function (e, i) {
+                    $(this).prop('checked', true);
+                });
+            } else {
+                $('.chkChild').each(function (e, i) {
+                    $(this).prop('checked', false);
+                });
+            }
+        });
+        $(document).on('change',
+            ".chkChild",
+            function (e) {
+                var AllChecked = true;
+                $('.chkChild').each(function (el, i) {
+                    if (!$(this).is(":checked")) {
+                        AllChecked = false;
+                    }
+                });
+                $('.chkParent').prop('checked', AllChecked);
+            }
+        );
+        $('#btnDeleteSelected').click(function(event) {
+            getConfirm('Are you sure?',
+                function(result) {
+                    if (result) {
+                        var modelDto = [];
+                        $('.chkChild').each(function(el, i) {
+                            if ($(this).is(":checked")) {
+                                modelDto.push($(this).prop('id'));
+                            }
+                        });
+                        var modelstr = JSON.stringify(modelDto);
+                        var url = '@($"/Notifications/Details/{Model.nid}?handler=DeleteSelected")';
+                        $.ajax({
+                            type: "GET",
+                            url: url,
+                            data: { modelstr: modelstr },
+                            success: function(data) {
+                                if (data != null) {
+                                    if (data === 'unauthorized') {
+                                        $("#divClientAlert").addClass("alert-warning");
+                                        $("#divClientAlert > p.m-0").text("Please login to access this resource");
+                                        $("#divClientAlert").show();
+                                        SetTimeOut($("#divClientAlert"));
+                                        window.location.href = "/Account/Login";
+                                    } else {
+                                        $("#divClientAlert").addClass("alert-success");
+                                        $("#divClientAlert > p.m-0").text(data);
+                                        $("#divClientAlert").show();
+                                        SetTimeOut($("#divClientAlert"));
+                                        window.location.reload(true);
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        event.preventDefault();
+                    }
+                });
+        });
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            $('#Id').val($(event.relatedTarget).data('id'));
+        });
+    </script>
+}

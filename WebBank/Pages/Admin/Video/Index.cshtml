@@ -1,0 +1,76 @@
+﻿@page
+@model WebBank.Pages.Admin.Video.IndexModel
+@{
+    ViewData["Title"] = "Video Update";
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Video Heading</h3>
+            <a class="btn btn-sm btn-primary float-right" asp-page="Manage"><i class="fa fa-plus"></i>Add New Heading</a>
+            <div class="clearfix"></div>
+        </div>
+        @Html.AntiForgeryToken()
+        <div class="card-body">
+            @if (Model.ModelVMs?.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table id="tblpressrelease" class="table table-sm table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>English Heading </th>
+                            <th>Hindi Heading</th>
+                            <th>English Category</th>
+                            <th>Hindi Category</th>
+                            <th>English Thumbnail Link</th>
+                            <th>Hindi Thumbnail Link</th>
+                            <th class="text-center">Show</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.ModelVMs)
+                        {
+                            <tr>
+                                <td>@item.EnglishHeading</td>
+                                <td>@item.HindiHeading</td>
+                                <td>@item.EnglishCategory</td>
+                                <td>@item.HindiCategory</td>
+                                <td>@item.EnglishThumbnailLink</td>
+                                <td>@item.HindThumbnailLink</td>
+                                <td class="text-center">@Html.Raw(item.Active ? "<i class=\"fa fa-check-circle text-success\"></i>" : "<i class=\"fa fa-times-circle text-danger\"></i>")</td>
+                                <td><a class="fa fa-edit text-danger" title="Edit" asp-page="Manage" asp-route-id="@item.Id"></a></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p>No records has been added yet. Click 'Create New' to start adding.</p>
+            }
+        </div>
+
+
+    </div>
+</section>
+
+@section Scripts{
+    <script type="text/javascript" asp-append-version="true">
+        $('#tblpressrelease').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "rowReorder": {
+                "selector": 'td:nth-child(2)'
+            },
+            "responsive": true,
+            "order": [[0, "desc"]]
+        });
+    </script>
+}

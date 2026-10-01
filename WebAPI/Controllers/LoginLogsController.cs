@@ -1,0 +1,124 @@
+﻿using Application.Dtos;
+using Application.Extensions;
+using Application.ServiceInterfaces;
+using Infrastructure.Context;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+namespace WebAPI.Controllers
+{
+   // [Authorize]
+    [ApiController]
+    [Route("[controller]/[action]")]
+    public class LoginLogsController : Controller
+    {
+        private readonly IDataService _dataService;
+        private readonly AppDbContext _context;
+        public LoginLogsController(IDataService dataService,AppDbContext context)
+        {
+            _dataService = dataService;
+            _context = context;
+        }
+        // GET LoginLogs
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var modelVms = await _dataService.LoginLogs.Get().ConfigureAwait(false);
+            if (modelVms == null || modelVms.Count <= 0) return NotFound("Records not found");
+            return Ok(modelVms.OrderByDescending(x => x.TimeStamp));
+        }
+        // GET LoginLogs/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetVM([FromRoute] int id)
+        {
+            if (id <= 0) return BadRequest("Input not valid or null");
+            var modelVm = await _dataService.LoginLogs.GetVM(id).ConfigureAwait(false);
+            if (modelVm == null) return NotFound("Record not found");
+            return Ok(modelVm);
+        }
+        // GET LoginLogs/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
+        {
+            if (id <= 0) return BadRequest("Input not valid or null");
+            var modelDto = await _dataService.LoginLogs.Get(id).ConfigureAwait(false);
+            if (modelDto == null) return NotFound("Record not found");
+            return Ok(modelDto);
+        }
+        // POST: LoginLogs/Create
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] LoginLogsDTO inputModel)
+        {
+            if (inputModel == null) return BadRequest("Input not valid or null");
+            // 1. If UserId is missing but UserName exists, fetch it from AspNetUsers
+            
+            if (!string.IsNullOrEmpty(inputModel.UserName))
+            {
+                // Use your context to find the ID
+                var userId = await _context.AspNetUsers
+                    .Where(u => u.UserName == inputModel.UserName)
+                    .Select(u => u.Id)
+                    .FirstOrDefaultAsync();
+
+                inputModel.UserId = userId;
+            }
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
+
+            // 2. Proceed with creation
+            var modelDto = await _dataService.LoginLogs.Create(inputModel).ConfigureAwait(false);
+
+            if (modelDto != null) return Ok(modelDto);
+            return BadRequest("Create failed");
+        }
+        // PUT: LoginLogs/Edit/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit([FromRoute] int id, [FromBody] LoginLogsDTO inputModel)
+        {
+            if (inputModel == null) return BadRequest("Input not valid or null");
+            if (id != inputModel.Id) return BadRequest("Invalid Id");
+            if (!ModelState.IsValid) return BadRequest(ModelState.GetErrorMessages());
+            var modelDto = await _dataService.LoginLogs.Update(inputModel).ConfigureAwait(false);
+            if (modelDto != null) return Ok(modelDto);
+            return BadRequest("Update failed");
+        }
+        // DELETE: LoginLogs/Delete/5/false
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (id <= 0) return BadRequest("Input not valid or null");
+            var rowsChanged = await _dataService.LoginLogs.Delete(id).ConfigureAwait(false);
+            if (rowsChanged > 0) return Ok(rowsChanged);
+            return BadRequest("Delete failed. There might be active child records.");
+        }
+        // POST: LoginLogs/CreateRange
+        [HttpPost]
+        public async Task<IActionResult> CreateRange([FromBody] List<LoginLogsDTO> modelDtos)
+        {
+            if (modelDtos == null || modelDtos.Count == 0) return BadRequest("Input not valid or null");
+            var modelDtosTR = await _dataService.LoginLogs.CreateRange(modelDtos).ConfigureAwait(false);
+            if (modelDtosTR != null) return Ok(modelDtosTR);
+            return BadRequest("Bulk insertion failed");
+        }
+        // POST: LoginLogs/Upsert
+        [HttpPost]
+        public async Task<IActionResult> Upsert([FromBody] List<LoginLogsDTO> modelDtos)
+        {
+            if (modelDtos == null || modelDtos.Count == 0) return BadRequest("Input not valid or null");
+            var modelDtosTR = await _dataService.LoginLogs.Upsert(modelDtos).ConfigureAwait(false);
+            if (modelDtosTR != null) return Ok(modelDtosTR);
+            return BadRequest("Bulk upsertion failed");
+        }
+        // POST: LoginLogs/DeleteRange
+        [HttpPost]
+        public async Task<IActionResult> DeleteRange([FromBody] List<LoginLogsDTO> inputDtos)
+        {
+            if (inputDtos == null || inputDtos.Count == 0) return BadRequest("Input not valid or null");
+            var rowsChanged = await _dataService.LoginLogs.DeleteRange(inputDtos).ConfigureAwait(false);
+            if (rowsChanged > 0) return Ok(rowsChanged);
+            return BadRequest("Bulk deletion failed");
+        }
+    }
+}

@@ -1,0 +1,173 @@
+.quick-access-list .quick-access-item .quick-access-icon {
+	height: 110px;
+}
+
+.quick-access-list .quick-access-item .quick-access-head {
+	height: 80px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.service-item .icon {
+	font-size: 4.5rem;
+}
+
+.service-list-custom-col {
+	flex: 0 0 25%;
+}
+
+.quick-access .slick-list {
+	width: 80%;
+}
+
+.service-type-desc h5 {
+	height: 50px;
+}
+
+.service-type-icon {
+	width: 220px;
+	width: 160px;
+	flex-shrink: 0;
+}
+
+.service-item .service-icon {
+	color: #fff;
+}
+
+.updates-item p {
+	font-size: 0.8rem;
+	font-weight: 500;
+	max-height: 60px;
+	overflow: hidden;
+}
+
+.updates-item .action-link {
+	text-align: right;
+	color: #001344;
+	font-weight: 700;
+	font-size: 0.85rem;
+	text-decoration: underline;
+}
+
+.quick-access-list .quick-access-item .quick-access-icon .icon {
+	font-size: 5rem;
+}
+
+.service-type-desc {
+	flex-grow: 1;
+}
+
+.updates-item-icon-image {
+	width: 50%;
+	flex-shrink: 0;
+	margin-right: 0.3rem;
+}
+
+.update-item-large-text {
+	font-weight: 700;
+	font-size: 1.3rem;
+}
+
+.updates-item-icon-image img {
+	max-width: 80%;
+}
+
+.update-item-medium-text {
+	font-weight: 600;
+}
+
+/*					service section					*/
+#SODwelcome_servicesection .service-bg {
+	background-image: url(../images/SODrolInitiatives.jpg);
+} 
+#SODwelcome_servicesection .service-bg-0 {
+	background-image: url(../images/SODrolInitiatives.jpg);
+}
+
+#SODwelcome_servicesection .service-bg-1 {
+	background-image: url(../images/Happy-Safety-Hour.jpg);
+}
+
+#SODwelcome_servicesection .service-bg-2 {
+	background-image: url(../images/Stakeholder-Initiatives.jpg);
+}
+
+#SODwelcome_servicesection .service-bg-3 {
+	background-image: url(../images/SustainabilitySocietal-Value.jpg);
+}
+
+/*Key Links*/
+.quick-access-item.oisd:hover {
+	background-image: url(../images/KeyOISD.jpg);
+}
+
+.quick-access-item.dish:hover {
+	background-image: url(../images/KeyDish.jpg);
+}
+
+.quick-access-item.hp-buddy:hover {
+	background-image: url(../images/HPKeybuddy.jpg);
+}
+
+.quick-access-item.dealer-website:hover {
+	background-image: url(../images/KeyWebsiteDealer.jpg);
+}
+
+.quick-access-item.hse-policy:hover {
+	background-image: url(../images/policyHSE.jpg);
+}
+
+.quick-access-item.env-policy:hover {
+	background-image: url(../images/policyEnvoirmental.jpg);
+}
+
+.quick-access-item.solar-energy:hover {
+	background-image: url(../images/policysolarEnergy.jpg);
+}
+
+.quick-access-item.energy-mgt:hover {
+	background-image: url(../images/policyEnergyManagement.jpg);
+}
+
+.quick-access-item.ethanol:hover {
+	background-image: url(../images/policyEnthol-Bio-Fuel.jpg);
+}
+
+.header-image-slider-wrapper .slick-dots {
+	bottom: 250px;
+}
+
+@media only screen and (min-width: 1600px) {}
+
+@media only screen and (max-width: 1365px) {}
+
+@media only screen and (max-width: 1199px) {
+	.quick-access .slick-list {
+		width: 100%;
+	}
+}
+
+@media only screen and (max-width: 1023px) {}
+
+@media only screen and (max-width: 1100px) {}
+
+@media only screen and (max-width: 1080px) {
+	.service-list-custom-row {
+		justify-content: center;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.service-list-custom-col {
+		flex: 0 0 25%;
+	}
+}
+
+@media only screen and (max-width: 767px) {}
+
+@media only screen and (max-width: 576px) {}
+
+@media only screen and (max-width: 480px) {}
+
+@media only screen and (max-width: 400px) {}

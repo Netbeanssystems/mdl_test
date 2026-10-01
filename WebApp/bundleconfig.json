@@ -1,0 +1,68 @@
+[
+  {
+    "outputFileName": "wwwroot/css/styles.min.css",
+    "inputFiles": [
+      "wwwroot/css/styles.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/scripts.min.js",
+    "inputFiles": [
+      "wwwroot/js/scripts.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/alt-theme/css/adminlte.min.css",
+    "inputFiles": [
+      "wwwroot/plugins/alt-theme/css/adminlte.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/alt-theme/js/adminlte.min.js",
+    "inputFiles": [
+      "wwwroot/plugins/alt-theme/js/adminlte.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/aes/aes.min.js",
+    "inputFiles": [
+      "wwwroot/plugins/aes/aes.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/fullcalendar/custom.min.css",
+    "inputFiles": [
+      "wwwroot/plugins/fullcalendar/custom.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/datatables/Datatables-1.13.4/jquery.dataTables.min.js",
+    "inputFiles": [
+      "wwwroot/plugins/datatables/Datatables-1.13.4/jquery.dataTables.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/hierarchy/jquery.orgchart.min.css",
+    "inputFiles": [
+      "wwwroot/plugins/hierarchy/jquery.orgchart.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/hierarchy/jquery.orgchart.min.js",
+    "inputFiles": [
+      "wwwroot/plugins/hierarchy/jquery.orgchart.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/hierarchy/hierarchy.min.css",
+    "inputFiles": [
+      "wwwroot/plugins/hierarchy/hierarchy.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/plugins/hierarchy/hierarchy.min.js",
+    "inputFiles": [
+      "wwwroot/plugins/hierarchy/hierarchy.js"
+    ]
+  }
+]

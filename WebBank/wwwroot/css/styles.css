@@ -1,0 +1,101 @@
+/*.brand-link { line-height: 2.4; }*/
+.col-lg-3.col-6.percent20 { flex: 0 0 20% !important; max-width: 20% !important; }
+/*For Alert messages*/
+#divAlertMessage, #divClientAlert { position: fixed; top: -15%; left: 35%; z-index: 1051; width: 30%; -webkit-animation: slide 0.8s forwards; animation: slide 0.8s forwards; }
+
+@-webkit-keyframes slide {
+    100% { top: 15%; }
+}
+
+@keyframes slide {
+    100% { top: 15%; }
+}
+
+@media (max-width: 767px) {
+    #divAlertMessage, #divClientAlert { position: fixed; top: -15%; left: 0%; z-index: 1051; width: 100%; -webkit-animation: slide 0.8s forwards; animation: slide 0.8s forwards; }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    #divAlertMessage, #divClientAlert { position: fixed; top: -15%; left: 27%; z-index: 1051; width: 50%; -webkit-animation: slide 0.8s forwards; animation: slide 0.8s forwards; }
+}
+/*fix carousel image height*/
+.slider-size { height: 344px; /* This is your slider height */ }
+.carousel-item img { width: 100%; height: 344px; margin: 0 auto; /* center your carousel if other than 100% */ }
+/*Form Labels*/
+@media (max-width: 767px) {
+    .col-form-label { padding-top: 0; padding-bottom: 0; }
+}
+/*Set sub menu item bg*/
+.sub-menu-bg { color: #FFFFFF !important; background-color: #dc3545 !important; }
+/*for aligning checkbox and its label*/
+label.custom-control-label.adjusttop:before, label.custom-control-label.adjusttop:after { top: 8px !important; }
+/*For required span*/
+.required { /*vertical-align: super; color: #dc3545;*/ color: #000000; }
+.information { font-size: 13px; color: #666666; padding: 0; margin: 0; width: 100%; display: block; }
+.text-danger-sm { font-size: 14px; color: #dc3545; padding: 0; margin: 0; }
+/*round buttons*/
+.btn-circle.btn-sm { width: 30px; height: 30px; padding: 6px 0px; border-radius: 15px; text-align: center; line-height: 1.2; }
+.btn-circle.btn-md { width: 50px; height: 50px; padding: 7px 10px; border-radius: 25px; text-align: center; line-height: 1.2; }
+.btn-circle.btn-xl { width: 70px; height: 70px; padding: 10px 16px; border-radius: 35px; text-align: center; line-height: 1.2; }
+/*asap colors #00abbd #ff8336*/
+.bg-asap-sky { background-color: #00abbd !important; }
+.bg-asap-orange { background-color: #ff8336 !important; }
+ul.navbar-nav a.nav-link { color: #ffffff !important; }
+/*validation css*/
+.valid { border-color: #28a745 !important }
+    .valid + div.input-group-append > div.input-group-text { border-color: #28a745 !important }
+.input-validation-error { border-color: #dc3545 !important }
+    .input-validation-error + div.input-group-append > div.input-group-text { border-color: #dc3545 !important }
+/*asap menu bar theme*/
+.sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link.active, .sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #dea304 !important
+}
+/*form label padding-bottom*/
+.col-form-label { padding-bottom: 0 !important; padding-top: 0 !important; }
+/*height of search text boxes in datatable*/
+.search input[type="text"].form-control { height: calc(1.75rem + 2px); }
+.dropdown-item a { cursor: pointer; }
+    .dropdown-item a:hover, .dropdown-item a:focus { color: #16181b; text-decoration: none; background-color: #f8f9fa; }
+/*to remove Browse from input file label*/
+.input-group > .custom-file:not(:last-child) .custom-file-label::after { display: none !important; }
+.table td.fit,
+.table th.fit { white-space: nowrap; width: 1%; }
+.table td input, .table td select { width: auto; height: calc(2rem + 2px); }
+/*bring confirmation modals to top*/
+#clientConfirmationModal, #confirmationModal { z-index: 1051 !important }
+/*avoid right padding when modal shows*/
+/*body.modal-open { padding-right: 0px !important; }*/
+body.modal-open { overflow: auto; }
+    body.modal-open[style] { padding-right: 0px !important; }
+.modal::-webkit-scrollbar { width: 0 !important; }
+/*please wait loading*/
+.loading-overlay { position: absolute; z-index: 1052; width: 100%; height: 100%; font-weight: bolder; color: #007bff; background-color: #ffffff; opacity: 0.9; border-radius: 5px; text-align: center; display: none; }
+    .loading-overlay .spinner-wrapper { position: relative; top: 0; left: 0; }
+        .loading-overlay .spinner-wrapper i, .loading-overlay .spinner-wrapper img { margin-top: 25%; }
+/*strkitrough table row*/
+/*tr.strikeout td:before { content: " "; position: absolute; top: 50%; left: 0; border-bottom: 1px solid #111; width: 100%; }*/
+@media print {
+    .verticaltext { transform: rotate(-90deg); transform-origin: right, top; -ms-transform: rotate(-90deg); -ms-transform-origin: right, top; -webkit-transform: rotate(-90deg); -webkit-transform-origin: right, top; position: absolute; }
+}
+/*blinking*/
+.blink_me { animation: blinker 1s linear infinite; }
+
+@keyframes blinker {
+    50% { opacity: 0; }
+}
+/*Remove default blue highlight*/
+.form-control:focus { box-shadow: none !important; }
+/*vertical-align content tables*/
+table.vertical-align > tbody > tr > td { vertical-align: middle; }
+/*custom background for checkboxes and radios*/
+.custom-control-label::before { background-color: #ffffff; }
+.custom-control-input:disabled ~ .custom-control-label::before { background-color: #dadada; }
+#SortList { width: 100%; border: 1px solid #c5c5c5; padding: 5px; list-style-type: none; }
+#SortList li { border: 1px solid #c5c5c5; margin: 5px; padding: 5px; background-color: #f6f6f6; cursor: grab; }
+input.form-control::placeholder {
+    color: #404040 !important;
+}
+
+a {
+    color:#3F51B5;
+}

@@ -1,0 +1,27 @@
+﻿@using Microsoft.Extensions.Configuration;
+@inject IConfiguration config
+@model List<Application.Dtos.BannerDTO>
+ 
+
+@if (Model?.Count > 0)
+{ 
+    @foreach (var item in Model.Where(x => x.ParentId == 1 && x.Show).OrderBy(x => x.Priority).ToList())
+    {
+        if (item.Linkopen == "Target Blank")
+        {
+            <div class="item">
+                <a href="@item.EnglishLink" target="_blank" onclick="return confirm('External site that opens in a new window.');" title="@item.EnglishHeadingName">
+                    <img title="@item.Title"  src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/HomeBanner/EnglishBanners/@item.EnglishBanner" alt="@item.Alt"  >
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="item">
+                <a href="@item.EnglishLink" title="@item.EnglishHeadingName">
+                    <img title="@item.Title" src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/HomeBanner/EnglishBanners/@item.EnglishBanner" alt="@item.Alt">
+                </a>
+            </div>
+        }
+    }
+}

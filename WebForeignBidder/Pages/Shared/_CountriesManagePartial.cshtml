@@ -1,0 +1,55 @@
+﻿@model CountriesDTO
+<div class="modal fade" id="ManageModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="ManageModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="post" asp-page-handler="Manage">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ManageModalTitle">Country</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Name" class="col-form-label">Country Name<span class="required">*</span></label>
+                        <input asp-for="Name" class="form-control" onkeypress="return myKeyPress(event)" placeholder="Country Name" autocomplete="on" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Code3" class="col-form-label">Country Code3<span class="required">*</span></label>
+                        <input asp-for="Code3" class="form-control" onkeypress="return myKeyPress(event)" placeholder="Country Code3" autocomplete="on" />
+                        <span asp-validation-for="Code3" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Code2" class="col-form-label">Country Code2<span class="required">*</span></label>
+                        <input asp-for="Code2" class="form-control" onkeypress="return myKeyPress(event)" placeholder="Country Code2" autocomplete="on" />
+                        <span asp-validation-for="Code2" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Capital" class="col-form-label">Capital</label>
+                        <input asp-for="Capital" class="form-control" onkeypress="return myKeyPress(event)" placeholder="Capital" autocomplete="on" />
+                        <span asp-validation-for="Capital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CurrencyCode" class="col-form-label">Currency Code<span class="required">*</span></label>
+                        <input asp-for="CurrencyCode" class="form-control" onkeypress="return myKeyPress(event)" placeholder="Currency Code" autocomplete="on" />
+                        <span asp-validation-for="CurrencyCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-switch custom-switch-on-primary">
+                            <input asp-for="IsActive" class="custom-control-input">
+                            <label asp-for="IsActive" class="custom-control-label">Active</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSave" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model EmailDTO
+<div class="modal fade" id="emailModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="emailModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emailModalTitle">Send Password Reset Link</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" asp-for="Email"/>
+                    <label asp-for="NewEmail" class="col-form-label">Email*</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Email" asp-for="NewEmail"/>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="NewEmail" class="text-danger-sm"></span>
+                    <span class="information">Credentials will be sent to this email address</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-primary">Send</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">CANCEL</button>
+            </div>
+        </div>
+    </div>
+</div>

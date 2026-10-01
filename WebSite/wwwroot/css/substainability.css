@@ -1,0 +1,447 @@
+.substainability-header{
+    background-image: url(../images/sustainbility.jpg);
+    height: 300px;
+}
+.welcomto-hpgas {
+    background-image: url(../images/welcome.jpg);
+    height: 300px;
+}
+.faq {
+    background-image: url(../images/FAQbanner.jpg);
+    height: 300px;
+}
+.freetraide-lpd {
+    background-image: url(../images/Free-Trade-LPG-Inside-Page-banner.jpg);
+    height: 300px;
+}
+.domestik-lpg {
+    background-image: url(../images/Domestic.jpg);
+    height: 300px;
+}
+.naturalgas-header {
+    background-image: url(../images/BioGas.jpg);
+    height: 300px;
+}
+.compressedbiogas-header {
+    background-image: url(../images/compressedbiogas.jpg);
+    height: 300px;
+}
+.compressedbiogasnew-header {
+    background-image: url(../images/Compressed-Bio-Gas.jpg);
+    height: 300px;
+}
+.renewableenergy-header {
+    background-image: url(../images/renewableenergy.jpg);
+    height: 300px;
+}
+.photogallery-header {
+    background-image: url(../images/Photogallerybanner.jpg);
+    height: 300px;
+}
+.videogallery-header {
+    background-image: url(../images/videogallerybanner.jpg);
+    height: 300px;
+}
+
+.internationaltrade-header {
+    background-image: url(../images/Internationaltradebanner.jpg);
+    height: 300px;
+}
+
+.HealthHPCL-header {
+    background-image: url(../images/HPCLHealth.jpg);
+    height: 300px;
+}
+
+.HPCLSafety-header {
+    background-image: url(../images/HPCLSafety.jpg);
+    height: 300px;
+}
+
+.HPCLEnvironment-header {
+    background-image: url(../images/HPCLEnvironment.jpg);
+    height: 300px;
+}
+
+.welcomto-hpgas {
+    background-image: url(../images/welcome.jpg);
+    height: 300px;
+}
+
+.faq {
+    background-image: url(../images/FAQ.jpg);
+    height: 300px;
+}
+
+.freetraide-lpd {
+    background-image: url(../images/Free-Trade-LPG-Inside-Page-banner.jpg);
+    height: 300px;
+}
+
+.domestik-lpg {
+    background-image: url(../images/Domestic.JPG);
+    height: 300px;
+}
+.CityGasDistributionNetworks-header {
+    background-image: url(../images/City-Gas-Distribution-Networksbanner.jpg);
+    height: 300px;
+}
+
+.CityGasDistribution-header {
+/*    background-image: url(../images/City-Gas-Distribution.jpg);*/
+    background-image: url(../images/BioGas.jpg);
+    height: 300px;
+}
+.RenewalEnergy-header {
+    background-image: url(../images/Renewal-Energybanner.jpg);
+    height: 300px;
+}
+.Vigilance-header {
+    background-image: url(../images/Vigilance.jpg);
+    height: 300px;
+}
+.CorporateGovernace-header {
+    background-image: url(../images/Corporate-Governace.jpg);
+    height: 300px;
+}
+.PublicGrievanceRedressal-header {
+    background-image: url(../images/PublicGrievanceRedressalbanner.jpg);
+    height: 300px;
+}
+.overviewinvestorbanner-header {
+    background-image: url(../images/overview-investorbanner.jpg);
+    height: 300px;
+}
+.DividendInformation-header {
+    background-image: url(../images/Dividend-Informationbanner.jpg);
+    height: 300px;
+}
+.investorsguide-header {
+    background-image: url(../images/investors-guidebanner.jpg);
+    height: 300px;
+}
+.ShareholdingPattern-header {
+    background-image: url(../images/shareholding-patternbanner.jpg);
+    height: 300px;
+}
+.HPCLPostalBallot-header {
+    background-image: url(../images/hpcl-postal-ballot.jpg);
+    height: 300px;
+}
+.Policies-header {
+    background-image: url(../images/policiesbanner.jpg);
+    height: 300px;
+}
+.CurrentOpenings-header {
+    background-image: url(../images/our-current-openings.jpg);
+    height: 300px;
+}
+.screenreaderaccess-header {
+    background-image: url(../images/screen-reader-access.jpg);
+    height: 300px;
+}
+.IntegrityPact-header {
+    background-image: url(../images/Integrity-Pactbanner.jpg);
+    height: 300px;
+}
+.StockPrice-header {
+    background-image: url(../images/stockpricebanner.jpg);
+    height: 300px;
+}
+
+
+
+
+
+
+
+.substainability-desc-section .substainability-desc{
+    font-size: 0.95rem;
+    /*color: #5d5d5d;*/
+    font-weight: 500;
+}
+.substainability-policy-section{
+    background-image: url(../images/sustainability/policy-bg.jpg);
+    background-size: contain;
+    background-position: right top;
+    background-color: #003c6e;
+    background-repeat: no-repeat;
+}
+.substainability-policy-section .inner-page-block-heading, 
+.leadership-speaks-section .inner-page-block-heading{
+    color: #fff;
+}
+.substainability-policy-section p{
+    font-size: 0.9rem;
+    color: #fff;
+}
+.substainability-paragraph{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+strong{
+    font-weight: 700;
+}
+.leadership-speaks-section{
+    position: relative;
+}
+.leadership-speaks-section:before{
+    background-color: #003c6e;
+    height: 290px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: "";
+}
+.leadership-speaks-item{
+    position:relative;       
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    background-color: #004e8f;
+}
+.leadership-speaks-item:before, .leadership-speaks-item:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    -webkit-box-shadow: 0 12px 10px rgba(0,0,0,0.4);
+    -moz-box-shadow: 0 12px 10px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 10px rgba(0,0,0,0.4);
+    top: 50%;
+    bottom: 0px;
+    left: 10px;
+    right: 10px;
+    -moz-border-radius: 100px / 10px;
+    border-radius: 0 / 10px;
+}
+
+.leadership-speaks-item .leadership-speaks-image-wrapper{
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.leadership-speaks-image{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    overflow: hidden;
+}
+.leadership-speaks-image img{
+    max-height: 100%;
+}
+.leadership-speaks-item .leadership-speaks-desc{
+    min-height: 110px;
+}
+.leadership-speaks-item .leadership-speaks-desc h4{
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0;
+}
+.leadership-speaks-item .leadership-speaks-desc span{
+    font-size: 0.8rem;
+    color: #fff;
+    font-weight: 400;
+    line-height: normal;
+}
+.leadership-speaks-item .leadership-speaks-desc p{
+    color: #fff;
+    font-size: 0.8rem;
+}
+.leadership-speaks-name-role {
+    min-height: 75px;
+    margin-bottom: 1rem;
+}
+#leaderSpeaksSlider .slick-track {
+    display: flex;
+}
+#leaderSpeaksSlider .slick-track .slick-slide {
+    display: flex;
+    height: auto;
+}
+.finance-item img{
+    max-width: 100%;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+}
+.finance-item h4{
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #232323;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.financial-block{
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+}
+.financial-block h4{
+    font-weight: 700;
+    font-size: 1rem;
+    color: #003f85;
+}
+.financial-block ul li{
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.2rem 0;
+}
+.financial-block ul li label{
+    margin: 0;
+    width: 150px;
+}
+.substainability-item a{
+    outline: none;
+    text-decoration: none;
+}
+
+.substainability-item .substainability-item-image{
+    position: relative;
+}
+
+.substainability-item{
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+    margin: 0.5rem;
+}
+.substainability-item .substainability-item-image{
+    background-position:top center;
+    background-size: cover;
+    height: 120px;
+}
+
+.substainability-item .substainability-item-image .zoom-icon{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.substainability-item .substainability-item-image .zoom-icon:before{
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-left-color: #ffffff;
+    border-width: 40px;
+    margin-top: 0;
+    transform: rotate(45deg);
+    right: -40px;
+    bottom: -40px;
+}
+.substainability-item .substainability-item-image .zoom-icon .icon{
+    position: relative;
+    z-index: 1;
+}
+.substainability-item .substainability-item-image .zoom-icon .icon:before{
+    color: #003f85;
+    font-size: 1.5rem;
+}
+.substainability-item-head{
+    background-color: #fff;
+    font-weight: 600;
+    color: #000;
+    font-size: 0.9rem;
+}
+
+.substainability-service-item{
+    box-shadow: 0px 0px 9px rgba(0,0,0,0.4);
+}
+
+.substainability-service-item .substainability-service-image{
+    height: 200px;
+    background-position: center;
+    background-size: cover;
+}
+.substainability-service-item .substainability-service-details h4{
+    font-weight: 700;
+    color: #003f85;
+    text-align: center;
+    font-size: 1rem;
+}
+.substainability-service-item .substainability-service-details p{
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+.slick-arrow:before{
+    color: #003f85;
+}
+
+.substainability-policy-section .btn-outline-primary{
+    border-color: rgba(255,255,255,0.30);
+    color: #fff;
+    font-weight: 500;
+}
+
+.substainability-separator-hr{
+    border-top-width: 6px;
+    border-color: #003f85;
+}
+
+
+.paragraph-readmore{
+    display: none;
+}
+
+
+
+
+
+
+@media only screen and (min-width : 1600px) {
+}
+
+@media only screen and (max-width : 1365px) {
+  
+}
+
+
+
+@media only screen and (max-width : 1199px) {
+
+}
+@media only screen and (max-width : 1023px) {
+
+}
+@media only screen and (max-width : 1100px) {
+
+}
+
+@media only screen and (max-width : 1080px) {
+
+}
+
+@media only screen and (max-width : 991px) {
+    .leadership-speaks-name-role{
+        min-height: 65px;
+    }
+
+    .header-without-slider {
+        height: 90px;
+        background-position-x: right;
+    }
+    #gallery{
+        overflow:hidden
+    }
+}
+
+
+@media only screen and (max-width : 767px) {
+  
+}
+
+@media only screen and (max-width : 576px) {
+
+}
+
+@media only screen and (max-width : 480px) {
+}
+
+@media only screen and (max-width : 400px) {
+
+}
+

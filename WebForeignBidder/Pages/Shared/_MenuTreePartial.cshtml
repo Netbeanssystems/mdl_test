@@ -1,0 +1,16 @@
+@model List<MenusVM>
+@foreach (var item in Model.OrderBy(x => x.Sequence))
+{
+    <li>
+        @item.Sequence. @item.MenuText
+        | <a data-id="@item.Id" data-toggle="modal" data-target="#ManageMenuModal" class="ml-2 mr-2"><i class="fa fa-edit d-inline-block" data-toggle="tooltip" data-placement="top" title="Edit"></i></a>
+        | <a data-pid="@item.Id" data-toggle="modal" data-target="#ManageMenuModal" class="ml-2 mr-2"><i class="fa fa-plus d-inline-block" data-toggle="tooltip" data-placement="top" title="Add Sub Menu"></i></a>
+        | <a class="ml-2 mr-2" onclick="Delete(@item.Id);"><i class="fa fa-trash d-inline-block" data-toggle="tooltip" data-placement="top" title="Delete"></i></a>
+        @if (item.Children.Any())
+        {
+            <ul>
+                <partial name="_MenuTreePartial" model="@item.Children" />
+            </ul>
+        }
+    </li>
+}

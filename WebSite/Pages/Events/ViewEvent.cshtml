@@ -1,0 +1,193 @@
+﻿@page "/{lang}/Events/ViewEvent/{id?}"
+@model WebSite.Pages.Events.ViewEventModel
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration config
+@{
+    Layout = "_InternalPagesLayout";
+    ViewData["Title"] = "View Event";
+}
+
+<style>
+    /* BASIC STYLES
+                    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+    :root {
+        --yellow: #fffbbc;
+        --lightbox: #242424;
+    }
+
+    /* IMAGE GRID STYLES
+                    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+    .image-grid figure {
+        margin-bottom: 0;
+    }
+
+    .image-grid img {
+        box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.2s;
+    }
+
+    .image-grid a:hover img {
+        box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.35);
+    }
+
+
+    /* LIGHTBOX STYLES
+                    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+    .lightbox-modal .modal-content {
+        background: var(--lightbox);
+    }
+
+    .lightbox-modal .btn-close {
+        position: absolute;
+        top: 20px;
+        right: 18px;
+        font-size: 1.2rem;
+        z-index: 10;
+    }
+
+    .lightbox-modal .modal-body {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        text-align: center;
+    }
+
+    .lightbox-modal img {
+        width: auto;
+        max-height: 100vh;
+        max-width: 100%;
+    }
+
+    .lightbox-modal .carousel-caption {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(36, 36, 36, 0.75);
+    }
+
+    .lightbox-modal .carousel-control-prev,
+    .lightbox-modal .carousel-control-next {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        width: auto;
+    }
+
+    .lightbox-modal .carousel-control-prev {
+        left: 10px;
+    }
+
+    .lightbox-modal .carousel-control-next {
+        right: 10px;
+    }
+
+
+    /* FOOTER STYLES
+                    –––––––––––––––––––––––––––––––––––––––––––––––––– */
+    .page-footer {
+        position: fixed;
+        right: 0;
+        bottom: 60px;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        padding: 5px;
+        background: rgba(255, 255, 255, 0.65);
+    }
+
+        .page-footer a {
+            display: flex;
+            margin-left: 9px;
+        }
+
+    .hero img {
+        width: 100% !important;
+    }
+
+    ul.pdf li {
+        background: url('/img/icon-pdf.png') no-repeat;
+        padding-left: 22px;
+    }
+</style>
+
+@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">View Event</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip"><span><a href="/">Home</a> > <a href="/English/Events/EventCategory">Event Gallery</a> > View Event</span></div>
+    </div>
+}
+else
+{
+    <div class="hero" style="position: relative;">
+        <div class="item"><div class="heading">इवेंट</div><img src="/assets/images/rti-banner.jpg" alt=""></div>
+        <div class="strip"><span><a href="/">होम</a> > <a href="/Hindi/Events/EventCategory">इवेंट गैलरी</a> > इवेंट</span></div>
+    </div>
+}
+
+<div class="mid-content">
+    <div class="container">
+        <div class="row">
+            @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+            {
+                @if (Model.events.Count > 0)
+                {
+                    <h3 class="inner-heading">@Model.events[0].EventName</h3>
+                }
+            }
+            else
+            {
+                @if (Model.events.Count > 0)
+                {
+                    <h3 class="inner-heading">@Model.events[0].EventNameHindi</h3>
+                } 
+            }
+            
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <section class="image-grid">
+                        <div class="container-xxl">
+                            <div class="row gy-4">
+                                @if (Model.events.Count > 0)
+                                {
+                                    @foreach (var item in Model.events)
+                                    {
+                                        <div class="col-12 col-sm-6 col-md-4">
+                                            <figure>
+                                                <a class="d-block" href="">
+                                                    <img width="1920" height="1280" src="@config["FileBaseUrlW"]/admin/img/UploadedFiles/EventPhotos/EnglishPhoto/@item.EnglishAttachment" class="img-fluid" 
+                                                    alt="@(item.EnglishHeading + "123")" data-caption="@item.EnglishHeading">
+                                                </a>
+                                            </figure>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            @if (Model.events.Count > 0)
+            {
+                <span style="float: right; color: #00008B;">Last Updated Date: @Model.events.FirstOrDefault().Added_on.ToString("dd-MM-yyyy hh:mm tt")</span>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal lightbox-modal" id="lightbox-modal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body">
+                <div class="container-fluid p-0">
+                    <!-- JS content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="/Assets/js/bootstrap.min.js" asp-append-version="true"></script>*@
+@*<script src="/Assets/js/bootstrap-5.2.3.min.js" asp-append-version="true"></script>*@
