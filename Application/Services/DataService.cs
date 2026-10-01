@@ -109,7 +109,10 @@ namespace Application.Services
             _whatsNew = new WhatsNewService(_unitOfWork, _mapper);
             _TempwhatsNew = new TempWhatsNewService(_unitOfWork, _mapper);
             events = new EventsService(_unitOfWork, _mapper);
-            vigilance = new VigilanceService(_unitOfWork, _mapper);
+            // Purana:
+            //vigilance = new VigilanceService(_unitOfWork, _mapper);
+            // Naya:
+            vigilance = new VigilanceService(_unitOfWork, _mapper, _configuration);
             enquiry = new EnquiryService(_unitOfWork, _mapper);
             feedback = new FeedbackService(_unitOfWork, _mapper);
             grievance = new GrievanceService(_unitOfWork, _mapper);
