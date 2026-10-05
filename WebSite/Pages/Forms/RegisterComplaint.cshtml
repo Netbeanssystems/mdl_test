@@ -3,20 +3,19 @@
 @model WebSite.Pages.Forms.RegisterComplaintModel
 @{
     Layout = "_InternalPagesLayout";
-    @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
-    {
-
-        ViewData["Title"] = "Register Complaint";
-    }
-    else
-    {
-        ViewData["Title"] = "शिकायत दर्ज करें";
-    }
+    bool isEnglish = HttpContext.Session.GetString("Lang") == null
+                     || HttpContext.Session.GetString("Lang") == "English";
+    ViewData["Title"] = isEnglish ? "Register Complaint" : "शिकायत दर्ज करें";
+    var verifiedEmail = Model.VerifiedEmail;
+    bool isVerified = !string.IsNullOrEmpty(verifiedEmail);
 }
 <link href="~/Sweetalert2/sweetalert2.css" rel="stylesheet" />
 <link href="~/Sweetalert2/animate.css" rel="stylesheet" />
 <input type="hidden" id="ComplaintSubmitted" value="@Model.ComplaintSubmitted" />
-@if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+@Html.AntiForgeryToken()
+
+@* ═══════════════ HERO ═══════════════ *@
+@if (isEnglish)
 {
     <div class="hero" style="position: relative;">
         <div class="item"><div class="heading">Register Complaint</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
@@ -26,15 +25,16 @@
 else
 {
     <div class="hero" style="position: relative;">
-        <div class="item"><div class="heading">शिकायत दर्ज करना </div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
-        <div class="strip"><span><a href="/">मुख्य पृष्ठ </a> > हमारे बारे में > <a href="/English/vigilance">सतर्कता</a> > शिकायत दर्ज करना </span></div>
+        <div class="item"><div class="heading">शिकायत दर्ज करना</div><img src="/assets/images/rti-banner.jpg" alt="" class="image1"></div>
+        <div class="strip"><span><a href="/">मुख्य पृष्ठ</a> > हमारे बारे में > <a href="/English/vigilance">सतर्कता</a> > शिकायत दर्ज करना</span></div>
     </div>
 }
 
 <div class="mid-content">
     <div class="container">
 
-        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
+        @* ═══════════════ INFO ═══════════════ *@
+        @if (isEnglish)
         {
             <h5 class="main-head"><b>Register a Complaint Online</b></h5>
             <hr>
@@ -51,104 +51,217 @@ else
             <h5 class="main-head"><b>शिकायत दर्ज करना</b></h5>
             <hr>
             <p>शिकायत इस वेबसाइट पर निम्नलिखित फॉर्म में दिए गए विवरण भरकर ऑनलाइन दर्ज की जा सकती है। ऑनलाइन शिकायत दर्ज करते समय, फॉर्म में मांगी गई जानकारी के अनुसार शिकायतकर्ता का नाम, पोस्टल पता और संपर्क विवरण (फोन नंबर) होना आवश्यक है।</p>
-            <p>शिकायत विशिष्ट, संक्षिप्त और तथ्यों पर आधारित होनी चाहिए, जहां संभव हो, सत्यापित तथ्यों को दस्तावेजी प्रमाण के साथ प्रस्तुत किया जाना चाहिए।</p>
-            <p>निराधार, अस्पष्ट, अव्यावहारिक या सामान्य आरोपों वाली शिकायतों का सीवीओ (मुख्य सतर्कता अधिकारी) के विवेक पर निपटारा किया जाएगा।</p>
+            <p>शिकायत विशिष्ट, संक्षिप्त और तथ्यों पर आधारित होनी चाहिए।</p>
+            <p>निराधार, अस्पष्ट या सामान्य आरोपों वाली शिकायतों का सीवीओ के विवेक पर निपटारा किया जाएगा।</p>
             <p>गुमनाम / उपनाम वाली शिकायतों पर कोई कार्रवाई नहीं की जाएगी।</p>
             <p>(संदर्भ: सीवीसी परिपत्र संख्या 03/03/16 दिनांक 07.03.2016)</p>
-            <p>शिकायत निम्नलिखित फॉर्म को भरकर और उसे सबमिट करके ऑनलाइन दर्ज की जा सकती है।  </p>
             <p>(कृपया सभी विवरण भरें)</p>
         }
-        @if (HttpContext.Session.GetString("Lang") == null || HttpContext.Session.GetString("Lang") == "English")
-        {
+
+        @* ═══════════════ STEP INDICATOR ═══════════════ *@
+        <div class="step-wrapper mb-4">
+            <div class="step-item @(isVerified ? "completed" : "active")" data-step="1">
+                <span class="step-circle">1</span>
+                <span class="step-label">@(isEnglish ? "Verify Email" : "ई-मेल सत्यापित करें")</span>
+            </div>
+            <div class="step-item @(isVerified ? "completed" : "")" data-step="2">
+                <span class="step-circle">2</span>
+                <span class="step-label">@(isEnglish ? "Enter OTP" : "OTP दर्ज करें")</span>
+            </div>
+            <div class="step-item @(isVerified ? "active" : "")" data-step="3">
+                <span class="step-circle">3</span>
+                <span class="step-label">@(isEnglish ? "Fill Form" : "फॉर्म भरें")</span>
+            </div>
+        </div>
+
+        @* ═══════════════ STEP 1: EMAIL ═══════════════ *@
+        <div id="step1" class="wizard-step" style="@(isVerified ? "display:none;" : "")">
             <div class="row">
                 <div class="col-md-12 mb-4">
-                    <form method="post" class="row g-3" asp-page-handler="Complaint" enctype="multipart/form-data" id="complaintForm">
+                    <div class="card p-4">
+                        <h5>@(isEnglish ? "Step 1: Verify your Email" : "चरण 1: अपना ई-मेल सत्यापित करें")</h5>
+                        <p class="text-muted">
+                            @(isEnglish
+                                ? "Enter your email ID. We will send a 6-digit OTP to verify your email."
+                                : "अपनी ई-मेल आईडी दर्ज करें। हम सत्यापन के लिए 6 अंकों का OTP भेजेंगे।")
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">@(isEnglish ? "E-Mail" : "ई-मेल") <span class="astricks">*</span></label>
+                                <input type="email" id="step1Email" class="form-control"
+                                       placeholder="you@example.com" autocomplete="off" maxlength="100" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="button" id="btnSendOtp" class="btn btn-primary w-100">
+                                    @(isEnglish ? "Send OTP" : "OTP भेजें")
+                                </button>
+                            </div>
+                        </div>
+                        <div id="step1Msg" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        <span style="font-size:medium;">   <b> NOTE :</b> All special characters like (>, &#60;, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _ ) etc. are not allowed. By any way you try to save it will be removed and then saved.</span>
-                        <p>(<span class="astricks">*</span>) Information Required</p>
+        @* ═══════════════ STEP 2: OTP ═══════════════ *@
+        <div id="step2" class="wizard-step" style="display:none;">
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card p-4">
+                        <h5>@(isEnglish ? "Step 2: Enter OTP" : "चरण 2: OTP दर्ज करें")</h5>
+                        <p class="text-muted">
+                            @(isEnglish
+                                ? "Enter the 6-digit OTP sent to your email. It is valid for 10 minutes."
+                                : "अपनी ई-मेल पर भेजा गया 6 अंकों का OTP दर्ज करें। यह 10 मिनट के लिए मान्य है।")
+                        </p>
+                        <p><b>@(isEnglish ? "Email:" : "ई-मेल:")</b> <span id="step2EmailLabel"></span></p>
+                        <input type="hidden" id="step2Email" />
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">OTP <span class="astricks">*</span></label>
+                                <input type="text" id="step2Otp" class="form-control" maxlength="6"
+                                       placeholder="123456" autocomplete="off" inputmode="numeric" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="button" id="btnVerifyOtp" class="btn btn-success w-100">
+                                    @(isEnglish ? "Verify OTP" : "OTP सत्यापित करें")
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <button type="button" id="btnResendOtp" class="btn btn-outline-secondary btn-sm">
+                                @(isEnglish ? "Resend OTP" : "OTP पुनः भेजें")
+                            </button>
+                            <span id="resendInfo" class="ms-2 text-muted"></span>
+                        </div>
+
+                        <div id="step2Msg" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* ═══════════════ STEP 3: FULL FORM ═══════════════ *@
+        <div id="step3" class="wizard-step" style="@(isVerified ? "" : "display:none;")">
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <form method="post" class="row g-3" asp-page-handler="Complaint"
+                          enctype="multipart/form-data" id="complaintForm" novalidate>
+
+                        <span style="font-size:medium;">
+                            <b>@(isEnglish ? "NOTE :" : "नोट :")</b>
+                            @(isEnglish
+                                ? "All special characters like (>, <, =, $, ;, %, ^, :, &, *, ',' , [, ], {, }, +, -, _ ) etc. are not allowed. Multiple spaces, repeated characters (aaa, bbb) and gibberish words (test, asdf, dummy) are not allowed."
+                                : "सभी विशिष्ट चिह्न जैसे (>,=,$,;,%,^,:,&,*,\",[,],{,},+,-,_) आदि की अनुमति नहीं है। कई स्पेस, दोहराए गए अक्षर (aaa, bbb) और अर्थहीन शब्द (test, asdf, dummy) की अनुमति नहीं है।")
+                        </span>
+                        <p>(<span class="astricks">*</span>) @(isEnglish ? "Information Required" : "आवश्यक जानकारी")</p>
+
                         <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
                         <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
+
+                        @* ── Verified Email (readonly) ── *@
                         <div class="col-md-4">
-                            <label for="vigi_Name" asp-for="vigi.Name" class="form-label">Name<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Name" autocomplete="off" aria-describedby="vigi_Name-error" placeholder="Name" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Name" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Designation" asp-for="vigi.Designation" class="form-label">Designation<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Designation" aira-discribedby="vigi_Designation-error" autocomplete="off" placeholder="Designation" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Designation" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Organization" asp-for="vigi.Organization" class="form-label">Organization<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Organization" autocomplete="off" placeholder="Organization" aria-describedby="vigi_Organization-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Organization" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Email" asp-for="vigi.Email" class="form-label">E-Mail<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Email" autocomplete="off" class="form-control vic" aria-describedby="vigi_Email-error" placeholder="E-Mail" onkeypress="return myKeyPress(event)">
+                            <label asp-for="vigi.Email" class="form-label">
+                                @(isEnglish ? "E-Mail (Verified)" : "ई-मेल (सत्यापित)") <span class="astricks">*</span>
+                            </label>
+                            <input asp-for="vigi.Email" id="step3EmailInput" class="form-control"
+                                   value="@verifiedEmail" readonly
+                                   style="background-color:#e9ecef; cursor:not-allowed;" />
                             <span asp-validation-for="vigi.Email" class="text-danger"></span>
                         </div>
 
+                        <div class="col-md-4">
+                            <label asp-for="vigi.Name" class="form-label">@(isEnglish ? "Name" : "नाम")<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Name" id="vigi_Name" autocomplete="off"
+                                   placeholder="@(isEnglish ? "Name" : "नाम")"
+                                   data-rule="name"
+                                   class="form-control vic" maxlength="50"
+                                   oninput="cleanInput(this, 'alphanumeric')" />
+                            <small class="text-muted char-counter" data-for="vigi_Name" data-max="50">0 / 50</small>
+                            <span asp-validation-for="vigi.Name" class="text-danger field-error"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="vigi.Designation" class="form-label">@(isEnglish ? "Designation" : "पदनाम")<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Designation" id="vigi_Designation" autocomplete="off"
+                                   placeholder="@(isEnglish ? "Designation" : "पदनाम")"
+                                   data-rule="designation"
+                                   class="form-control vic" maxlength="16"
+                                   oninput="cleanInput(this, 'alphanumeric')" />
+                            <small class="text-muted char-counter" data-for="vigi_Designation" data-max="16">0 / 16</small>
+                            <span asp-validation-for="vigi.Designation" class="text-danger field-error"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="vigi.Organization" class="form-label">@(isEnglish ? "Organization" : "संगठन")<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Organization" id="vigi_Organization" autocomplete="off"
+                                   placeholder="@(isEnglish ? "Organization" : "संगठन")"
+                                   data-rule="organization"
+                                   class="form-control vic" maxlength="16"
+                                   oninput="cleanInput(this, 'alphanumeric')" />
+                            <small class="text-muted char-counter" data-for="vigi_Organization" data-max="16">0 / 16</small>
+                            <span asp-validation-for="vigi.Organization" class="text-danger field-error"></span>
+                        </div>
+
                         <div class="col-4">
-                            <label asp-for="vigi.Contact" class="form-label">Contact No<span class="astricks">*</span></label>
-                            @*            <input asp-for="vigi.Contact" autocomplete="off" class="form-control vic" aria-describedby="vigi_Contact-error" onplaying="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)"> *@
-                            <input asp-for="vigi.Contact" autocomplete="off" placeholder="Contact No" class="form-control vic" onplaying="Contact No" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)">
-                            <span asp-validation-for="vigi.Contact" class="text-danger"></span>
+                            <label asp-for="vigi.Contact" class="form-label">@(isEnglish ? "Contact No" : "संपर्क नं")<span class="astricks">*</span></label>
+                            <input asp-for="vigi.Contact" id="vigi_Contact" autocomplete="off"
+                                   placeholder="@(isEnglish ? "Contact No" : "संपर्क नं")"
+                                   data-rule="contact"
+                                   class="form-control vic" maxlength="15"
+                                   oninput="cleanInput(this, 'digits')" />
+                            <small class="text-muted char-counter" data-for="vigi_Contact" data-max="15">0 / 15</small>
+                            <span asp-validation-for="vigi.Contact" class="text-danger field-error"></span>
                         </div>
                         <div class="col-4">
-                            <label asp-for="vigi.Fax" class="form-label">Fax No</label>
-                            <input asp-for="vigi.Fax" autocomplete="off" class="form-control vic" placeholder="Fax No" maxlength="20" oninput="this.value = this.value.replace(/[^0-9+.-]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                            <span asp-validation-for="vigi.Fax" class="text-danger"></span>
+                            <label asp-for="vigi.Fax" class="form-label">@(isEnglish ? "Fax No" : "फैक्स नं")</label>
+                            <input asp-for="vigi.Fax" id="vigi_Fax" autocomplete="off"
+                                   class="form-control vic"
+                                   placeholder="@(isEnglish ? "Fax No" : "फैक्स नं")" maxlength="20"
+                                   data-rule="fax"
+                                   oninput="cleanInput(this, 'fax')" />
+                            <small class="text-muted char-counter" data-for="vigi_Fax" data-max="20">0 / 20</small>
+                            <span asp-validation-for="vigi.Fax" class="text-danger field-error"></span>
+                        </div>
+
+                        <div class="col-6">
+                            <label asp-for="vigi.PostalAddress" class="form-label">@(isEnglish ? "Postal Address" : "पता")<span class="astricks">*</span></label>
+                            <textarea class="form-control vic" autocomplete="off"
+                                      id="vigi_PostalAddress"
+                                      placeholder="@(isEnglish ? "Postal Address" : "पता")"
+                                      data-rule="address"
+                                      oninput="cleanInput(this, 'alphanumeric')"
+                                      asp-for="vigi.PostalAddress" maxlength="64" rows="3"></textarea>
+                            <small class="text-muted char-counter" data-for="vigi_PostalAddress" data-max="64">0 / 64</small>
+                            <span asp-validation-for="vigi.PostalAddress" class="text-danger field-error"></span>
                         </div>
                         <div class="col-6">
-                            <label asp-for="vigi.PostalAddress" class="form-label">Postal Address<span class="astricks">*</span></label>
-                            <textarea class="form-control vic" autocomplete="off" placeholder="Postal Address" aria-describedby="vigi_PostalAddress-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="vigi.PostalAddress" rows="3"></textarea>
-                            <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
+                            <label asp-for="vigi.ComplaintDetails" class="form-label">@(isEnglish ? "Complaint details" : "शिकायत")<span class="astricks">*</span></label>
+                            <textarea class="form-control vic" autocomplete="off"
+                                      id="vigi_ComplaintDetails"
+                                      placeholder="@(isEnglish ? "Complaint details" : "शिकायत")"
+                                      data-rule="complaint"
+                                      oninput="cleanInput(this, 'alphanumeric')"
+                                      asp-for="vigi.ComplaintDetails" maxlength="200" rows="3"></textarea>
+                            <small class="text-muted char-counter" data-for="vigi_ComplaintDetails" data-max="200">0 / 200</small>
+                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger field-error"></span>
                         </div>
-                        <div class="col-6">
-                            <label asp-for="vigi.ComplaintDetails" class="form-label">Complaint details<span class="astricks">*</span></label>
-                            <textarea class="form-control vic" autocomplete="off" placeholder="Complaint details" aria-describedby="vigi_ComplaintDetails-error" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="vigi.ComplaintDetails" onkeypress="return myKeyPress(event)" rows="3"></textarea>
-                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
-                        </div>
-
-                        @* <div class="col-6">
-                        <label asp-for="vigi.UploadFile" class="form-label">
-                            Upload File (if required) Maximum upload size is 3 MB. .pdf
-                            Photos
-                        </label>
-                        <input class="form-control Attachment" accept=".pdf,.PDF" asp-for="vigi.UploadFile" />
-                        <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span>
-                    </div> *@
-
-                        @*  <div class="col-12">
-                        <div class="form-check form-check-inline">
-                            <label class="form-check-label" for="inlineCheckbox3">Queries Regarding</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                            <label class="form-check-label" for="inlineCheckbox1">Ship Building</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                            <label class="form-check-label" for="inlineCheckbox2">Submarine & Heavy Engg</label>
-                        </div>
-
-                    </div> *@
 
                         <div class="col-4">
-                            <label for="captcha">
-                                Captcha <span class="astricks">*</span>
-                            </label>
+                            <label>@(isEnglish ? "Captcha" : "कैप्चा") <span class="astricks">*</span></label>
                             <div class="form-group mt-3">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
                                     </div>
-                                    <button onclick="speakCaptcha()">🔊</button>
-                                    <input type="text" class="form-control" placeholder="Captcha Code" aria-describedby="vigi_CaptchaCode-error" asp-for="vigi.CaptchaCode" />
-                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
+                                    <button type="button" onclick="speakCaptcha()">🔊</button>
+                                    <input type="text" class="form-control"
+                                           placeholder="@(isEnglish ? "Captcha Code" : "कैप्चा कोड")"
+                                           asp-for="vigi.CaptchaCode" />
+                                    <div class="input-group-append" title="Refresh Captcha">
                                         <div class="input-group-text" tabindex="0">
-                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
+                                            <button id="captchaRefresh" class="fa fa-refresh" type="button"></button>
                                         </div>
                                     </div>
                                 </div>
@@ -157,247 +270,624 @@ else
                         </div>
 
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" id="btn_reset" class="btn btn-primary">Reset</button>
+                            <button type="submit" class="btn btn-primary">@(isEnglish ? "Submit" : "जमा करें")</button>
+                            <button type="button" id="btn_reset" class="btn btn-secondary">@(isEnglish ? "Reset" : "रीसेट करें")</button>
                         </div>
                     </form>
                 </div>
-
             </div>
-        }
-        else
-        {
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <form method="post" class="row g-3" asp-page-handler="Complaint" enctype="multipart/form-data" id="complaintForm">
+        </div>
 
-                        <span style="font-size:medium;">   <b> नोट :</b> सभी विशिष्ट चिह्न जैसे (>,=,$,;,%,^,:,&,*,”,[,],{,},+,-,_) आदि की अनुमति नहीं है। आप किसी भी तरह इसे सेव करने का प्रयत्न करते हैं तो ये हटा दिए जाएंगे और फिर सेव किया जाएगा।</span>
-                        <p>(<span class="astricks">*</span>) आवश्यक जानकारी </p>
-                        <input type="hidden" asp-for="vigi.ShipBuildRelated" value="0" />
-                        <input type="hidden" asp-for="vigi.SubHeavyRelated" value="0" />
-                        <div class="col-md-4">
-                            <label for="vigi_Name" asp-for="vigi.Name" class="form-label">नाम<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Name" autocomplete="off" placeholder="नाम" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Name" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Designation" asp-for="vigi.Designation" class="form-label">पदनाम<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Designation" autocomplete="off" placeholder="पदनाम" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Designation" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Organization" asp-for="vigi.Organization" class="form-label">संगठन<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Organization" autocomplete="off" placeholder="संगठन" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" class="form-control vic">
-                            <span asp-validation-for="vigi.Organization" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="vigi_Email" asp-for="vigi.Email" class="form-label">ई-मेल<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Email" autocomplete="off" placeholder="ई-मेल" class="form-control vic" onkeypress="return myKeyPress(event)">
-                            <span asp-validation-for="vigi.Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-4">
-                            <label for="vigi_Contact" asp-for="vigi.Contact" class="form-label">संपर्क नं<span class="astricks">*</span></label>
-                            <input asp-for="vigi.Contact" autocomplete="off" placeholder="संपर्क नं" class="form-control vic" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress1(event)">
-                            <span asp-validation-for="vigi.Contact" class="text-danger"></span>
-                        </div>
-                        <div class="col-4">
-                            <label for="vigi_Fax" asp-for="vigi.Fax" class="form-label">फैक्स नं</label>
-                            <input asp-for="vigi.Fax" autocomplete="off" class="form-control vic" placeholder="फैक्स नं" oninput="this.value = this.value.replace(/[^0-9+.-]/g, '').replace(/(\..*?)\..*/g, '$1');">
-                            <span asp-validation-for="vigi.Fax" class="text-danger"></span>
-                        </div>
-                        <div class="col-6">
-                            <label for="vigi_PostalAddress" asp-for="vigi.PostalAddress" class="form-label">पता<span class="astricks">*</span></label>
-                            <textarea class="form-control vic" autocomplete="off" placeholder="पता" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" onkeypress="return myKeyPress(event)" asp-for="vigi.PostalAddress" rows="3"></textarea>
-                            <span asp-validation-for="vigi.PostalAddress" class="text-danger"></span>
-                        </div>
-                        <div class="col-6">
-                            <label for="vigi_ComplaintDetails" asp-for="vigi.ComplaintDetails" class="form-label">शिकायत<span class="astricks">*</span></label>
-                            <textarea class="form-control vic" autocomplete="off" placeholder="शिकायत" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ,/-]/g, '').replace(/(\..*?)\..*/g, '$1');" asp-for="vigi.ComplaintDetails" onkeypress="return myKeyPress(event)" rows="3"></textarea>
-                            <span asp-validation-for="vigi.ComplaintDetails" class="text-danger"></span>
-                        </div>
-
-                        @* <div class="col-6">
-                            <label for="vigi_UploadFile" asp-for="vigi.UploadFile" class="form-label">
-                                फ़ाइल अपलोड करें (यदि आवश्यक हो) अधिकतम अपलोड आकार 3 एमबी है। .pdf तस्वीरें
-                            </label>
-                            <input class="form-control Attachment" accept=".pdf,.PDF" asp-for="vigi.UploadFile" />
-                            <span asp-validation-for="vigi.UploadFile"  class="text-danger"></span>
-                        </div> *@
-
-                        @*  <div class="col-12">
-                    <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="inlineCheckbox3">Queries Regarding</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                    <label class="form-check-label" for="inlineCheckbox1">Ship Building</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                    <label class="form-check-label" for="inlineCheckbox2">Submarine & Heavy Engg</label>
-                    </div>
-
-                    </div> *@
-
-                        <div class="col-4">
-                            <label for="vigi_CaptchaCode">चित्र में दिखाया गया कैप्चा कोड दर्ज करें<span class="astricks">*</span></label>
-                            <div class="form-group mt-3">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <img id="img-captcha" src="../Home/GetCaptchaImage" alt="captcha" />
-                                    </div>
-                                    <button onclick="speakCaptcha()" aria-label="Play Captcha">🔊</button>
-                                    <input type="text" class="form-control" placeholder="कैप्चा कोड" asp-for="vigi.CaptchaCode" />
-                                    <div class="input-group-append" title="Reresh Captcha" data-toggle="tooltip" data-placement="top">
-                                        <div class="input-group-text" tabindex="0">
-                                            <button id="captchaRefresh" class="fa fa-refresh" type="button" aria-label="Refresh CAPTCHA"></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <span id="captchavalid" asp-validation-for="vigi.CaptchaCode" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">जमा करें</button>
-                            <button type="button" id="btn_reset" class="btn btn-primary">रीसेट करें</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        }
     </div>
-
-    
 </div>
 
-@*<script src="~/js/jquery.min.js" asp-append-version="true"></script>*@
+@* ═══════════════ STYLES ═══════════════ *@
+<style>
+    .step-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .step-item {
+        text-align: center;
+        flex: 1;
+        opacity: 0.45;
+        transition: opacity 0.3s;
+    }
+
+        .step-item.active {
+            opacity: 1;
+        }
+
+        .step-item.completed {
+            opacity: 0.85;
+        }
+
+            .step-item.completed .step-circle {
+                background: #28a745;
+            }
+
+        .step-item.active .step-circle {
+            background: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(13,110,253,0.15);
+        }
+
+    .step-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        line-height: 1;
+        border-radius: 50%;
+        background: #adb5bd;
+        color: #fff;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+
+    .step-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .wizard-step {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .step-label {
+            font-size: 11px;
+        }
+
+        .step-circle {
+            width: 34px;
+            height: 34px;
+            font-size: 14px;
+        }
+    }
+
+    .field-error {
+        font-size: 13px;
+        display: block;
+        margin-top: 3px;
+    }
+
+    .form-control.is-invalid-custom {
+        border-color: #dc3545;
+    }
+
+    .char-counter {
+        display: block;
+        font-size: 11px;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 2px;
+    }
+
+        .char-counter.warn {
+            color: #fd7e14;
+        }
+
+        .char-counter.danger {
+            color: #dc3545;
+        }
+</style>
+
+@* ═══════════════ SCRIPTS ═══════════════ *@
 <script src="~/js/jquery-3.6.4.min.js" asp-append-version="true"></script>
-@*<script src="~/plugins/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>*@
 <script src="~/plugins/jquery-validate/jquery.validate-1.19.5.min.js" asp-append-version="true"></script>
 <script src="~/plugins/jquery-validate/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
 <script src="~/Sweetalert2/sweetalert2.js" asp-append-version="true"></script>
+
 <script>
+    // ═══════════════════════════════════════════════════════════
+    //  CONFIG
+    // ═══════════════════════════════════════════════════════════
+    var IS_ENGLISH = @(isEnglish.ToString().ToLower());
+    var RESEND_LIMIT = 3;
+    var resendUsed = 0;
 
-    var complaintSubmitted = $("#ComplaintSubmitted").val();
+    // ═══════════════════════════════════════════════════════════
+    //  ANTIFORGERY TOKEN
+    // ═══════════════════════════════════════════════════════════
+    var ANTI_FORGERY_TOKEN = $('input[name="__RequestVerificationToken"]').val();
+    console.log("Antiforgery token exists:", !!ANTI_FORGERY_TOKEN);
 
-    // Display SweetAlert if the form was successfully submitted
-    if (complaintSubmitted==1) {
-    Swal.fire({
-    icon: 'success',
-    title: 'Your Complaint has been forwarded to CVO/MDL',
-    allowEscapeKey: false,
-    allowOutsideClick: false,
-    text: 'Very shortly you will receive a “Complaint Tracking No.” on your E-mail ID. You can use the “Complaint Tracking No.” to check the status of your complaint on MDL Website.',
-    didClose: (e) => {
-    window.location.href = '/English/Forms/RegisterComplaint';
-    },
-    showClass: {
-    popup: 'animate__animated animate__fadeInDown'
-    },
-    hideClass: {
-    popup: 'animate__animated animate__fadeOutUp'
+    // ═══════════════════════════════════════════════════════════
+    //  CHARACTER COUNTER
+    // ═══════════════════════════════════════════════════════════
+    function updateCharCounter(el) {
+        var id = el.id;
+        var max = parseInt(el.getAttribute('maxlength')) || 0;
+        var len = el.value ? el.value.length : 0;
+
+        var $counter = $('.char-counter[data-for="' + id + '"]');
+        if ($counter.length === 0) return;
+
+        $counter.text(len + ' / ' + max);
+        $counter.removeClass('warn danger');
+
+        if (max > 0) {
+            var ratio = len / max;
+            if (ratio >= 1) $counter.addClass('danger');
+            else if (ratio >= 0.8) $counter.addClass('warn');
+        }
     }
+
+    // Initialize counters on page load
+    $(document).ready(function () {
+        $('.char-counter').each(function () {
+            var id = $(this).data('for');
+            var el = document.getElementById(id);
+            if (el) updateCharCounter(el);
+        });
     });
+
+    // ═══════════════════════════════════════════════════════════
+    //  BUSINESS VALIDATION
+    // ═══════════════════════════════════════════════════════════
+
+    var BLOCKED_WORDS = [
+        'test','testing','asdf','asdfasdf','qwerty','qwertyuiop',
+        'aaa','aaaa','bbbb','ccc','dddd',
+        'dummy','none','na','n/a','xyz','abc','abcd',
+        'admin','user','guest','sample','demo',
+        'null','undefined','fake','fack','test123'
+    ];
+
+    function hasMultipleSpaces(s) { return /\s{2,}/.test(s); }
+
+    function hasConsecutiveRepeats(s, maxRepeat) {
+        if (!s) return false;
+        maxRepeat = maxRepeat || 2;
+        var re = new RegExp('(.)\\1{' + maxRepeat + ',}', 'i');
+        return re.test(s);
     }
 
-    // Reset the TempData flag to avoid showing the alert on page refresh
+    function isGibberish(s) {
+        if (!s) return false;
+        var lower = s.trim().toLowerCase().replace(/\s+/g, ' ');
+        var words = lower.split(' ');
+        for (var i = 0; i < words.length; i++) {
+            if (BLOCKED_WORDS.indexOf(words[i]) !== -1) return true;
+        }
+        var walks = ['qwerty','asdf','zxcv','qaz','wsx','edc'];
+        for (var i = 0; i < walks.length; i++) {
+            if (lower.indexOf(walks[i]) !== -1) return true;
+        }
+        if (/^\d+$/.test(lower)) return true;
+        return false;
+    }
+
+    function vowelRatio(s) {
+        if (!s) return 0;
+        var letters = s.replace(/[^a-z]/gi, '').toLowerCase();
+        if (letters.length === 0) return 0;
+        var vowels = (letters.match(/[aeiou]/g) || []).length;
+        return vowels / letters.length;
+    }
+
+    function isRepeatingOrSequential(s) {
+        if (!s) return false;
+        var digits = s.replace(/\D/g, '');
+        if (digits.length < 10) return false;
+        if (/^(\d)\1+$/.test(digits)) return true;
+        var seqInc = true, seqDec = true;
+        for (var i = 1; i < digits.length; i++) {
+            var d1 = parseInt(digits[i - 1], 10);
+            var d2 = parseInt(digits[i], 10);
+            if (d2 !== d1 + 1) seqInc = false;
+            if (d2 !== d1 - 1) seqDec = false;
+        }
+        if (seqInc || seqDec) return true;
+        return false;
+    }
+
+    function validateField(rule, value) {
+        var v = (value || '').trim();
+        var t = IS_ENGLISH;
+
+        if (rule !== 'fax' && !v) {
+            return { valid: false, msg: t ? 'This field is required.' : 'यह फ़ील्ड आवश्यक है।' };
+        }
+
+        switch (rule) {
+            case 'name':
+                if (v.length < 3) return { valid: false, msg: t ? 'Name must be at least 3 characters.' : 'नाम कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length > 50) return { valid: false, msg: t ? 'Name must be at most 50 characters.' : 'नाम अधिकतम 50 अक्षरों का हो सकता है।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
+                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters like "aaa", "bbb" are not allowed.' : '"aaa", "bbb" जैसे दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid name.' : 'कृपया वैध नाम दर्ज करें।' };
+                if (!/^[a-zA-Z][a-zA-Z\s.'-]*$/.test(v)) return { valid: false, msg: t ? 'Name can only contain letters, spaces, dot, apostrophe, hyphen.' : 'नाम में केवल अक्षर, स्पेस, डॉट, अपॉस्ट्रॉफी, हाइफ़न हो सकते हैं।' };
+                return { valid: true, msg: '' };
+
+            case 'designation':
+                if (v.length < 3) return { valid: false, msg: t ? 'Designation must be at least 3 characters.' : 'पदनाम कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length > 16) return { valid: false, msg: t ? 'Designation must be at most 16 characters.' : 'पदनाम अधिकतम 16 अक्षरों का हो सकता है।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
+                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid designation.' : 'कृपया वैध पदनाम दर्ज करें।' };
+                return { valid: true, msg: '' };
+
+            case 'organization':
+                if (v.length < 3) return { valid: false, msg: t ? 'Organization must be at least 3 characters.' : 'संगठन कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length > 16) return { valid: false, msg: t ? 'Organization must be at most 16 characters.' : 'संगठन अधिकतम 16 अक्षरों का हो सकता है।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
+                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid organization name.' : 'कृपया वैध संगठन का नाम दर्ज करें।' };
+                var ratio = vowelRatio(v);
+                if (v.replace(/[^a-z]/gi, '').length >= 6 && (ratio < 0.15 || ratio > 0.75))
+                    return { valid: false, msg: t ? 'Organization name looks invalid.' : 'संगठन का नाम अमान्य लग रहा है।' };
+                return { valid: true, msg: '' };
+
+            case 'contact':
+                var digits = v.replace(/\D/g, '');
+                if (digits.length < 10) return { valid: false, msg: t ? 'Contact number must be at least 10 digits.' : 'संपर्क नंबर कम से कम 10 अंकों का होना चाहिए।' };
+                if (digits.length > 15) return { valid: false, msg: t ? 'Contact number must be at most 15 digits.' : 'संपर्क नंबर अधिकतम 15 अंकों का हो सकता है।' };
+                if (isRepeatingOrSequential(digits)) return { valid: false, msg: t ? 'Repeating or sequential digits are not allowed.' : 'दोहराए या क्रमिक अंकों की अनुमति नहीं है।' };
+                return { valid: true, msg: '' };
+
+            case 'fax':
+                if (!v) return { valid: true, msg: '' };
+                var faxDigits = v.replace(/\D/g, '');
+                if (faxDigits.length < 7) return { valid: false, msg: t ? 'Fax must be at least 7 digits.' : 'फैक्स कम से कम 7 अंकों का होना चाहिए।' };
+                if (faxDigits.length > 15) return { valid: false, msg: t ? 'Fax must be at most 15 digits.' : 'फैक्स अधिकतम 15 अंकों का हो सकता है।' };
+                if (isRepeatingOrSequential(v)) return { valid: false, msg: t ? 'Repeating or sequential digits are not allowed.' : 'दोहराए या क्रमिक अंकों की अनुमति नहीं है।' };
+                return { valid: true, msg: '' };
+
+            case 'address':
+                if (v.length < 3) return { valid: false, msg: t ? 'Address must be at least 3 characters.' : 'पता कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length > 64) return { valid: false, msg: t ? 'Address must be at most 64 characters.' : 'पता अधिकतम 64 अक्षरों का हो सकता है।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
+                if (hasConsecutiveRepeats(v, 3)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                return { valid: true, msg: '' };
+
+            case 'complaint':
+                if (v.length < 3) return { valid: false, msg: t ? 'Complaint details must be at least 3 characters.' : 'शिकायत विवरण कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length > 200) return { valid: false, msg: t ? 'Complaint details must be at most 200 characters.' : 'शिकायत विवरण अधिकतम 200 अक्षरों का हो सकता है।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
+                if (hasConsecutiveRepeats(v, 3)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                return { valid: true, msg: '' };
+
+            default:
+                return { valid: true, msg: '' };
+        }
+    }
+
+    function cleanInput(el, mode) {
+        var v = el.value;
+
+        if (mode === 'digits') v = v.replace(/[^0-9]/g, '');
+        else if (mode === 'fax') v = v.replace(/[^0-9+.\-]/g, '');
+        else v = v.replace(/[^a-zA-Z0-9 ,.\/'-]/g, '');
+
+        v = v.replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+        el.value = v;
+
+        updateCharCounter(el);
+
+        var rule = el.getAttribute('data-rule');
+        if (rule) validateAndShow(el, rule);
+    }
+
+    function validateAndShow(el, rule) {
+        var res = validateField(rule, el.value);
+        var $el = $(el);
+        var $err = $el.closest('.col-md-4, .col-4, .col-6, .col-12').find('.field-error').first();
+
+        if (res.valid) {
+            $el.removeClass('is-invalid-custom');
+            $err.text('');
+        } else {
+            $el.addClass('is-invalid-custom');
+            $err.text(res.msg);
+        }
+        return res.valid;
+    }
+
+    $(document).on('blur', '[data-rule]', function () {
+        validateAndShow(this, this.getAttribute('data-rule'));
+    });
+
+    $('#complaintForm').on('submit', function (e) {
+        var allValid = true;
+        var firstInvalid = null;
+
+        $('#complaintForm [data-rule]').each(function () {
+            var ok = validateAndShow(this, this.getAttribute('data-rule'));
+            if (!ok && !firstInvalid) firstInvalid = this;
+            if (!ok) allValid = false;
+        });
+
+        if (!allValid) {
+            e.preventDefault();
+            if (firstInvalid) firstInvalid.focus();
+            return false;
+        }
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    //  SUCCESS ALERT
+    // ═══════════════════════════════════════════════════════════
+    var complaintSubmitted = $("#ComplaintSubmitted").val();
+    if (complaintSubmitted == 1) {
+        Swal.fire({
+            icon: 'success',
+            title: IS_ENGLISH ? 'Your Complaint has been forwarded to CVO/MDL' : 'आपकी शिकायत CVO/MDL को भेज दी गई है',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            text: IS_ENGLISH
+                ? 'Very shortly you will receive a "Complaint Tracking No." on your E-mail ID.'
+                : 'शीघ्र ही आपको अपनी ई-मेल आईडी पर "शिकायत ट्रैकिंग नंबर" प्राप्त होगा।',
+            didClose: function () { window.location.href = window.location.pathname; },
+            showClass: { popup: 'animate__animated animate__fadeInDown' },
+            hideClass: { popup: 'animate__animated animate__fadeOutUp' }
+        });
+    }
     @(TempData["ComplaintSubmitted"] = null)
 
-    $("#img-captcha,#captchaRefresh").click(function () {
-    resetCaptchaImage();
-    // setTimeout(() => speakCaptcha(), 300);
+    // ═══════════════════════════════════════════════════════════
+    //  STEP NAVIGATION
+    // ═══════════════════════════════════════════════════════════
+    function showStep(step) {
+        $('#step1, #step2, #step3').hide();
+        $('#step' + step).show();
+        $('.step-item').removeClass('active completed');
+        for (var i = 1; i <= 3; i++) {
+            var $item = $('.step-item[data-step="' + i + '"]');
+            if (i < step) $item.addClass('completed');
+            else if (i == step) $item.addClass('active');
+        }
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    }
+
+    function showMsg(selector, message, type) {
+        var cls = type === 'success' ? 'alert alert-success' : 'alert alert-danger';
+        $(selector).html('<div class="' + cls + ' py-2 mb-0">' + message + '</div>');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  STEP 1: SEND OTP — WITH 24hr ALREADY-SUBMITTED HANDLING
+    // ═══════════════════════════════════════════════════════════
+    $('#btnSendOtp').on('click', function () {
+        var email = $('#step1Email').val().trim();
+        if (!email) { showMsg('#step1Msg', IS_ENGLISH ? 'Please enter email.' : 'कृपया ई-मेल दर्ज करें।', 'danger'); return; }
+
+        var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+        if (!emailRegex.test(email)) {
+            showMsg('#step1Msg', IS_ENGLISH ? 'Invalid email format.' : 'अमान्य ई-मेल प्रारूप।', 'danger');
+            return;
+        }
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var $btn = $(this).prop('disabled', true).text(IS_ENGLISH ? 'Sending...' : 'भेज रहे हैं...');
+
+        $.ajax({
+            type: "POST",
+            url: window.location.pathname + "?handler=SendOtp",
+            data: { email: email, __RequestVerificationToken: token },
+            success: function (res) {
+                console.log("SendOtp response:", res);
+
+                // ✅ Case 1: Already submitted within 24 hours
+                if (res && res.message === "ALREADY_SUBMITTED") {
+                    Swal.fire({
+                        icon: 'info',
+                        title: IS_ENGLISH ? 'Complaint Already Submitted' : 'शिकायत पहले ही जमा की जा चुकी है',
+                        text: IS_ENGLISH
+                            ? 'Your complaint has been submitted successfully from this email. Please wait 24 hours before submitting a new complaint.'
+                            : 'इस ई-मेल से आपकी शिकायत सफलतापूर्वक जमा की जा चुकी है। कृपया नई शिकायत जमा करने से पहले 24 घंटे प्रतीक्षा करें।'
+                    });
+                    $btn.prop('disabled', false).text(IS_ENGLISH ? 'Send OTP' : 'OTP भेजें');
+                    return;
+                }
+
+                // ✅ Case 2: Success
+                if (res && res.success) {
+                    showMsg('#step1Msg', res.message || 'OTP sent.', 'success');
+                    $('#step2EmailLabel').text(email);
+                    $('#step2Email').val(email);
+                    $('#step2Otp').val('');
+                    $('#step2Msg').html('');
+                    resendUsed = 0;
+                    updateResendInfo();
+                    showStep(2);
+                } else {
+                    // ✅ Case 3: Error — API message or default
+                    showMsg('#step1Msg', (res && res.message) || (IS_ENGLISH ? 'Failed to send OTP.' : 'OTP भेजने में विफल।'), 'danger');
+                }
+            },
+            error: function (xhr) {
+                console.error("SendOtp error:", xhr.status, xhr.responseText);
+                var msg = IS_ENGLISH ? 'Failed to send OTP.' : 'OTP भेजने में विफल।';
+                try {
+                    var p = JSON.parse(xhr.responseText);
+                    if (p && p.message) {
+                        if (p.message === "ALREADY_SUBMITTED") {
+                            Swal.fire({
+                                icon: 'info',
+                                title: IS_ENGLISH ? 'Complaint Already Submitted' : 'शिकायत पहले ही जमा की जा चुकी है',
+                                text: IS_ENGLISH
+                                    ? 'Your complaint has been submitted successfully from this email. Please wait 24 hours before submitting a new complaint.'
+                                    : 'इस ई-मेल से आपकी शिकायत सफलतापूर्वक जमा की जा चुकी है। कृपया नई शिकायत जमा करने से पहले 24 घंटे प्रतीक्षा करें।'
+                            });
+                            $btn.prop('disabled', false).text(IS_ENGLISH ? 'Send OTP' : 'OTP भेजें');
+                            return;
+                        }
+                        msg = p.message;
+                    }
+                } catch (e) {}
+                showMsg('#step1Msg', msg, 'danger');
+            },
+            complete: function () {
+                $btn.prop('disabled', false).text(IS_ENGLISH ? 'Send OTP' : 'OTP भेजें');
+            }
+        });
     });
-    function resetCaptchaImage() {
-    var d = new Date();
-    $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
-    }
 
-    $("#inlineCheckbox1").change(function () {
-    if (this.checked) {
-    $("#vigi_ShipBuildRelated").val(1);
-    }
-    else {
-    $("#vigi_ShipBuildRelated").val(0);
-    }
+    $('#step1Email').on('keypress', function (e) {
+        if (e.which === 13) { e.preventDefault(); $('#btnSendOtp').click(); }
     });
 
+    // ═══════════════════════════════════════════════════════════
+    //  STEP 2: VERIFY OTP
+    // ═══════════════════════════════════════════════════════════
+    $('#btnVerifyOtp').on('click', function () {
+        var email = $('#step2Email').val();
+        var otp = $('#step2Otp').val().trim();
 
-    $("#inlineCheckbox2").change(function () {
-    if (this.checked) {
-    $("#vigi_SubHeavyRelated").val(1);
-    }
-    else {
-    $("#vigi_SubHeavyRelated").val(0);
-    }
+        if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
+            showMsg('#step2Msg', IS_ENGLISH ? 'Please enter a valid 6-digit OTP.' : 'कृपया 6 अंकों का OTP दर्ज करें।', 'danger');
+            return;
+        }
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var $btn = $(this).prop('disabled', true).text(IS_ENGLISH ? 'Verifying...' : 'सत्यापित...');
+
+        $.ajax({
+            type: "POST",
+            url: window.location.pathname + "?handler=VerifyOtp",
+            data: { email: email, otp: otp, __RequestVerificationToken: token },
+            success: function (res) {
+                if (res && res.success) {
+                    showMsg('#step2Msg', res.message || 'Verified.', 'success');
+                    setTimeout(function () {
+                        $('#step3EmailInput').val(email);
+                        showStep(3);
+                    }, 400);
+                } else {
+                    showMsg('#step2Msg', (res && res.message) || (IS_ENGLISH ? 'Invalid OTP.' : 'अमान्य OTP।'), 'danger');
+                }
+            },
+            error: function (xhr) {
+                var msg = IS_ENGLISH ? 'Verification failed.' : 'सत्यापन विफल।';
+                try { var p = JSON.parse(xhr.responseText); if (p && p.message) msg = p.message; } catch (e) {}
+                showMsg('#step2Msg', msg, 'danger');
+            },
+            complete: function () {
+                $btn.prop('disabled', false).text(IS_ENGLISH ? 'Verify OTP' : 'OTP सत्यापित करें');
+            }
+        });
     });
 
-    $.validator.setDefaults({
-    onkeyup: false
-    })
-
-    /*
-    $('#vigi_UploadFile').on('change', function () {
-    var fileUpload = $("#vigi_UploadFile").get(0);
-    var files = fileUpload.files;
-    var path = $("#vigi_UploadFile").val();
-    var Filename = path.split('/').pop()
-    var valid_extensions = /(\.pdf|\.PDF)$/i;
-
-    if (valid_extensions.test(Filename)) {
-    const size = (this.files[0].size / 1024 / 1024).toFixed(2);
-
-    if (size > 1) {
-    $('#vigi_UploadFile').val(null);
-    alert("File size must be less than 3 MB");
-    }
-    }
-    else {
-    $('#vigi_UploadFile').val(null);
-    alert("Please Upload a Valid File PDF Only");
-    }
-    });
-    */
-
-    $('.vic').keyup(function (e) {
-    var strg = this.value;
-    var firstChar = strg.charAt(0);
-    if ((firstChar == " ") || (firstChar == "&nbsp;") || (strg == "")) {
-    this.value = this.value.replace(/\s/g, '');
-    }
+    $('#step2Otp').on('keypress', function (e) {
+        if (e.which === 13) { e.preventDefault(); $('#btnVerifyOtp').click(); }
     });
 
-    $("#btn_reset").click(function () {
-    $("#vigi_Name").val("");
-    $("#vigi_Designation").val("");
-    $("#vigi_Organization").val("");
-    $("#vigi_Email").val("");
-    $("#vigi_Contact").val("");
-    $("#vigi_Fax").val("");
-    $("#vigi_PostalAddress").val("");
-    $("#vigi_ComplaintDetails").val("");
-    $("#vigi_CaptchaCode").val("");
-    $("html, body").animate({ scrollTop: 0 }, "fast");
+    $('#step2Otp').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // ═══════════════════════════════════════════════════════════
+    //  STEP 2: RESEND OTP
+    // ═══════════════════════════════════════════════════════════
+    $('#btnResendOtp').on('click', function () {
+        var email = $('#step2Email').val();
+        if (!email) return;
+
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var $btn = $(this).prop('disabled', true).text(IS_ENGLISH ? 'Sending...' : 'भेज रहे हैं...');
+
+        $.ajax({
+            type: "POST",
+            url: window.location.pathname + "?handler=ResendOtp",
+            data: { email: email, __RequestVerificationToken: token },
+            success: function (res) {
+                if (res && res.success) {
+                    resendUsed++;
+                    showMsg('#step2Msg', res.message || 'OTP resent.', 'success');
+                    $('#step2Otp').val('');
+                    updateResendInfo();
+                } else {
+                    showMsg('#step2Msg', (res && res.message) || (IS_ENGLISH ? 'Resend failed.' : 'पुनः भेजना विफल।'), 'danger');
+                }
+            },
+            error: function (xhr) {
+                var msg = IS_ENGLISH ? 'Resend failed.' : 'पुनः भेजना विफल।';
+                try { var p = JSON.parse(xhr.responseText); if (p && p.message) msg = p.message; } catch (e) {}
+                showMsg('#step2Msg', msg, 'danger');
+            },
+            complete: function () {
+                $btn.prop('disabled', false).text(IS_ENGLISH ? 'Resend OTP' : 'OTP पुनः भेजें');
+            }
+        });
+    });
+
+    function updateResendInfo() {
+        var left = RESEND_LIMIT - resendUsed;
+        if (left <= 0) {
+            $('#btnResendOtp').prop('disabled', true);
+            $('#resendInfo').text(IS_ENGLISH ? 'Resend limit reached.' : 'पुनः भेजने की सीमा समाप्त।');
+        } else {
+            $('#resendInfo').text(IS_ENGLISH ? '(' + left + ' resend(s) left)' : '(' + left + ' पुनः भेजना शेष)');
+        }
+    }
+    updateResendInfo();
+
+    // ═══════════════════════════════════════════════════════════
+    //  CAPTCHA
+    // ═══════════════════════════════════════════════════════════
+    $("#img-captcha, #captchaRefresh").click(function () {
+        var d = new Date();
+        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
     });
 
     $('#vigi_CaptchaCode').on('blur', function () {
-    var capcha = $(this).val();
-    if (capcha.length > 0) {
-    $.get("?handler=Validatecapcha", { CaptchaCode: capcha })
-    .done(function (data) {
-
-    if (data != capcha) {
-    $("#captchavalid").html("Please Enter Valid Captcha");
-    $("#vigi_CaptchaCode").val("");
-    resetCaptchaImage();
-    } else {
-    $("#captchavalid").html("");
-    }
+        var capcha = $(this).val();
+        if (capcha.length > 0) {
+            $.get("?handler=Validatecapcha", { CaptchaCode: capcha })
+                .done(function (data) {
+                    if (data != capcha) {
+                        $("#captchavalid").html(IS_ENGLISH ? "Please Enter Valid Captcha" : "कृपया वैध कैप्चा दर्ज करें");
+                        $("#vigi_CaptchaCode").val("");
+                        var d = new Date();
+                        $("#img-captcha").attr("src", "../Home/GetCaptchaImage?" + d.getTime());
+                    } else {
+                        $("#captchavalid").html("");
+                    }
+                });
+        }
     });
-    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  RESET
+    // ═══════════════════════════════════════════════════════════
+    $("#btn_reset").click(function () {
+        $("#vigi_Name").val("");
+        $("#vigi_Designation").val("");
+        $("#vigi_Organization").val("");
+        $("#vigi_Contact").val("");
+        $("#vigi_Fax").val("");
+        $("#vigi_PostalAddress").val("");
+        $("#vigi_ComplaintDetails").val("");
+        $("#vigi_CaptchaCode").val("");
+        // Reset counters
+        $('.char-counter').each(function () {
+            var id = $(this).data('for');
+            var el = document.getElementById(id);
+            if (el) updateCharCounter(el);
+        });
+        $('.field-error').text('');
+        $('.is-invalid-custom').removeClass('is-invalid-custom');
+        $("html, body").animate({ scrollTop: 0 }, "fast");
     });
 
-        
+    $.validator.setDefaults({ onkeyup: false });
 </script>
