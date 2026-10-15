@@ -10,7 +10,10 @@ namespace Domain.Models
         public string Organization { get; set; }
         public string Email { get; set; }
         public string Contact { get; set; }
-        public int Fax { get; set; }
+
+        // ✅ Fax — string (nullable)
+        public string Fax { get; set; }
+
         public string PostalAddress { get; set; }
         public string ComplaintDetails { get; set; }
         public int? ShipBuildRelated { get; set; }

@@ -4,7 +4,6 @@ using Application.ServiceInterfaces;
 using AutoMapper;
 using Domain.Models;
 using Domain.RepositoryInterfaces;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,17 +14,15 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _config;
 
-        public VigilanceService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration config)
+        public VigilanceService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _config = config;
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  EXISTING: Create (OTP gate + DB rate limit)
+        //  CREATE — OTP gate + DB rate limit + DB save
         // ═══════════════════════════════════════════════════════════
         public async Task<VigilanceFormDTO> Create(VigilanceFormDTO argModelDto)
         {
@@ -60,35 +57,36 @@ namespace Application.Services
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  NEW #1: SubmitEmail → Send OTP
+        //  SUBMIT EMAIL — Validate + rate limit + OTP generate
+        //  ✅ OTP return karo. Email NAHI bhejna. WebSite bhejega.
         // ═══════════════════════════════════════════════════════════
-        public async Task<(bool success, string message, int? resendLeft)> SubmitEmail(string email)
+        public async Task<(bool success, string message, string otp, int? resendLeft)> SubmitEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
-                return (false, "Email is required.", null);
+                return (false, "Email is required.", null, null);
 
             email = email.Trim().ToLower();
 
             if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-                return (false, "Invalid email format.", null);
+                return (false, "Invalid email format.", null, null);
 
             var rec = VigilanceOtpStore.GetOrCreate(email);
             if (rec == null)
-                return (false, "Unable to process email.", null);
+                return (false, "Unable to process email.", null, null);
 
-            // ── 24 hr rate limit — DB se check (persistent) ──
+            // ── 24 hr rate limit — DB se check ──
             var isRateLimited = await _unitOfWork.vigiRepo
                 .HasRecentComplaintByEmail(email, VigilanceOtpStore.RATE_LIMIT_HOURS)
                 .ConfigureAwait(false);
 
             if (isRateLimited)
-                return (false, "ALREADY_SUBMITTED", null);
+                return (false, "ALREADY_SUBMITTED", null, null);
 
             // Max resend
             if (rec.ResendCount >= VigilanceOtpStore.MAX_RESEND)
                 return (false,
                     $"Maximum OTP resend limit ({VigilanceOtpStore.MAX_RESEND}) reached. Please try after some time.",
-                    null);
+                    null, null);
 
             // Cooldown
             if (rec.LastResendAt != null &&
@@ -96,10 +94,10 @@ namespace Application.Services
             {
                 var secLeft = VigilanceOtpStore.RESEND_COOLDOWN_SECONDS
                               - (int)(DateTime.UtcNow - rec.LastResendAt.Value).TotalSeconds;
-                return (false, $"Please wait {secLeft} second(s) before requesting a new OTP.", null);
+                return (false, $"Please wait {secLeft} second(s) before requesting a new OTP.", null, null);
             }
 
-            // Generate + save
+            // Generate + save OTP
             var otp = VigilanceOtpStore.GenerateOtp();
             rec.OtpCode = otp;
             rec.OtpCreatedAt = DateTime.UtcNow;
@@ -109,18 +107,15 @@ namespace Application.Services
             rec.IsVerified = false;
             VigilanceOtpStore.Save(rec);
 
-            // Send email
-            var sent = VigilanceOtpStore.SendOtpEmail(email, otp, _config);
-            if (!sent)
-                return (false, "Failed to send OTP email. Please try again.", null);
-
+            // ✅ OTP return — WebSite email bhejega
             return (true,
-                $"OTP sent to {MaskEmail(email)}. Valid for {VigilanceOtpStore.OTP_VALIDITY_MINUTES} minutes.",
+                $"OTP generated successfully. Valid for {VigilanceOtpStore.OTP_VALIDITY_MINUTES} minutes.",
+                otp,
                 VigilanceOtpStore.MAX_RESEND - rec.ResendCount);
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  NEW #2: VerifyOtp
+        //  VERIFY OTP — match + attempts + expiry
         // ═══════════════════════════════════════════════════════════
         public async Task<(bool success, string message, int? attemptsLeft)> VerifyOtp(string email, string otp)
         {
@@ -156,41 +151,41 @@ namespace Application.Services
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  NEW #3: ResendOtp
+        //  RESEND OTP — regenerate + return, no email
         // ═══════════════════════════════════════════════════════════
-        public async Task<(bool success, string message, int? resendLeft)> ResendOtp(string email)
+        public async Task<(bool success, string message, string otp, int? resendLeft)> ResendOtp(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
-                return (false, "Email is required.", null);
+                return (false, "Email is required.", null, null);
 
             email = email.Trim().ToLower();
             var rec = VigilanceOtpStore.Get(email);
 
             if (rec == null)
-                return (false, "No OTP request found. Please submit email first.", null);
+                return (false, "No OTP request found. Please submit email first.", null, null);
 
             if (rec.IsVerified)
-                return (false, "Email already verified. Please proceed with the form.", null);
+                return (false, "Email already verified. Please proceed with the form.", null, null);
 
-            // ── 24 hr rate limit — DB se check (persistent) ──
+            // ── 24 hr rate limit ──
             var isRateLimited = await _unitOfWork.vigiRepo
                 .HasRecentComplaintByEmail(email, VigilanceOtpStore.RATE_LIMIT_HOURS)
                 .ConfigureAwait(false);
 
             if (isRateLimited)
-                return (false, "ALREADY_SUBMITTED", null);
+                return (false, "ALREADY_SUBMITTED", null, null);
 
             if (rec.ResendCount >= VigilanceOtpStore.MAX_RESEND)
                 return (false,
                     $"Maximum OTP resend limit ({VigilanceOtpStore.MAX_RESEND}) reached.",
-                    0);
+                    null, 0);
 
             if (rec.LastResendAt != null &&
                 (DateTime.UtcNow - rec.LastResendAt.Value).TotalSeconds < VigilanceOtpStore.RESEND_COOLDOWN_SECONDS)
             {
                 var secLeft = VigilanceOtpStore.RESEND_COOLDOWN_SECONDS
                               - (int)(DateTime.UtcNow - rec.LastResendAt.Value).TotalSeconds;
-                return (false, $"Please wait {secLeft} second(s) before resending.", null);
+                return (false, $"Please wait {secLeft} second(s) before resending.", null, null);
             }
 
             var otp = VigilanceOtpStore.GenerateOtp();
@@ -201,23 +196,11 @@ namespace Application.Services
             rec.LastResendAt = DateTime.UtcNow;
             VigilanceOtpStore.Save(rec);
 
-            var sent = VigilanceOtpStore.SendOtpEmail(email, otp, _config);
-            if (!sent)
-                return (false, "Failed to send OTP email.", null);
-
+            // ✅ OTP return — WebSite email bhejega
             return (true,
-                $"New OTP sent to {MaskEmail(email)}.",
+                $"New OTP generated successfully.",
+                otp,
                 VigilanceOtpStore.MAX_RESEND - rec.ResendCount);
-        }
-
-        // ── Helper ──
-        private static string MaskEmail(string email)
-        {
-            if (string.IsNullOrEmpty(email) || !email.Contains("@")) return email;
-            var parts = email.Split('@');
-            var name = parts[0];
-            if (name.Length <= 2) return email;
-            return name.Substring(0, 2) + new string('*', Math.Max(1, name.Length - 2)) + "@" + parts[1];
         }
     }
 }

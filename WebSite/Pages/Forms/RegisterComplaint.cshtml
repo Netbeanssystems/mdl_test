@@ -175,53 +175,58 @@ else
                         <div class="col-md-4">
                             <label asp-for="vigi.Name" class="form-label">@(isEnglish ? "Name" : "नाम")<span class="astricks">*</span></label>
                             <input asp-for="vigi.Name" id="vigi_Name" autocomplete="off"
-                                   placeholder="@(isEnglish ? "Name" : "नाम")"
+                                   placeholder="@(isEnglish ? "Enter your full name" : "अपना पूरा नाम दर्ज करें")"
                                    data-rule="name"
+                                   data-min="2"
                                    class="form-control vic" maxlength="50"
                                    oninput="cleanInput(this, 'alphanumeric')" />
-                            <small class="text-muted char-counter" data-for="vigi_Name" data-max="50">0 / 50</small>
+                            <small class="text-muted char-counter" data-for="vigi_Name" data-max="50" data-min="2">0 / 50 (min 2)</small>
                             <span asp-validation-for="vigi.Name" class="text-danger field-error"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="vigi.Designation" class="form-label">@(isEnglish ? "Designation" : "पदनाम")<span class="astricks">*</span></label>
                             <input asp-for="vigi.Designation" id="vigi_Designation" autocomplete="off"
-                                   placeholder="@(isEnglish ? "Designation" : "पदनाम")"
+                                   placeholder="@(isEnglish ? "Enter your designation" : "अपना पदनाम दर्ज करें")"
                                    data-rule="designation"
-                                   class="form-control vic" maxlength="16"
+                                   data-min="2"
+                                   class="form-control vic" maxlength="50"
                                    oninput="cleanInput(this, 'alphanumeric')" />
-                            <small class="text-muted char-counter" data-for="vigi_Designation" data-max="16">0 / 16</small>
+                            <small class="text-muted char-counter" data-for="vigi_Designation" data-max="50" data-min="2">0 / 50 (min 2)</small>
                             <span asp-validation-for="vigi.Designation" class="text-danger field-error"></span>
                         </div>
 
                         <div class="col-md-4">
                             <label asp-for="vigi.Organization" class="form-label">@(isEnglish ? "Organization" : "संगठन")<span class="astricks">*</span></label>
                             <input asp-for="vigi.Organization" id="vigi_Organization" autocomplete="off"
-                                   placeholder="@(isEnglish ? "Organization" : "संगठन")"
+                                   placeholder="@(isEnglish ? "Enter full form of organization (e.g., Mazagon Dock Shipbuilders Limited) — not abbreviation like MDL" : "संगठन का पूरा नाम दर्ज करें (जैसे माझगांव डॉक शिपबिल्डर्स लिमिटेड) — संक्षेप नहीं जैसे MDL")"
                                    data-rule="organization"
-                                   class="form-control vic" maxlength="16"
+                                   data-min="2"
+                                   class="form-control vic" maxlength="100"
                                    oninput="cleanInput(this, 'alphanumeric')" />
-                            <small class="text-muted char-counter" data-for="vigi_Organization" data-max="16">0 / 16</small>
+                            <small class="text-muted char-counter" data-for="vigi_Organization" data-max="100" data-min="2">0 / 100 (min 2)</small>
                             <span asp-validation-for="vigi.Organization" class="text-danger field-error"></span>
                         </div>
 
                         <div class="col-4">
-                            <label asp-for="vigi.Contact" class="form-label">@(isEnglish ? "Contact No" : "संपर्क नं")<span class="astricks">*</span></label>
+                            <label asp-for="vigi.Contact" class="form-label">@(isEnglish ? "Mobile No" : "मोबाइल नं")<span class="astricks">*</span></label>
                             <input asp-for="vigi.Contact" id="vigi_Contact" autocomplete="off"
-                                   placeholder="@(isEnglish ? "Contact No" : "संपर्क नं")"
+                                   placeholder="9342397423"
                                    data-rule="contact"
+                                   data-min="10"
                                    class="form-control vic" maxlength="15"
-                                   oninput="cleanInput(this, 'digits')" />
-                            <small class="text-muted char-counter" data-for="vigi_Contact" data-max="15">0 / 15</small>
+                                   oninput="cleanInput(this, 'mobile')" />
+                            <small class="text-muted char-counter" data-for="vigi_Contact" data-max="15" data-min="10">0 / 15 (min 10)</small>
                             <span asp-validation-for="vigi.Contact" class="text-danger field-error"></span>
                         </div>
                         <div class="col-4">
-                            <label asp-for="vigi.Fax" class="form-label">@(isEnglish ? "Fax No" : "फैक्स नं")</label>
+                            <label asp-for="vigi.Fax" class="form-label">@(isEnglish ? "Fax No (Optional)" : "फैक्स नं (वैकल्पिक)")</label>
                             <input asp-for="vigi.Fax" id="vigi_Fax" autocomplete="off"
                                    class="form-control vic"
-                                   placeholder="@(isEnglish ? "Fax No" : "फैक्स नं")" maxlength="20"
+                                   placeholder="@(isEnglish ? "Fax No" : "फैक्स नं")" maxlength="15"
                                    data-rule="fax"
+                                   data-min="7"
                                    oninput="cleanInput(this, 'fax')" />
-                            <small class="text-muted char-counter" data-for="vigi_Fax" data-max="20">0 / 20</small>
+                            <small class="text-muted char-counter" data-for="vigi_Fax" data-max="15" data-min="7">0 / 15 (min 7)</small>
                             <span asp-validation-for="vigi.Fax" class="text-danger field-error"></span>
                         </div>
 
@@ -231,9 +236,10 @@ else
                                       id="vigi_PostalAddress"
                                       placeholder="@(isEnglish ? "Postal Address" : "पता")"
                                       data-rule="address"
+                                      data-min="10"
                                       oninput="cleanInput(this, 'alphanumeric')"
-                                      asp-for="vigi.PostalAddress" maxlength="64" rows="3"></textarea>
-                            <small class="text-muted char-counter" data-for="vigi_PostalAddress" data-max="64">0 / 64</small>
+                                      asp-for="vigi.PostalAddress" maxlength="200" rows="3"></textarea>
+                            <small class="text-muted char-counter" data-for="vigi_PostalAddress" data-max="200" data-min="10">0 / 200 (min 10)</small>
                             <span asp-validation-for="vigi.PostalAddress" class="text-danger field-error"></span>
                         </div>
                         <div class="col-6">
@@ -242,9 +248,10 @@ else
                                       id="vigi_ComplaintDetails"
                                       placeholder="@(isEnglish ? "Complaint details" : "शिकायत")"
                                       data-rule="complaint"
+                                      data-min="100"
                                       oninput="cleanInput(this, 'alphanumeric')"
-                                      asp-for="vigi.ComplaintDetails" maxlength="200" rows="3"></textarea>
-                            <small class="text-muted char-counter" data-for="vigi_ComplaintDetails" data-max="200">0 / 200</small>
+                                      asp-for="vigi.ComplaintDetails" maxlength="1000" rows="3"></textarea>
+                            <small class="text-muted char-counter" data-for="vigi_ComplaintDetails" data-max="1000" data-min="100">0 / 1000 (min 100)</small>
                             <span asp-validation-for="vigi.ComplaintDetails" class="text-danger field-error"></span>
                         </div>
 
@@ -408,21 +415,29 @@ else
     //  ANTIFORGERY TOKEN
     // ═══════════════════════════════════════════════════════════
     var ANTI_FORGERY_TOKEN = $('input[name="__RequestVerificationToken"]').val();
-    console.log("Antiforgery token exists:", !!ANTI_FORGERY_TOKEN);
 
     // ═══════════════════════════════════════════════════════════
-    //  CHARACTER COUNTER
+    //  CHARACTER COUNTER — current / max (min N)
     // ═══════════════════════════════════════════════════════════
     function updateCharCounter(el) {
         var id = el.id;
         var max = parseInt(el.getAttribute('maxlength')) || 0;
+        var min = parseInt(el.getAttribute('data-min')) || 0;
         var len = el.value ? el.value.length : 0;
 
         var $counter = $('.char-counter[data-for="' + id + '"]');
         if ($counter.length === 0) return;
 
-        $counter.text(len + ' / ' + max);
+        var text = len + ' / ' + max;
+        if (min > 0) text += ' (min ' + min + ')';
+
+        $counter.text(text);
         $counter.removeClass('warn danger');
+
+        if (min > 0 && len > 0 && len < min) {
+            $counter.addClass('danger');
+            return;
+        }
 
         if (max > 0) {
             var ratio = len / max;
@@ -431,7 +446,6 @@ else
         }
     }
 
-    // Initialize counters on page load
     $(document).ready(function () {
         $('.char-counter').each(function () {
             var id = $(this).data('for');
@@ -441,18 +455,180 @@ else
     });
 
     // ═══════════════════════════════════════════════════════════
-    //  BUSINESS VALIDATION
+    //  GIBBERISH DETECTION — v3.0 (No bypass, pure algorithmic)
     // ═══════════════════════════════════════════════════════════
+    var BASE_VOWELS = 'aeiou';
+    var CONSONANTS_REGEX = /[bcdfghjklmnpqrstvwxyz]/i;
 
-    var BLOCKED_WORDS = [
-        'test','testing','asdf','asdfasdf','qwerty','qwertyuiop',
-        'aaa','aaaa','bbbb','ccc','dddd',
-        'dummy','none','na','n/a','xyz','abc','abcd',
-        'admin','user','guest','sample','demo',
-        'null','undefined','fake','fack','test123'
+    // ─── Keyboard rows (for walk detection) ───
+    var KBD_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+    var KBD_ROWS_REV = KBD_ROWS.map(function (r) {
+        return r.split('').reverse().join('');
+    });
+
+    // Longest contiguous substring of `s` that appears (fwd or rev) on a keyboard row
+    function maxKeyboardRowWalk(s) {
+        if (!s || s.length < 3) return 0;
+        var maxWalk = 0;
+        for (var r = 0; r < KBD_ROWS.length; r++) {
+            var fwd = KBD_ROWS[r];
+            var rev = KBD_ROWS_REV[r];
+            for (var i = 0; i < s.length; i++) {
+                for (var j = i + 3; j <= s.length; j++) {
+                    var sub = s.substring(i, j);
+                    if (fwd.indexOf(sub) !== -1 || rev.indexOf(sub) !== -1) {
+                        if (sub.length > maxWalk) maxWalk = sub.length;
+                    }
+                }
+            }
+        }
+        return maxWalk;
+    }
+
+    // Smart Y — context-aware vowel detection
+    function isVowelAt(s, i) {
+        var ch = s[i].toLowerCase();
+        if (BASE_VOWELS.indexOf(ch) !== -1) return true;
+
+        if (ch === 'y') {
+            if (i === 0) return false;  // yes, Yamuna, Yogesh
+            var prev = s[i - 1];
+            var next = i < s.length - 1 ? s[i + 1] : null;
+            if (next === null) return true;  // baby, happy, sky
+            if (CONSONANTS_REGEX.test(prev) && CONSONANTS_REGEX.test(next)) return true;  // rhythm, myth
+            return false;
+        }
+        return false;
+    }
+
+    function countVowels(s) {
+        var count = 0;
+        for (var i = 0; i < s.length; i++) {
+            if (isVowelAt(s, i)) count++;
+        }
+        return count;
+    }
+
+    function maxConsecutiveConsonants(s) {
+        var maxRun = 0, currentRun = 0;
+        for (var i = 0; i < s.length; i++) {
+            if (/[a-z]/i.test(s[i]) && !isVowelAt(s, i)) {
+                currentRun++;
+                if (currentRun > maxRun) maxRun = currentRun;
+            } else {
+                currentRun = 0;
+            }
+        }
+        return maxRun;
+    }
+
+    function maxConsecutiveVowels(s) {
+        var maxRun = 0, currentRun = 0;
+        for (var i = 0; i < s.length; i++) {
+            if (isVowelAt(s, i)) {
+                currentRun++;
+                if (currentRun > maxRun) maxRun = currentRun;
+            } else {
+                currentRun = 0;
+            }
+        }
+        return maxRun;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  GIBBERISH ENGINE — every word goes through this. No bypass.
+    // ═══════════════════════════════════════════════════════════
+    function analyzeWord(word, fieldConfig) {
+        fieldConfig = fieldConfig || { threshold: 3 };
+
+        var letters = (word || '').replace(/[^a-z]/gi, '').toLowerCase();
+        var len = letters.length;
+
+        if (len < 3) {
+            return { gibberish: false, score: 0, reason: 'too-short' };
+        }
+
+        var vowels = countVowels(letters);
+        var consonants = len - vowels;
+        var score = 0;
+        var reasons = [];
+
+        // Rule 1: Zero vowels + long consonant run (real acronyms like NTPC/HPCL avoided)
+        if (vowels === 0 && len >= 4 && maxConsecutiveConsonants(letters) >= 5) {
+            score += 3;
+            reasons.push('no-vowels-long-cons');
+        }
+
+        // Rule 2: Consonant/Vowel ratio
+        if (vowels > 0) {
+            var ratio = consonants / vowels;
+            if (len <= 5 && ratio > 4) { score += 2; reasons.push('ratio-high'); }
+            else if (len <= 8 && ratio > 3.5) { score += 2; reasons.push('ratio-mid'); }
+            else if (len > 8 && ratio > 3) { score += 1; reasons.push('ratio-long'); }
+        }
+
+        // Rule 3: Consecutive consonants
+        var maxConsRun = maxConsecutiveConsonants(letters);
+        if (maxConsRun >= 7) { score += 3; reasons.push('cons-run-7plus'); }
+        else if (maxConsRun >= 6) { score += 2; reasons.push('cons-run-6'); }
+        else if (maxConsRun >= 5 && len <= 6) { score += 1; reasons.push('cons-run-5-short'); }
+
+        // Rule 4: Consecutive vowels
+        var maxVowRun = maxConsecutiveVowels(letters);
+        if (maxVowRun >= 4 && len <= 8) { score += 2; reasons.push('vow-run-4'); }
+
+        // Rule 5: Keyboard-row walk penalty (SDFGHJ, QWERT, LKJHGF, ZXCVB, ...)
+        var kbdWalk = maxKeyboardRowWalk(letters);
+        if (kbdWalk >= 5) { score += 4; reasons.push('kbd-walk-' + kbdWalk); }
+        else if (kbdWalk >= 4) { score += 3; reasons.push('kbd-walk-' + kbdWalk); }
+        else if (kbdWalk >= 3) { score += 1; reasons.push('kbd-walk-' + kbdWalk); }
+
+        var threshold = fieldConfig.threshold || 3;
+        return {
+            gibberish: score >= threshold,
+            score: score,
+            reason: reasons.join(' + ') || 'clean'
+        };
+    }
+
+    function isGibberishText(text, fieldConfig) {
+        if (!text) return false;
+        var words = text.trim().split(/\s+/).filter(Boolean);
+        for (var i = 0; i < words.length; i++) {
+            if (analyzeWord(words[i], fieldConfig).gibberish) return true;
+        }
+        return false;
+    }
+
+    var FIELD_CONFIGS = {
+        name:         { threshold: 3 },
+        designation:  { threshold: 3 },
+        organization: { threshold: 3 },
+        address:      { threshold: 4 },  // Lenient
+        complaint:    { threshold: 4 }   // Lenient
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    //  BUSINESS VALIDATION HELPERS
+    // ═══════════════════════════════════════════════════════════
+    var PLACEHOLDER_WORDS = [
+        'test', 'testing', 'asdf', 'asdfasdf', 'none', 'na', 'n/a',
+        'admin', 'dummy', 'sample', 'demo', 'xyz', 'abc', 'abcd',
+        'user', 'guest', 'fake', 'null', 'undefined',
+        'aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff'
     ];
+    var KEYBOARD_WALKS = ['qwerty', 'qwertyuiop', 'asdf', 'asdfgh', 'zxcv', 'zxcvbn', 'qaz', 'wsx', 'edc'];
 
-    function hasMultipleSpaces(s) { return /\s{2,}/.test(s); }
+    // ─── Valid repeat acronyms (3+ identical letters allowed) ───
+    var VALID_REPEAT_ACRONYMS = [
+        'WWW',   // World Wide Web
+        'BBB',   // Better Business Bureau
+        'CCC',   // Civilian Conservation Corps
+        'MMM',   // 3M / Minnesota Mining & Manufacturing
+        'HHH',   // Person name / sound
+        'TTT',   // Rare but valid
+        'III'    // Roman numeral — Phase III, Sector III
+    ];
 
     function hasConsecutiveRepeats(s, maxRepeat) {
         if (!s) return false;
@@ -461,45 +637,105 @@ else
         return re.test(s);
     }
 
-    function isGibberish(s) {
+    function isAllowedRepeatAcronym(word) {
+        if (!word) return false;
+        var alpha = word.replace(/[^a-zA-Z]/g, '');
+        if (alpha.length < 2 || alpha.length > 6) return false;
+        if (alpha !== alpha.toUpperCase()) return false;
+        return VALID_REPEAT_ACRONYMS.indexOf(alpha) !== -1;
+    }
+
+    function hasBlockedRepeats(s) {
         if (!s) return false;
-        var lower = s.trim().toLowerCase().replace(/\s+/g, ' ');
-        var words = lower.split(' ');
+        var words = s.split(/\s+/).filter(Boolean);
         for (var i = 0; i < words.length; i++) {
-            if (BLOCKED_WORDS.indexOf(words[i]) !== -1) return true;
+            var alpha = words[i].replace(/[^a-zA-Z]/g, '');
+            if (!/([a-zA-Z])\1{2,}/.test(alpha)) continue;
+            if (isAllowedRepeatAcronym(alpha)) continue;
+            return true;
         }
-        var walks = ['qwerty','asdf','zxcv','qaz','wsx','edc'];
-        for (var i = 0; i < walks.length; i++) {
-            if (lower.indexOf(walks[i]) !== -1) return true;
-        }
-        if (/^\d+$/.test(lower)) return true;
         return false;
     }
 
-    function vowelRatio(s) {
-        if (!s) return 0;
-        var letters = s.replace(/[^a-z]/gi, '').toLowerCase();
-        if (letters.length === 0) return 0;
-        var vowels = (letters.match(/[aeiou]/g) || []).length;
-        return vowels / letters.length;
-    }
+    function hasMultipleSpaces(s) { return /\s{2,}/.test(s); }
 
-    function isRepeatingOrSequential(s) {
+    function isPlaceholderWord(s) {
         if (!s) return false;
-        var digits = s.replace(/\D/g, '');
-        if (digits.length < 10) return false;
-        if (/^(\d)\1+$/.test(digits)) return true;
-        var seqInc = true, seqDec = true;
-        for (var i = 1; i < digits.length; i++) {
-            var d1 = parseInt(digits[i - 1], 10);
-            var d2 = parseInt(digits[i], 10);
-            if (d2 !== d1 + 1) seqInc = false;
-            if (d2 !== d1 - 1) seqDec = false;
+        return PLACEHOLDER_WORDS.indexOf(s.trim().toLowerCase()) !== -1;
+    }
+
+    function containsPlaceholderWord(s) {
+        if (!s) return false;
+        var words = s.trim().toLowerCase().split(/\s+/);
+        for (var i = 0; i < words.length; i++) {
+            if (PLACEHOLDER_WORDS.indexOf(words[i]) !== -1) return true;
         }
-        if (seqInc || seqDec) return true;
         return false;
     }
 
+    function isKeyboardWalk(s) {
+        if (!s) return false;
+        var lower = s.trim().toLowerCase().replace(/\s+/g, '');
+        for (var i = 0; i < KEYBOARD_WALKS.length; i++) {
+            if (lower.indexOf(KEYBOARD_WALKS[i]) !== -1) return true;
+        }
+        return false;
+    }
+
+    function isPureNumeric(s) {
+        if (!s) return false;
+        return /^\d+$/.test(s.trim());
+    }
+
+    function uniqueWordPercent(s) {
+        if (!s) return 0;
+        var words = s.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        if (words.length < 3) return 100;
+        var uniq = {};
+        for (var i = 0; i < words.length; i++) uniq[words[i]] = true;
+        return (Object.keys(uniq).length / words.length) * 100;
+    }
+
+    function isRepeatingOrSequential(digits) {
+        if (!digits || digits.length < 4) return false;
+        if (/^(\d)\1+$/.test(digits)) return true;
+
+        var known = ['1234567890','0123456789','9876543210','0987654321',
+                     '123456789','987654321','12345678','23456789'];
+        if (known.indexOf(digits) !== -1) return true;
+
+        var seqIncWrap = true, seqDecWrap = true;
+        for (var i = 1; i < digits.length; i++) {
+            var d1 = parseInt(digits[i-1], 10);
+            var d2 = parseInt(digits[i], 10);
+            if ((d2 - d1 + 10) % 10 !== 1) seqIncWrap = false;
+            if ((d1 - d2 + 10) % 10 !== 1) seqDecWrap = false;
+        }
+        if (seqIncWrap || seqDecWrap) return true;
+
+        var half = Math.floor(digits.length / 2);
+        for (var len = 1; len <= half; len++) {
+            var block = digits.substring(0, len);
+            var repeated = '';
+            while (repeated.length < digits.length) repeated += block;
+            repeated = repeated.substring(0, digits.length);
+            if (repeated === digits) return true;
+        }
+
+        if (digits.length >= 6) {
+            var alt = true;
+            for (var k = 2; k < digits.length; k++) {
+                if (digits[k] !== digits[k-2]) { alt = false; break; }
+            }
+            if (alt) return true;
+        }
+
+        return false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  FIELD VALIDATOR — regex first, gibberish LAST
+    // ═══════════════════════════════════════════════════════════
     function validateField(rule, value) {
         var v = (value || '').trim();
         var t = IS_ENGLISH;
@@ -509,61 +745,69 @@ else
         }
 
         switch (rule) {
+
             case 'name':
-                if (v.length < 3) return { valid: false, msg: t ? 'Name must be at least 3 characters.' : 'नाम कम से कम 3 अक्षरों का होना चाहिए।' };
+                if (v.length < 2) return { valid: false, msg: t ? 'Name must be at least 2 characters.' : 'नाम कम से कम 2 अक्षरों का होना चाहिए।' };
                 if (v.length > 50) return { valid: false, msg: t ? 'Name must be at most 50 characters.' : 'नाम अधिकतम 50 अक्षरों का हो सकता है।' };
-                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
-                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters like "aaa", "bbb" are not allowed.' : '"aaa", "bbb" जैसे दोहराए गए अक्षर की अनुमति नहीं है।' };
-                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid name.' : 'कृपया वैध नाम दर्ज करें।' };
-                if (!/^[a-zA-Z][a-zA-Z\s.'-]*$/.test(v)) return { valid: false, msg: t ? 'Name can only contain letters, spaces, dot, apostrophe, hyphen.' : 'नाम में केवल अक्षर, स्पेस, डॉट, अपॉस्ट्रॉफी, हाइफ़न हो सकते हैं।' };
+                if (!/^[a-zA-Z][a-zA-Z\s.'-]*$/.test(v)) return { valid: false, msg: t ? 'Only letters, spaces, dot, apostrophe, hyphen allowed.' : 'केवल अक्षर, स्पेस, डॉट, अपॉस्ट्रॉफी, हाइफ़न की अनुमति है।' };
+                if (hasBlockedRepeats(v)) return { valid: false, msg: t ? 'Repeated characters like "aaa", "bbb" are not allowed.' : '"aaa", "bbb" जैसे दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isPlaceholderWord(v) || containsPlaceholderWord(v)) return { valid: false, msg: t ? 'Placeholder words like "test", "dummy" are not allowed.' : '"test", "dummy" जैसे प्लेसहोल्डर शब्द की अनुमति नहीं है।' };
+                if (isKeyboardWalk(v)) return { valid: false, msg: t ? 'Keyboard patterns like "qwerty" are not allowed.' : '"qwerty" जैसे कीबोर्ड पैटर्न की अनुमति नहीं है।' };
+                if (isGibberishText(v, FIELD_CONFIGS.name)) return { valid: false, msg: t ? 'Name looks like gibberish. Please enter a valid name.' : 'नाम अर्थहीन लग रहा है। कृपया वैध नाम दर्ज करें।' };
                 return { valid: true, msg: '' };
 
             case 'designation':
-                if (v.length < 3) return { valid: false, msg: t ? 'Designation must be at least 3 characters.' : 'पदनाम कम से कम 3 अक्षरों का होना चाहिए।' };
-                if (v.length > 16) return { valid: false, msg: t ? 'Designation must be at most 16 characters.' : 'पदनाम अधिकतम 16 अक्षरों का हो सकता है।' };
-                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
-                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
-                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid designation.' : 'कृपया वैध पदनाम दर्ज करें।' };
+                if (v.length < 2) return { valid: false, msg: t ? 'Designation must be at least 2 characters.' : 'पदनाम कम से कम 2 अक्षरों का होना चाहिए।' };
+                if (v.length > 50) return { valid: false, msg: t ? 'Designation must be at most 50 characters.' : 'पदनाम अधिकतम 50 अक्षरों का हो सकता है।' };
+                if (isPureNumeric(v)) return { valid: false, msg: t ? 'Designation cannot be pure numeric.' : 'पदनाम केवल संख्याओं का नहीं हो सकता।' };
+                if (hasBlockedRepeats(v)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isKeyboardWalk(v)) return { valid: false, msg: t ? 'Keyboard walks like "qwerty" are not allowed.' : '"qwerty" जैसे कीबोर्ड वॉक की अनुमति नहीं है।' };
+                if (isPlaceholderWord(v) || containsPlaceholderWord(v)) return { valid: false, msg: t ? 'Placeholder words are not allowed.' : 'प्लेसहोल्डर शब्द की अनुमति नहीं है।' };
+                if (isGibberishText(v, FIELD_CONFIGS.designation)) return { valid: false, msg: t ? 'Designation looks like gibberish.' : 'पदनाम अर्थहीन लग रहा है।' };
                 return { valid: true, msg: '' };
 
             case 'organization':
-                if (v.length < 3) return { valid: false, msg: t ? 'Organization must be at least 3 characters.' : 'संगठन कम से कम 3 अक्षरों का होना चाहिए।' };
-                if (v.length > 16) return { valid: false, msg: t ? 'Organization must be at most 16 characters.' : 'संगठन अधिकतम 16 अक्षरों का हो सकता है।' };
-                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
-                if (hasConsecutiveRepeats(v, 2)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
-                if (isGibberish(v)) return { valid: false, msg: t ? 'Please enter a valid organization name.' : 'कृपया वैध संगठन का नाम दर्ज करें।' };
-                var ratio = vowelRatio(v);
-                if (v.replace(/[^a-z]/gi, '').length >= 6 && (ratio < 0.15 || ratio > 0.75))
-                    return { valid: false, msg: t ? 'Organization name looks invalid.' : 'संगठन का नाम अमान्य लग रहा है।' };
+                if (v.length < 2) return { valid: false, msg: t ? 'Organization must be at least 2 characters.' : 'संगठन कम से कम 2 अक्षरों का होना चाहिए।' };
+                if (v.length > 100) return { valid: false, msg: t ? 'Organization must be at most 100 characters.' : 'संगठन अधिकतम 100 अक्षरों का हो सकता है।' };
+                if (hasBlockedRepeats(v)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (isPlaceholderWord(v) || containsPlaceholderWord(v)) return { valid: false, msg: t ? 'Placeholder words like "test", "xyz" are not allowed.' : '"test", "xyz" जैसे प्लेसहोल्डर शब्द की अनुमति नहीं है।' };
+                if (isKeyboardWalk(v)) return { valid: false, msg: t ? 'Keyboard patterns are not allowed.' : 'कीबोर्ड पैटर्न की अनुमति नहीं है।' };
+                var lowerOrg = v.toLowerCase();
+                if (lowerOrg === 'test corp' || lowerOrg === 'xyz inc') return { valid: false, msg: t ? 'Test organization names are not allowed.' : 'टेस्ट संगठन नाम की अनुमति नहीं है।' };
+                if (isGibberishText(v, FIELD_CONFIGS.organization)) return { valid: false, msg: t ? 'Organization name looks like gibberish. Please enter the full organization name.' : 'संगठन का नाम अर्थहीन लग रहा है। कृपया पूरा नाम दर्ज करें।' };
                 return { valid: true, msg: '' };
 
             case 'contact':
-                var digits = v.replace(/\D/g, '');
-                if (digits.length < 10) return { valid: false, msg: t ? 'Contact number must be at least 10 digits.' : 'संपर्क नंबर कम से कम 10 अंकों का होना चाहिए।' };
-                if (digits.length > 15) return { valid: false, msg: t ? 'Contact number must be at most 15 digits.' : 'संपर्क नंबर अधिकतम 15 अंकों का हो सकता है।' };
-                if (isRepeatingOrSequential(digits)) return { valid: false, msg: t ? 'Repeating or sequential digits are not allowed.' : 'दोहराए या क्रमिक अंकों की अनुमति नहीं है।' };
+                var contactDigits = v.replace(/\D/g, '');
+                if (contactDigits.length < 10) return { valid: false, msg: t ? 'Mobile number must have at least 10 digits.' : 'मोबाइल नंबर में कम से कम 10 अंक होने चाहिए।' };
+                if (contactDigits.length > 15) return { valid: false, msg: t ? 'Mobile number must have at most 15 digits.' : 'मोबाइल नंबर में अधिकतम 15 अंक हो सकते हैं।' };
+                if (isRepeatingOrSequential(contactDigits)) return { valid: false, msg: t ? 'Invalid mobile number (all-same, sequential, or repeating digits are not allowed).' : 'अमान्य मोबाइल नंबर।' };
+                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Only single space allowed.' : 'केवल एकल स्पेस की अनुमति है।' };
                 return { valid: true, msg: '' };
 
             case 'fax':
                 if (!v) return { valid: true, msg: '' };
+                if (!/^[0-9+\-. ()]+$/.test(v)) return { valid: false, msg: t ? 'Fax can only contain digits, +, -, ., (, ) and space.' : 'फैक्स में केवल अंक, +, -, ., (, ) और स्पेस हो सकते हैं।' };
                 var faxDigits = v.replace(/\D/g, '');
-                if (faxDigits.length < 7) return { valid: false, msg: t ? 'Fax must be at least 7 digits.' : 'फैक्स कम से कम 7 अंकों का होना चाहिए।' };
-                if (faxDigits.length > 15) return { valid: false, msg: t ? 'Fax must be at most 15 digits.' : 'फैक्स अधिकतम 15 अंकों का हो सकता है।' };
-                if (isRepeatingOrSequential(v)) return { valid: false, msg: t ? 'Repeating or sequential digits are not allowed.' : 'दोहराए या क्रमिक अंकों की अनुमति नहीं है।' };
+                if (faxDigits.length < 7) return { valid: false, msg: t ? 'Fax must have at least 7 digits.' : 'फैक्स में कम से कम 7 अंक होने चाहिए।' };
+                if (faxDigits.length > 15) return { valid: false, msg: t ? 'Fax must have at most 15 digits.' : 'फैक्स में अधिकतम 15 अंक हो सकते हैं।' };
+                if (isRepeatingOrSequential(faxDigits)) return { valid: false, msg: t ? 'Invalid fax number.' : 'अमान्य फैक्स नंबर।' };
                 return { valid: true, msg: '' };
 
             case 'address':
-                if (v.length < 3) return { valid: false, msg: t ? 'Address must be at least 3 characters.' : 'पता कम से कम 3 अक्षरों का होना चाहिए।' };
-                if (v.length > 64) return { valid: false, msg: t ? 'Address must be at most 64 characters.' : 'पता अधिकतम 64 अक्षरों का हो सकता है।' };
-                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
-                if (hasConsecutiveRepeats(v, 3)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (v.length < 10) return { valid: false, msg: t ? 'Address must be at least 10 characters.' : 'पता कम से कम 10 अक्षरों का होना चाहिए।' };
+                if (v.length > 200) return { valid: false, msg: t ? 'Address too long (max 200).' : 'पता बहुत लंबा है (अधिकतम 200)।' };
+                if (hasBlockedRepeats(v)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (uniqueWordPercent(v) < 40) return { valid: false, msg: t ? 'Address looks repetitive.' : 'पता दोहराव वाला लग रहा है।' };
+                if (isGibberishText(v, FIELD_CONFIGS.address)) return { valid: false, msg: t ? 'Address looks like gibberish.' : 'पता अर्थहीन लग रहा है।' };
                 return { valid: true, msg: '' };
 
             case 'complaint':
-                if (v.length < 3) return { valid: false, msg: t ? 'Complaint details must be at least 3 characters.' : 'शिकायत विवरण कम से कम 3 अक्षरों का होना चाहिए।' };
-                if (v.length > 200) return { valid: false, msg: t ? 'Complaint details must be at most 200 characters.' : 'शिकायत विवरण अधिकतम 200 अक्षरों का हो सकता है।' };
-                if (hasMultipleSpaces(v)) return { valid: false, msg: t ? 'Multiple consecutive spaces are not allowed.' : 'लगातार कई स्पेस की अनुमति नहीं है।' };
-                if (hasConsecutiveRepeats(v, 3)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (v.length < 100) return { valid: false, msg: t ? 'Complaint details must be at least 100 characters.' : 'शिकायत विवरण कम से कम 100 अक्षरों का होना चाहिए।' };
+                if (v.length > 1000) return { valid: false, msg: t ? 'Complaint details too long (max 1000).' : 'शिकायत विवरण बहुत लंबा है।' };
+                if (hasBlockedRepeats(v)) return { valid: false, msg: t ? 'Repeated characters are not allowed.' : 'दोहराए गए अक्षर की अनुमति नहीं है।' };
+                if (uniqueWordPercent(v) < 40) return { valid: false, msg: t ? 'Complaint details look repetitive.' : 'शिकायत विवरण दोहराव वाला लग रहा है।' };
+                if (isGibberishText(v, FIELD_CONFIGS.complaint)) return { valid: false, msg: t ? 'Complaint details look like gibberish.' : 'शिकायत विवरण अर्थहीन लग रहा है।' };
                 return { valid: true, msg: '' };
 
             default:
@@ -571,16 +815,31 @@ else
         }
     }
 
+    // ═══════════════════════════════════════════════════════════
+    //  INPUT SANITIZER
+    // ═══════════════════════════════════════════════════════════
     function cleanInput(el, mode) {
         var v = el.value;
 
-        if (mode === 'digits') v = v.replace(/[^0-9]/g, '');
-        else if (mode === 'fax') v = v.replace(/[^0-9+.\-]/g, '');
-        else v = v.replace(/[^a-zA-Z0-9 ,.\/'-]/g, '');
+        if (mode === 'digits') {
+            v = v.replace(/[^0-9]/g, '');
+        } else if (mode === 'mobile') {
+            v = v.replace(/[^0-9+ ]/g, '');
+            v = v.replace(/(?!^)\+/g, '');
+            v = v.replace(/\s{2,}/g, ' ');
+            v = v.replace(/^\s+/, '');
+        } else if (mode === 'fax') {
+            v = v.replace(/[^0-9+\-. ()]/g, '');
+            v = v.replace(/(?!^)\+/g, '');
+            v = v.replace(/\s{2,}/g, ' ');
+            v = v.replace(/^\s+/, '');
+        } else {
+            v = v.replace(/[^a-zA-Z0-9 ,.\/'-]/g, '');
+            v = v.replace(/\s{2,}/g, ' ');
+            v = v.replace(/^\s+/, '');
+        }
 
-        v = v.replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
         el.value = v;
-
         updateCharCounter(el);
 
         var rule = el.getAttribute('data-rule');
@@ -606,19 +865,56 @@ else
         validateAndShow(this, this.getAttribute('data-rule'));
     });
 
+    // ═══════════════════════════════════════════════════════════
+    //  FORM SUBMIT — STRONG VALIDATION
+    // ═══════════════════════════════════════════════════════════
     $('#complaintForm').on('submit', function (e) {
         var allValid = true;
         var firstInvalid = null;
+        var errorMessages = [];
 
         $('#complaintForm [data-rule]').each(function () {
-            var ok = validateAndShow(this, this.getAttribute('data-rule'));
-            if (!ok && !firstInvalid) firstInvalid = this;
-            if (!ok) allValid = false;
+            var rule = this.getAttribute('data-rule');
+            var res = validateField(rule, this.value);
+            var $el = $(this);
+            var $err = $el.closest('.col-md-4, .col-4, .col-6, .col-12').find('.field-error').first();
+
+            if (res.valid) {
+                $el.removeClass('is-invalid-custom');
+                $err.text('');
+            } else {
+                $el.addClass('is-invalid-custom');
+                $err.text(res.msg);
+                allValid = false;
+                if (!firstInvalid) firstInvalid = this;
+                errorMessages.push(res.msg);
+            }
         });
+
+        var captcha = $('#vigi_CaptchaCode').val().trim();
+        if (!captcha) {
+            allValid = false;
+            if (!firstInvalid) firstInvalid = $('#vigi_CaptchaCode')[0];
+            $('#captchavalid').text(IS_ENGLISH ? 'Captcha is required.' : 'कैप्चा आवश्यक है।');
+            errorMessages.push(IS_ENGLISH ? 'Captcha is required.' : 'कैप्चा आवश्यक है।');
+        }
 
         if (!allValid) {
             e.preventDefault();
-            if (firstInvalid) firstInvalid.focus();
+            if (firstInvalid) {
+                firstInvalid.focus();
+                $('html, body').animate({ scrollTop: $(firstInvalid).offset().top - 120 }, 400);
+            }
+            if (errorMessages.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: IS_ENGLISH ? 'Please fix the following:' : 'कृपया इन्हें ठीक करें:',
+                    html: '<ul style="text-align:left; padding-left:20px;">' +
+                          errorMessages.map(function (m) { return '<li>' + m + '</li>'; }).join('') +
+                          '</ul>',
+                    confirmButtonText: IS_ENGLISH ? 'OK' : 'ठीक है'
+                });
+            }
             return false;
         }
     });
@@ -664,7 +960,7 @@ else
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  STEP 1: SEND OTP — WITH 24hr ALREADY-SUBMITTED HANDLING
+    //  STEP 1: SEND OTP
     // ═══════════════════════════════════════════════════════════
     $('#btnSendOtp').on('click', function () {
         var email = $('#step1Email').val().trim();
@@ -684,9 +980,6 @@ else
             url: window.location.pathname + "?handler=SendOtp",
             data: { email: email, __RequestVerificationToken: token },
             success: function (res) {
-                console.log("SendOtp response:", res);
-
-                // ✅ Case 1: Already submitted within 24 hours
                 if (res && res.message === "ALREADY_SUBMITTED") {
                     Swal.fire({
                         icon: 'info',
@@ -699,7 +992,6 @@ else
                     return;
                 }
 
-                // ✅ Case 2: Success
                 if (res && res.success) {
                     showMsg('#step1Msg', res.message || 'OTP sent.', 'success');
                     $('#step2EmailLabel').text(email);
@@ -710,12 +1002,10 @@ else
                     updateResendInfo();
                     showStep(2);
                 } else {
-                    // ✅ Case 3: Error — API message or default
                     showMsg('#step1Msg', (res && res.message) || (IS_ENGLISH ? 'Failed to send OTP.' : 'OTP भेजने में विफल।'), 'danger');
                 }
             },
             error: function (xhr) {
-                console.error("SendOtp error:", xhr.status, xhr.responseText);
                 var msg = IS_ENGLISH ? 'Failed to send OTP.' : 'OTP भेजने में विफल।';
                 try {
                     var p = JSON.parse(xhr.responseText);
@@ -726,7 +1016,7 @@ else
                                 title: IS_ENGLISH ? 'Complaint Already Submitted' : 'शिकायत पहले ही जमा की जा चुकी है',
                                 text: IS_ENGLISH
                                     ? 'Your complaint has been submitted successfully from this email. Please wait 24 hours before submitting a new complaint.'
-                                    : 'इस ई-मेल से आपकी शिकायत सफलतापूर्वक जमा की जा चुकी है। कृपया नई शिकायत जमा करने से पहले 24 घंटे प्रतीक्षा करें।'
+                                    : 'इस ई-मेल से आपकी शिकायत सफलतापूर्वक जमा की जा चुकी है।'
                             });
                             $btn.prop('disabled', false).text(IS_ENGLISH ? 'Send OTP' : 'OTP भेजें');
                             return;
@@ -878,7 +1168,6 @@ else
         $("#vigi_PostalAddress").val("");
         $("#vigi_ComplaintDetails").val("");
         $("#vigi_CaptchaCode").val("");
-        // Reset counters
         $('.char-counter').each(function () {
             var id = $(this).data('for');
             var el = document.getElementById(id);

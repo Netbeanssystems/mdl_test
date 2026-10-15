@@ -36,34 +36,32 @@ namespace WebAPI.Controllers
             return Ok(modelDto);
         }
 
-        // ── NEW #1: Send OTP ──
-        // ✅ Always return 200 OK — success flag differentiate karega
+        // ═══════════════════════════════════════════════════════════
+        //  NEW #1: SubmitEmail — OTP response mein return karo
+        // ═══════════════════════════════════════════════════════════
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> SubmitEmail([FromBody] VigilanceOtpRequest req)
         {
-            Console.WriteLine("🔥🔥🔥 VigilanceController.SubmitEmail HIT");
-
             if (req == null)
-                return Ok(new { success = false, message = "Request body is required." });
+                return Ok(new { success = false, message = "Request body is required.", otp = (string)null, resendLeft = (int?)null });
 
-            Console.WriteLine($"📧 Email received: {req.Email}");
-
-            var (success, message, resendLeft) = await _dataService.vigilance
+            var (success, message, otp, resendLeft) = await _dataService.vigilance
                 .SubmitEmail(req.Email)
                 .ConfigureAwait(false);
 
-            // ✅ 200 OK — success flag se differentiate
-            return Ok(new { success, message, resendLeft });
+            return Ok(new { success, message, otp, resendLeft });
         }
 
-        // ── NEW #2: Verify OTP ──
+        // ═══════════════════════════════════════════════════════════
+        //  NEW #2: Verify OTP
+        // ═══════════════════════════════════════════════════════════
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> VerifyOtp([FromBody] VigilanceVerifyOtpRequest req)
         {
             if (req == null)
-                return Ok(new { success = false, message = "Request body is required." });
+                return Ok(new { success = false, message = "Request body is required.", attemptsLeft = (int?)null });
 
             var (success, message, attemptsLeft) = await _dataService.vigilance
                 .VerifyOtp(req.Email, req.Otp).ConfigureAwait(false);
@@ -71,18 +69,20 @@ namespace WebAPI.Controllers
             return Ok(new { success, message, attemptsLeft });
         }
 
-        // ── NEW #3: Resend OTP ──
+        // ═══════════════════════════════════════════════════════════
+        //  NEW #3: Resend OTP — OTP response mein return karo
+        // ═══════════════════════════════════════════════════════════
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ResendOtp([FromBody] VigilanceOtpRequest req)
         {
             if (req == null)
-                return Ok(new { success = false, message = "Request body is required." });
+                return Ok(new { success = false, message = "Request body is required.", otp = (string)null, resendLeft = (int?)null });
 
-            var (success, message, resendLeft) = await _dataService.vigilance
+            var (success, message, otp, resendLeft) = await _dataService.vigilance
                 .ResendOtp(req.Email).ConfigureAwait(false);
 
-            return Ok(new { success, message, resendLeft });
+            return Ok(new { success, message, otp, resendLeft });
         }
     }
 }
