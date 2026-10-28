@@ -8,6 +8,7 @@ namespace WebSite.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {
+        
         private readonly RequestDelegate _next;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _config;

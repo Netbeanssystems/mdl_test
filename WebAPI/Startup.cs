@@ -105,7 +105,6 @@ namespace WebAPI
         {
             app.UsePathBase("/api");
 
-            //http to https redirection
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps(StatusCodes.Status301MovedPermanently));
             if (env.IsDevelopment())
             {
