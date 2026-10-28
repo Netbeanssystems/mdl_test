@@ -10,38 +10,42 @@ namespace Application.Dtos
         public int Id { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(64, ErrorMessage = "{1} characters max")]
+        [StringLength(50, ErrorMessage = "{1} characters max")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(64, ErrorMessage = "{1} characters max")]
+        [StringLength(50, ErrorMessage = "{1} characters max")]
         public string Designation { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(64, ErrorMessage = "{1} characters max")]
+        [StringLength(100, ErrorMessage = "{1} characters max")]
         public string Organization { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(64, ErrorMessage = "{1} characters max")]
+        [StringLength(100, ErrorMessage = "{1} characters max")]
         [RegularExpression("^[a-z0-9_\\+-]+(\\.[a-z0-9_\\+-]+)*@[a-z0-9-]+(\\.[a-z0-9]+)*\\.([a-z]{2,4})$", ErrorMessage = "Enter a valid email id")]
         public string Email { get; set; }
 
         [DisplayName("Contact No.")]
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(10, ErrorMessage = "{1} characters max")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Enter a valid 10 digit number")]
+        [StringLength(15, ErrorMessage = "{1} characters max")]
         public string Contact { get; set; }
-        public int? Fax { get; set; }
+
+        // ✅ Fax — string (allows +, -, ., space, leading zeros)
+        [DisplayName("Fax No.")]
+        [StringLength(15, ErrorMessage = "{1} characters max")]
+        public string Fax { get; set; }
 
         [DisplayName("Postal Address")]
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(240, ErrorMessage = "{1} characters max")]
+        [StringLength(200, ErrorMessage = "{1} characters max")]
         public string PostalAddress { get; set; }
 
         [DisplayName("Complaint Details")]
         [Required(ErrorMessage = "{0} is required")]
-        [StringLength(5000, ErrorMessage = "{1} characters max")]
+        [StringLength(1000, ErrorMessage = "{1} characters max")]
         public string ComplaintDetails { get; set; }
+
         public int? ShipBuildRelated { get; set; }
         public int? SubHeavyRelated { get; set; }
         public DateTime SubmitOn { get; set; }

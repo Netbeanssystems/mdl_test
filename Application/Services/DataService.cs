@@ -112,7 +112,7 @@ namespace Application.Services
             // Purana:
             //vigilance = new VigilanceService(_unitOfWork, _mapper);
             // Naya:
-            vigilance = new VigilanceService(_unitOfWork, _mapper, _configuration);
+            vigilance = new VigilanceService(_unitOfWork, _mapper);
             enquiry = new EnquiryService(_unitOfWork, _mapper);
             feedback = new FeedbackService(_unitOfWork, _mapper);
             grievance = new GrievanceService(_unitOfWork, _mapper);

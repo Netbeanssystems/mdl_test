@@ -138,7 +138,22 @@ namespace WebSite
             app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.Use(async (context, next) =>
+            {
+                
+                context.Response.Headers["Content-Security-Policy"] =
+                    //"default-src 'self'; " +
+                    //"script-src 'self'; " +
+                    "style-src 'self' 'unsafe-inline'; " +
+                    "img-src 'self' data:; " +
+                    "object-src 'none'; " +
+                    "base-uri 'self'; " +
+                    "frame-ancestors 'none'; " 
+                    //+"form-action 'self';"
+                    ;
 
+                await next();
+            });
             app.UseSession();
             //app.UseCookiePolicy();
 
